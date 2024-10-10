@@ -1,0 +1,143 @@
+﻿@model LumaxDMS.Models.ComplaintModel
+@using LumaxDMS.AppCode
+@using BusinessObject;
+@using BusinessManager.Entities
+@{
+    //var counter = 1;
+    var counter = 0;
+    UserMaster currentUser = (UserMaster)Session[Constants.Session.USER];
+    ItemGroupManager objItemGroupManager = new ItemGroupManager();
+}
+
+
+@Html.DropDownList("HiddenPartId", new SelectList(Model.PartList, "PART_ID", "PARTFULLNAME"), "--Select Part--", new { @class = "form-control", @Id = "HiddenPartId", @Name = "HiddenPartId", @Style = "display:none" })
+<div id="Complaint">
+    <div class="header_ps">
+        <span>Complaint</span>
+    </div>
+    <div class="col-sm-12 col-md-12">
+        <table id="complainttbl" class=" table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline">
+            <thead class="thead-lights">
+                <tr>
+                    <th class="complaintonlydata">
+                        INV.
+                    </th>
+
+                    <th>
+                        ITEM PART CODE
+                    </th>
+                    <th class="feedbackonlydata" width="10%">
+                        PRICE RATING<br />
+                        <small>1 for worst and 5 for best</small>
+                    </th>
+                    <th class="feedbackonlydata" width="10%">
+                        QUALITY RATING<br />
+                        <small>1 for worst and 5 for best</small>
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        INV QTY
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        INV RATE
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        CLAIM QTY
+                    </th>
+                    <th class="complaintonlydata" width="10%">
+                        CLAIM VALUE
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        RECEIPT DATE
+                    </th>
+                    <th>
+                        ITEM REMARKS
+                    </th>
+                    <th>
+                        ITEM ATTACHMENT
+                    </th>
+                </tr>
+            </thead>
+            @if (Model.ComplaintDTLList != null)
+            {
+
+                <tbody>
+                    @Html.Hidden("ComplaintDTLCount", Model.ComplaintDTLList.Count, new { @Name = "ComplaintDTLCount" })
+                    @foreach (var item in Model.ComplaintDTLList)
+                    {
+                        if (Model.COMPLAINTID > 0)
+                        {
+                            if (item.INVOICEID != null && item.INVOICEID != 0)
+                            {
+                                Model.PartList = objItemGroupManager.GetAllPartByInvoiceid(item.INVOICEID.ToString(), (int)Model.DEALER_ID, (int)Model.CTYPEID, currentUser.USER_ID);
+                            }
+                            else
+                            {
+                                Model.PartList = objItemGroupManager.GetAllPartByInvoiceid(String.Empty, (int)Model.DEALER_ID, (int)Model.CTYPEID, currentUser.USER_ID);
+                            }
+                        }
+
+                        counter++;
+                        <tr id="Complaint_@counter">
+                            <td class="complaintonlydata">
+                                @if (item.INVOICEID != null && item.INVOICEID != 0)
+                                {
+                                    @Html.TextBox("INVOICENUMBER", Model.InvoiceList.FirstOrDefault(m => m.INVOICE_ID == item.INVOICEID).INVOICENUMBER, new { @class = "form-control", @id = "INVOICEID_" + counter, @Name = "INVOICEID_" + counter, @readonly = "readonly" })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(m => item.INVOICEID, new SelectList(Model.InvoiceList, "INVOICE_ID", "INVOICENUMBER"), "-- Select Invoice", new { @class = "form-control partchosen-select", @id = "INVOICEID_" + counter, @Name = "INVOICEID_" + counter, @onchange = "return GetPartByInvoiceId(this);" })
+                                }
+
+
+                            </td>
+                            <td>
+
+                                @Html.TextBox("PARTNUMBER", Model.PartList.FirstOrDefault(m => m.PART_ID == item.PARTID).PARTFULLNAME, new { @class = "form-control", @id = "PARTID_" + counter, @Name = "PARTID_" + counter, @readonly = "readonly" })
+                            </td>
+                            <td class="feedbackonlydata">
+                                @Html.TextBoxFor(model => item.RATING, new { @class = "form-control", @id = "Rating_" + counter, @Name = "Rating_" + counter, @readonly = "readonly" })
+
+                            </td>
+                            <td class="feedbackonlydata">
+                                @Html.DropDownListFor(m => item.QUALITYRATING, new SelectList(Model.RatingList, "Value", "Text", item.QUALITYRATING), "-- Select--", new { @class = "form-control", @id = "QRating_" + counter, @Name = "QRating_" + counter })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.INV_QTY, new { @class = "form-control", @id = "invQty_" + counter, @Name = "invQty_" + counter, @readonly = "readonly" })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.INV_RATE, new { @class = "form-control", @id = "invRate_" + counter, @Name = "invRate_" + counter, @readonly = "readonly" })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.CLAIM_QTY, new { @class = "form-control decimalinput", @id = "claimQty_" + counter, @Name = "claimQty_" + counter, @readonly = "readonly" })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.CLAIM_VALUE, new { @class = "form-control", @id = "claimValue_" + counter, @Name = "claimValue_" + counter, @readonly = "readonly" })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.RECEIPT_DATE, "{0:dd/MMM/yyyy}", new { @class = "form-control datepicker", @readonly = "readonly", @id = "ReceiptDate_" + counter, @Name = "ReceiptDate_" + counter })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => item.REMARKS, new { @class = "form-control", @id = "Remarks_" + counter, @Name = "Remarks_" + counter, @readonly = "readonly" })
+                            </td>
+                            <td>
+                                @*<a href="#" onclick="return DownloadImageFile('@item.IMAGEPATH');">Download</a>*@
+                                <a href="##" id="downLoadImgBtn_@item.PARTID" class="btn btn-primary" style="margin: 0 2px 0 2px;float:right;" onclick="return DownloadImageFile('@item.IMAGEPATH');"><i class="fa fa-download" style="padding: 4px 1px;"></i></a>
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+
+            }
+        </table>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    var numrows = Number('@counter');
+    var serialnumber = 1;
+    var rowsarray = ["0", "0"];
+
+</script>
+

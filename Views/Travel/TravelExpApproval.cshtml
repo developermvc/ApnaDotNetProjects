@@ -1,0 +1,163 @@
+﻿
+
+
+
+ <div class="card card-default">
+ <div class="panel panel-default panel_pt">
+ <div class="card-header card_bg">
+ <div class="card-title card_tittle2">SEARCH TRAVEL APPROVED</div>
+ </div>
+
+            <div class="card-body"> 
+			<form class="form-horizontal">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Sales Person Name :</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg from_bg2"  id="pwd">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            From Date :</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control datepicker from_bg from_bg2"  id="pwd"/>
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            To Date :</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control datepicker from_bg from_bg2"  id="pwd"/>
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Category :</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg from_bg2"  id="pwd">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Travel No. :</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg from_bg2"  id="pwd"/>
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Hd Qtr. :</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control datepicker from_bg from_bg2"  id="pwd"/>
+                    </div>
+                </div>
+              
+           
+				 
+				 
+
+</form>
+</div>
+  <div class="card-footer">
+  <div class="clearfix">
+  <div class="float-left">
+   <button class="btn btn-primary" type="submit">Search</button>
+	 <button class="btn btn-primary" type="submit">Clear</button>
+     </div>
+                            
+      </div>
+                        </div>
+               
+      
+ 
+
+    <div class="panel panel-default panel_pt">
+	 <div class="card-header card_bg">
+ <div class="card-title card_tittle2">APPROVED TRAVEL LIST</div>
+ </div>
+            <div class="card-body">
+              
+                    <table id="example2" class="table table-striped table-bordered" style="width: 100%">
+                      <thead class="thead-lights">
+                            <tr>
+                                <th style="text-align: center">
+                                    Travel No.
+                                </th>
+                                <th style="text-align: center">
+                                    Sales Person Name
+                                </th>
+                                <th style="text-align: center">
+                                    Date
+                                </th>
+                                <th style="text-align: center">
+                                    Amount
+                                </th>
+                                <th style="text-align: center">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td align="center">
+                                    N001
+                                </td>
+                                <td align="center">
+                                    Anshuman
+                                </td>
+                                <td align="center">
+                                    04-Oct-2018
+                                </td>
+                                <td align="center">
+                                    3000
+                                </td>
+                                <td align="center">
+                                    <a class="btn btn-sm btn-secondary  pt-top " href="/Travel/ApprovedTravelDetail">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                             
+                             <tr>
+                                <td align="center">
+                                    N002
+                                </td>
+                                <td align="center">
+                                    Ayushi
+                                </td>
+                                <td align="center">
+                                    04-Oct-2018
+                                </td>
+                                <td align="center">
+                                    6000
+                                </td>
+                                <td align="center">
+                                    <a class="btn btn-sm btn-secondary  pt-top " href="/Travel/ApprovedTravelDetail">
+                                         <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+              
+            </div>
+    
+    </div>
+	</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#example2').DataTable({
+            responsive: true
+        });
+
+        new $.fn.dataTable.FixedHeader(table);
+    });
+</script>

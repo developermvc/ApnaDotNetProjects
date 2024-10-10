@@ -1,0 +1,269 @@
+﻿@model LumaxDMS.Models.CRMDashboardModel
+
+@{
+    ViewBag.Title = "Complaint Dashboard";
+
+}
+@{Html.RenderPartial("_WaitModal");}
+@{
+
+    int CurrentYear = DateTime.Today.Year;
+    int PreviousYear = DateTime.Today.Year - 1;
+    int NextYear = DateTime.Today.Year + 1;
+    string PreYear = PreviousYear.ToString();
+    string NexYear = NextYear.ToString();
+    string CurYear = CurrentYear.ToString();
+    string FinYear = null;
+    string prevyear = Convert.ToString(PreviousYear - 1);
+    string PrevFinYear = null;
+
+
+    if (DateTime.Today.Month > 3)
+    {
+        FinYear = CurYear + "-" + NexYear;
+        PrevFinYear = PreYear + "-" + CurYear;
+    }
+
+    else
+    {
+        FinYear = PreYear + "-" + CurYear;
+        PrevFinYear = prevyear + "-" + PreYear;
+    }
+
+
+
+}
+<style>
+    .table {
+        margin-bottom: 28px !important;
+    }
+</style>
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">COMPLAINT DASHBOARD</div>
+    </div>
+
+    <input type="text" id="finyear" value="@FinYear" style="display:none;" />
+    <input type="text" id="PrevFinYear" value="@PrevFinYear" style="display:none;" />
+    <div class="card-body">
+        <div class="col-md-12 float-left">
+            <div style="text-align: center;">
+                <b>
+                    Chart Title
+                </b>
+            </div>
+            <div style="width:100%;">
+                <div id="CRMTrend" style="width:100%;height: auto; overflow:hidden;margin-left: -5%;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+
+        <hr />
+
+        <div class="col-md-6 float-left">
+            <table id="CRMTrendtbl" class="table table-striped table-bordered dt-responsive nowrap"
+                   style="width: 100%">
+                @if (Model.ComplaintTrendData != null && Model.ComplaintTrendData.Tables.Count > 0)
+                {
+                    <thead class="thead-lights">
+                        <tr>
+                            <th colspan="3">
+                                COMPLAINT TREND (Last 2 Yr)
+                            </th>
+                        </tr>
+                        <tr>
+                            @foreach (System.Data.DataColumn dc in Model.ComplaintTrendData.Tables[0].Columns)
+                            {
+                                if (!@dc.ToString().ToUpper().Contains("EXTRA"))
+                                {
+                                    <th align="center">
+                                        @dc
+                                    </th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (System.Data.DataRow dr in Model.ComplaintTrendData.Tables[0].Rows)
+                        {
+                            <tr>
+                                @foreach (System.Data.DataColumn dc in Model.ComplaintTrendData.Tables[0].Columns)
+                                {
+                                    if (!@dc.ToString().ToUpper().Contains("EXTRA"))
+                                    {
+                                        <td>
+                                            @if (@dc.ToString().ToUpper() == "ACTION")
+                                            {
+                                                <a href="@dr[dc]" title="View Details">
+                                                    <i class=" icon-eye"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+
+                                                @dr[dc]
+                                            }
+                                        </td>
+                                    }
+                                }
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+
+                }
+
+            </table>
+        </div>
+
+        <div class="col-md-6 float-left">
+            <table id="CRMCasetbl" class="table table-striped table-bordered dt-responsive nowrap"
+                   style="width: 100%">
+                @if (Model.ComplaintTrendData != null && Model.ComplaintTrendData.Tables.Count > 0)
+                {
+                    <thead class="thead-lights">
+
+                        <tr>
+                            @foreach (System.Data.DataColumn dc in Model.ComplaintTrendData.Tables[1].Columns)
+                            {
+                                if (!@dc.ToString().ToUpper().Contains("EXTRA"))
+                                {
+                                    <th align="center">
+                                        @dc
+                                    </th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (System.Data.DataRow dr in Model.ComplaintTrendData.Tables[1].Rows)
+                        {
+                            <tr>
+                                @foreach (System.Data.DataColumn dc in Model.ComplaintTrendData.Tables[1].Columns)
+                                {
+                                    if (!@dc.ToString().ToUpper().Contains("EXTRA"))
+                                    {
+                                        <td>
+                                            @if (@dc.ToString().ToUpper() == "ACTION")
+                                            {
+                                                <a href="@dr[dc]" title="View Details">
+                                                    <i class=" icon-eye"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+
+                                                @dr[dc]
+                                            }
+                                        </td>
+                                    }
+                                }
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+
+                }
+
+            </table>
+        </div>
+
+
+        <div class="clearfix"></div>
+
+
+    </div>
+
+
+</div>
+
+
+
+@section JS {
+    <script src="~/Scripts/DateRange/moment.min.js"></script>
+    <script src="~/Scripts/DateRange/daterangepicker.js"></script>
+    <script src="~/Scripts/DateRange/DateTimeFormat.js"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+
+
+        $(document).ready(function () {
+
+            google.charts.load('current', { packages: ['corechart', 'bar', 'controls'] });
+            google.charts.setOnLoadCallback(ComplaintChart);
+
+            HideWaitingSymbol();
+        })
+
+        function ComplaintChart() {
+           
+            var fyear = $("#finyear").val();
+            var preyear = $("#PrevFinYear").val();
+             
+           if ($('#CRMTrendtbl tbody tr').length > 0) {
+                var DataArray = [['CRM', preyear, fyear]];
+                
+            $('#CRMTrendtbl tbody tr').each(function (i, tr) {
+                
+                DataArray.push([$(tr).find("td:nth-child(1)").text(), parseInt($(tr).find("td:nth-child(2)").text()), parseInt($(tr).find("td:nth-child(3)").text())]);
+                    
+
+                });
+                var data1 = google.visualization.arrayToDataTable(DataArray);
+                var view1 = new google.visualization.DataView(data1);
+
+                view1.setColumns([0, //The "descr column"
+                    1, //Downlink column
+                    {
+                        calc: "stringify",
+                        sourceColumn: 1, // Create an annotation column with source column "1"
+                        type: "string",
+                        role: "annotation"
+                    },
+                    2, // Uplink column
+                    {
+                        calc: "stringify",
+                        sourceColumn: 2, // Create an annotation column with source column "2"
+                        type: "string",
+                        role: "annotation"
+                    }]);
+                var tstoptions1 = {
+                    colors: ['rgb(3,69,252)', 'rgb(252, 3, 15)'],
+                    title: "",
+                    legend: { position: 'top', alignment: 'start' },
+                    //hAxis: {
+                    //    title: 'Aggregate', titleTextStyle: { italic: true, fontSize: 15 }, textStyle: { italic: true, fontSize: 13 },
+                    //    textPosition: 'out', slantedText: true, slantedTextAngle: 30
+                    //},
+                    //vAxis: { title: 'Ageing', titleTextStyle: { italic: true, fontSize: 15 }, textPosition: 'out', format: '0' },
+                    bar: { groupWidth: "70%" },
+                    explorer: { axis: 'horizontal' }
+                };
+                var columnWrapper1 = new google.visualization.ChartWrapper({
+                    chartType: 'ColumnChart',
+                    containerId: 'CRMTrend',
+                    dataTable: view1,
+                    options: tstoptions1
+                });
+
+                columnWrapper1.draw();
+
+
+
+            }
+            
+        }
+
+        
+
+
+
+    </script>
+}

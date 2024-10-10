@@ -1,0 +1,30 @@
+2019-04-30 18:05:09,237 DEBUG DebugLogger - got file path
+2019-04-30 18:05:09,248 DEBUG DebugLogger - strat excel workbook created 
+2019-04-30 18:05:09,344 DEBUG DebugLogger - excel workbook created 
+2019-04-30 18:05:09,617 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\_ExportData.xls
+2019-04-30 18:05:09,710 DEBUG DebugLogger - file export complete
+2019-04-30 18:05:09,710 DEBUG DebugLogger - read file byte System.Byte[]
+2019-04-30 18:05:39,617 DEBUG DebugLogger - got file path
+2019-04-30 18:05:39,617 DEBUG DebugLogger - strat excel workbook created 
+2019-04-30 18:05:39,617 DEBUG DebugLogger - excel workbook created 
+2019-04-30 18:05:39,622 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\_ExportData.xls
+2019-04-30 18:05:39,625 DEBUG DebugLogger - file export complete
+2019-04-30 18:05:39,625 DEBUG DebugLogger - read file byte System.Byte[]
+2019-04-30 18:06:00,184 DEBUG DebugLogger - got file path
+2019-04-30 18:06:00,184 DEBUG DebugLogger - strat excel workbook created 
+2019-04-30 18:06:00,184 DEBUG DebugLogger - excel workbook created 
+2019-04-30 18:06:00,189 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\_ExportData.xls
+2019-04-30 18:06:00,191 DEBUG DebugLogger - file export complete
+2019-04-30 18:06:00,191 DEBUG DebugLogger - read file byte System.Byte[]
+2019-04-30 18:06:24,535 DEBUG DebugLogger - got file path
+2019-04-30 18:06:24,535 DEBUG DebugLogger - strat excel workbook created 
+2019-04-30 18:06:24,535 DEBUG DebugLogger - excel workbook created 
+2019-04-30 18:06:24,541 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\_ExportData.xls
+2019-04-30 18:06:24,544 DEBUG DebugLogger - file export complete
+2019-04-30 18:06:24,544 DEBUG DebugLogger - read file byte System.Byte[]
+2019-04-30 18:06:24,740 DEBUG DebugLogger - got file path
+2019-04-30 18:06:24,740 DEBUG DebugLogger - strat excel workbook created 
+2019-04-30 18:06:24,740 DEBUG DebugLogger - excel workbook created 
+2019-04-30 18:06:24,746 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\_ExportData.xls
+2019-04-30 18:06:24,748 DEBUG DebugLogger - file export complete
+2019-04-30 18:06:24,748 DEBUG DebugLogger - read file byte System.Byte[]

@@ -1,0 +1,117 @@
+﻿@model LumaxDMS.Models.DistrictModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CreateDistrict";
+
+}
+@{Html.RenderPartial("_WaitModal");}
+@{ Html.RenderPartial("CreateDistrict", @Model); }
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">DISTRICT LIST</div>
+    </div>
+
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12">
+                    <table id="districttbl" class="table table-striped table-bordered dt-responsive nowrap"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    District Code
+                                </th>
+                                <th>
+                                    District Name
+                                </th>
+
+                                <th>
+                                    District Desc
+                                </th>
+                                <th>
+                                    State Name
+                                </th>
+                                <th>
+                                    Country Name
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.districtMasterList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.DISTRICTCODE
+                                    </td>
+                                    <td>
+                                        @item.DISTRICTNAME
+                                    </td>
+
+                                    <td>
+                                        @item.DISTRICTDESC
+                                    </td>
+                                    <td>
+                                        @item.StateName
+                                    </td>
+                                    <td>
+                                        @item.CountryName
+                                    </td>
+                                    <td>
+                                        @Html.DisplayStatus(@item.ISACTIVE)
+                                    </td>
+                                    <td class="text_center">
+
+                                        <a href="#" title="edit district" onclick="return EditDistrict(@item.DISTRICT_ID)">
+                                            <i class="fa fa-pencil">
+                                            </i>
+                                        </a>
+
+                                        <a href="##" onclick="return DeleteDistrict(@item.DISTRICT_ID)" title="delete district">
+                                            <i class="fa fa-trash bg_red"></i>
+                                        </a>
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("DeleteDistrict", "ManageMaster", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.District_Id, new { @Id = "Del_DistrictId" });
+}
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#districttbl').DataTable();
+            HideWaitingSymbol();
+        });
+
+        function DeleteDistrict(id) {
+            $('.modal-title').html("DELETE DISTRICT");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_DistrictId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+    </script>
+}

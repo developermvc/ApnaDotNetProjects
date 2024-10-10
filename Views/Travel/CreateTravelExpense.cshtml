@@ -1,0 +1,204 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+<script src="~/Scripts/ProjectJS/TravelExp.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+       
+        $('.DatePicker').datepicker({
+            format: 'dd/M/yyyy',
+            endDate: new Date()
+
+        });
+
+        $('#travelExpHDRMaster_fromDate').datepicker({
+            format: 'dd/M/yyyy',
+            endDate: new Date()
+
+        });
+
+        $('#travelExpHDRMaster_toDate').datepicker({
+            format: 'dd/M/yyyy',
+            endDate: new Date()
+        });
+
+
+    })
+    function SetToDate() {
+        var checkUrl = "/Travel/CheckTravelExpDate";
+        if ($("#travelExpHDRMaster_UserCode").val() == "") {
+            alert("Please select any one employee")
+            $('#travelExpHDRMaster_toDate').val('');
+            $('#travelExpHDRMaster_fromDate').val('');
+        }
+        else {
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { UserCode: $("#travelExpHDRMaster_UserCode").val(), fromDate: $('#travelExpHDRMaster_fromDate').val() },
+                success: function (result) {
+
+                    if (result != "SUCCESS") {
+                        alert(result);
+                        $('#travelExpHDRMaster_toDate').val('');
+                        $('#travelExpHDRMaster_fromDate').val('');
+                    }
+                },
+                error: function (result) {
+                    console.log(result);
+                }
+            });
+
+            $('#travelExpHDRMaster_toDate').val('');
+        }
+
+
+    }
+    function checkDate() {
+        var fdt = new Date($('#travelExpHDRMaster_fromDate').val());
+        var ndt = new Date($('#travelExpHDRMaster_toDate').val());
+        if (Date.parse(ndt) < Date.parse(fdt)) {
+            alert('Please select grater than from date');
+            $('#travelExpHDRMaster_toDate').val('')
+        }
+    }
+
+    function resetDates() {
+        $('#travelExpHDRMaster_toDate').val('');
+        $('#travelExpHDRMaster_fromDate').val('');
+    }
+
+</script>
+@{Html.RenderPartial("_WaitModal");}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">Travel Expenses</div>
+    </div>
+
+
+    @using (@Html.BeginForm("SaveUpdateTravelExpense", "Travel", FormMethod.Post, new { enctype = "multipart/form-data", @id = "travelexpenseform", @name = "travelexpenseform" }))
+    {
+        @Html.HiddenFor(m => m.travelExpHDRMaster.status)
+        @Html.HiddenFor(m => m.travelExpHDRMaster.mode)
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-1">
+                    <label for="pwd" class="redlabel">
+                        Employee :
+                    </label>
+                </div>
+                <div class="col-lg-4">
+                    @if (TempData["IsAdmin"] != null)
+                    {
+                        if (Model.travelExpHDRMaster.trvlExpId > 0)
+                        {
+                            @Html.DropDownListFor(m => m.travelExpHDRMaster.UserCode, new SelectList(Model.UserMasterList, "USERCODE", "EmpName"), new { @class = "form-control user_code" })
+                            @*@Html.TextBoxFor(m => m.travelExpHDRMaster.UserCode, new { @class = "form-control", @placeholder = "A002", @readonly = "readonly" })*@
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(m => m.travelExpHDRMaster.UserCode, new SelectList(Model.UserMasterList, "USERCODE", "EmpName"), "--Select Employee--", new { @class = "form-control user_code select-chosen", @onchange = "resetDates()" })
+                        }
+
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(m => m.travelExpHDRMaster.UserCode, new SelectList(Model.UserMasterList, "USERCODE", "EmpName"), new { @class = "form-control user_code" })
+                        @*@Html.TextBoxFor(m => m.travelExpHDRMaster.UserCode, new { @class = "form-control", @placeholder = "A002", @readonly = "readonly" })*@
+                    }
+
+                </div>
+                <div class="col-lg-1">
+                    <label for="pwd" class="redlabel">
+                        From Date:
+                    </label>
+                </div>
+                <div class="col-lg-2">
+                    @if (Model.travelExpHDRMaster.trvlExpId > 0)
+                    {
+                        @Html.HiddenFor(m => m.travelExpHDRMaster.fromDate)
+                        @Html.TextBoxFor(m => m.travelExpHDRMaster.fromDate, "{0:dd/MM/yyyy}", new { @class = "form-control", @placeholder = "From Date", @disabled = "disabled", @onchange = "SetToDate()" })
+
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(m => m.travelExpHDRMaster.fromDate, new { @class = "form-control datepicker", @placeholder = "From Date", @readonly = "readonly", @onchange = "SetToDate()" })
+
+                    }
+
+                </div>
+                <div class="col-lg-1">
+                    <label for="pwd" class="redlabel">
+                        To Date :
+                    </label>
+                </div>
+                <div class="col-lg-2">
+                    @if (Model.travelExpHDRMaster.trvlExpId > 0)
+                    {
+                        @Html.HiddenFor(m => m.travelExpHDRMaster.toDate)
+                        @Html.TextBoxFor(m => m.travelExpHDRMaster.toDate, "{0:dd/MM/yyyy}", new { @class = "form-control", @placeholder = "To Date", @disabled = "disabled", @onchange = "checkDate()" })
+
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(m => m.travelExpHDRMaster.toDate, new { @class = "form-control datepicker", @placeholder = "To Date", @readonly = "readonly", @onchange = "checkDate()" })
+
+                    }
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2">
+                    @if (Model.travelExpHDRMaster.trvlExpId == 0)
+                    {
+                        <input type="button" name="btntype" value="Show" id="btnshow" onclick="showdiv()" class="btn btn-primary" />
+                    }
+
+                </div>
+            </div>
+        </div>
+        @*}*@
+
+
+        <div id="dvtravelexp" class="card-body">
+            @if (Model.travelExpHDRMaster.trvlExpId > 0)
+            {
+                Html.RenderPartial("_TravelExpenseDetail", Model);
+            }
+
+        </div>
+    }
+</div>
+
+<script>
+
+    if ('@Model.ActionName' == 'display') {
+            $('input').attr('disabled', 'disabled');
+            $('select').attr('disabled', 'disabled');
+        $('input[type="submit"]').css('display', 'none');
+        $('#btnsubmit').css('display', 'none');
+    }
+    if ('@Model.travelExpHDRMaster.status'> 1) {
+        $('input').attr('readonly', 'readonly');
+        $('select').attr('disabled', 'disabled');
+
+        }
+    $(document).ready(function () {
+        $(".user_code").chosen();
+        //$("#tab02 ").attr("class", "redlabel");
+
+        //$('#tab02').find('input:text').each(function () {
+        //    $(this).attr("style", "border-color: red;")
+        //});
+
+        HideWaitingSymbol();
+
+    })
+
+
+
+</script>

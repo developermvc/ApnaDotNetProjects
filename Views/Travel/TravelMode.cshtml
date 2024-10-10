@@ -1,0 +1,147 @@
+﻿
+
+<div class="card card-default">
+    <div class="panel panel-default panel_pt">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2"> DSR DETAILS</div>
+        </div>
+
+        <div class="card-body">
+            <form class="form-horizontal">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Code :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Name :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Description :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Rate KM :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            IsActive :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="checkbox" />
+                    </div>
+
+                </div>
+
+
+
+
+            </form>
+        </div>
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-left">
+                    <button class="btn btn-primary" type="submit">Approve</button>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                    <button class="btn btn-primary" type="submit">Clear</button>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="panel panel-default panel_pt">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2">TRAVEL MODE LIST</div>
+        </div>
+
+        <div class="card-body">
+
+            <table id="example2" class="table table-striped table-bordered" style="width: 100%">
+                <thead class="thead-lights">
+                    <tr>
+                        <th>
+                            Code
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Rate KM.
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            A001
+                        </td>
+                        <td>
+                            Train
+                        </td>
+                        <td>
+                            Travel Mode
+                        </td>
+                        <td>
+                            12345
+                        </td>
+                        <td class="text_center">
+                            <a href="#" title="edit zone" onclick="return EditZone(4)">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                            <a href="#" onclick="return DeleteZone(4)" title="delete zone">
+                                <i class="fa fa-trash bg_red" style="color:#e3192e;"></i>
+                            </a>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+</div>
+	 
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#example2').DataTable({
+            responsive: true
+        });
+
+        new $.fn.dataTable.FixedHeader(table);
+    });
+</script>

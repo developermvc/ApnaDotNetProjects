@@ -1,0 +1,208 @@
+﻿
+
+@model LumaxDMS.Models.AccountReportModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Bill Wise Ageing Report";
+
+}
+<script>
+    $(document).ready(function () {
+        $('#FROMDATE').datepicker({
+            format: 'dd/M/yyyy',
+            endDate: new Date()
+
+        });
+    })
+</script>
+@{Html.RenderPartial("_WaitModal");}
+<link href="~/Scripts/Choosen/Choosen.css" rel="stylesheet" />
+<link href="~/Content/css/DateRange/daterangepicker.css" rel="stylesheet" />
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">BILL WISE AGEING LIST</div>
+    </div>
+    @using (Html.BeginForm("BillWiseAgeingReport", "Report", FormMethod.Post, new { @Id = "SCFormId" }))
+    {
+        @Html.Hidden("hdnSelectedUserArea")
+
+    <div class="card-body">
+        <div class="row">
+
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Date :
+                </label>
+            </div>
+            <div class='col-lg-3'>
+                @Html.TextBoxFor(m => m.FROMDATE, "{0:dd/MMM/yyyy}", new { @class = "form-control", @placeholder = "Outstanding as on" })
+            </div>
+            <div class="col-lg-3 col-xs-12">
+                @Html.RadioButtonFor(m => m.ReportType, "DETAIL",   new { @class = "form-control" })  Details
+                
+            </div>
+            
+            <div class="col-lg-3 col-xs-12">
+                @Html.RadioButtonFor(m => m.ReportType, "SUMMARY",  new { @class = "form-control" })  Summary
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                @{Html.RenderPartial("AddPartyFilter", Model);}
+            </div>
+            
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Range1 :
+                </label>
+            </div>
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range1, new { @class = "form-control numberinput" ,@onblur= "Backvalidation(this)" })
+            </div>
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range11, new { @class = "form-control numberinput", @onblur = "Checkvalidation(this)" })
+            </div>
+
+            <div class="col-lg-1 col-xs-12">
+                <label for="pwd">
+                    Range2 :
+                </label>
+            </div>
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range2, new { @class = "form-control numberinput", @onblur = "Backvalidation(this)" })
+            </div>
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range21, new { @class = "form-control numberinput", @onblur = "Checkvalidation(this)" })
+            </div>
+
+
+            <div class="col-lg-1 col-xs-12">
+                <label for="pwd">
+                    Range3 :
+                </label>
+            </div>
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range3, new { @class = "form-control numberinput", @onblur = "Backvalidation(this)" })
+            </div>
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range31, new { @class = "form-control numberinput", @onblur = "Checkvalidation(this)" })
+            </div>
+        </div>
+        <br />
+       
+        <div class="row">
+
+
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Range4 :
+                </label>
+            </div>
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range4, new { @class = "form-control numberinput", @onblur = "Backvalidation(this)" })
+            </div>
+
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range41, new { @class = "form-control numberinput", @onblur = "Checkvalidation(this)" })
+            </div>
+
+            <div class="col-lg-1 col-xs-12">
+                <label for="pwd">
+                    Range5 :
+                </label>
+            </div>
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range5, new { @class = "form-control numberinput", @onblur = "Backvalidation(this)" })
+            </div>
+
+            <div class='col-lg-1'>
+                @Html.TextBoxFor(m => m.Range51, new { @class = "form-control numberinput" , @onblur = "Checkvalidation(this)" } )
+            </div>
+        </div>
+       
+
+
+
+
+
+        <br />
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    <input type="Submit" name="input" value="Show Detail" class="btn btn-primary" />
+                    <input type="Submit" formtarget="_blank" name="input" value="Export (EXCEL)" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    }
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                @{ Html.RenderPartial("_ReportData", @Model); }
+            </div>
+        </div>
+    </div>
+</div>
+@section JS {
+    <script src="~/Scripts/DateRange/moment.min.js"></script>
+    <script src="~/Scripts/DateRange/daterangepicker.js"></script>
+    <script src="~/Scripts/DateRange/DateTimeFormat.js"></script>
+    <script src="~/Scripts/ProjectJS/C_AreaJS.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var checkUrl = '@Url.Action("getAllArea", "Admin")';
+
+            GetAllAreaById(checkUrl, 1);
+
+            GetAllAreaById(checkUrl, 2);
+
+            GetAllAreaById(checkUrl, 3);
+
+            GetAllAreaById(checkUrl, 4);
+
+            GetAllAreaById(checkUrl, 5);
+
+            GetAllAreaById(checkUrl, 6);
+            //GetAllAreaById(checkUrl,8);
+
+            $('#btnadd').hide();
+
+              
+
+            HideWaitingSymbol();
+        });
+
+
+        function Checkvalidation(input) {
+            var str = $(input).attr("id");
+            var val1 = parseInt( $(input).val());             
+            var id = str.slice(0, -1);
+            var val2 = parseInt( $("#" + id).val());
+            if (val1 < val2) {
+                alert("this value should be greater than previous value")
+                $(input).val(parseInt(val2)+9);
+            }            
+        }
+
+        function Backvalidation(input) {
+           
+            var str = $(input).attr("id");
+            var val1 = parseInt( $(input).val());
+
+            var val2 = parseInt( $("#" + str + 1).val());
+             
+            if (val1 > val2) {
+                alert("this value should be less than next value")
+                $(input).val(parseInt(val2) - 10);
+            }
+        }
+
+    </script>
+}
+

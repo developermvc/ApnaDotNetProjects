@@ -1,0 +1,751 @@
+﻿@model LumaxDMS.Models.DsrhdrdtlModel
+@using LumaxDMS.Controllers
+@using BusinessObject
+@using LumaxDMS.AppCode
+@{
+    /**/
+
+    ViewBag.Title = "CreateDSRActual";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    UserMaster currentUser = (UserMaster)Session[Constants.Session.USER];
+}
+<div id="manidsrcontent" class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">PLAN DAILY SALES REPORTS</div>
+    </div>
+    @Html.DropDownList("HiddenprospectTypeid", new SelectList(Model.prospectTypeMasterList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME"), "--Select Customer Type--", new { @class = "form-control", @Id = "HiddenprospectTypeid", @Name = "HiddenprospectTypeid", @Style = "display:none" })
+    @Html.DropDownList("HiddenCityid", new SelectList(Model.cityMasterList, "CITY_ID", "CITYNAME"), "--Select City--", new { @class = "form-control", @Id = "HiddenCityid", @Name = "HiddenCityid", @Style = "display:none" })
+    @Html.DropDownList("HiddenCustomerid", new SelectList(Model.CustomerList, "cmid", "cname"), "--Select Customer--", new { @class = "form-control", @Id = "HiddenCustomerid", @Name = "HiddenCustomerid", @Style = "display:none" })
+
+
+    @using (@Html.BeginForm("CreateDSRActual", "DSR", FormMethod.Post, new { enctype = "multipart/form-data", @id = "frmcdsractualcrd", @name = "frmcdsractualcrd" }))
+    {
+        @Html.AntiForgeryToken();
+        <input type="hidden" value="@Model.dsrdetailMasterList.Count" id="loopcount" name="loopcount" />
+        @Html.HiddenFor(m => m.Planid, new { @class = "form-control" })
+
+        <div class="card-body">
+
+
+            <div class="row  row_pt">
+                <div class="col-md-12">
+                    <div class="forDealer poHdr">
+                        <table id="tblCreditInfo" class="table border">
+
+                            <tbody>
+                                <tr><td colspan="5"><span style="color:red;" id="dtpmsgshow">@Html.HiddenFor(m => m.empId)</span></td></tr>
+                                <tr>
+                                    @if (Model.ActionName == "UnPlanedCreate")
+                                    {
+                                        <td width="30%">
+                                            @Html.TextBoxFor(m => m.empName, new { @class = "form-control", @readonly = "true" })
+                                        </td>
+                                    }
+
+
+                                    <td width="20%">
+                                        <div class="input-group date datepicker">
+                                            @Html.TextBoxFor(m => m.plandate, new { @class = "form-control datepicker", @placeholder = "Plan Date", @readonly = "true" })
+                                            <span class="input-group-append input-group-addon">
+                                                <i class="input-group-text2 fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+
+                                    </td>
+                                    <td width="20%" height="10%">
+                                        @if (Model.Planid > 0)
+                                        {
+                                            @Html.DropDownListFor(m => m.SelectedDaytype_id, new SelectList(Model.daytypeMasterList, "DAYTYPE_ID", "DAYTYPENAME"), "--Select Day type--", new { @class = "form-control", @onchange = "return dsrblockinfo(this.value);" })
+                                            @Html.ValidationMessageFor(model => model.SelectedDaytype_id)
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(m => m.SelectedDaytype_id, new SelectList(Model.daytypeMasterList, "DAYTYPE_ID", "DAYTYPENAME"), "--Select Day type--", new { @class = "form-control", @onchange = "return dsrblockinfo(this.value);" })
+                                            @Html.ValidationMessageFor(model => model.SelectedDaytype_id)
+                                        }
+
+                                    </td>
+                                    <td height="10%">@Html.TextAreaFor(m => m.REMARKS, 10, 10, new { @class = "form-control", @placeholder = "Remarks ", @maxlength = "300" })</td>
+                                    <td width="20%">
+                                        @Html.TextBoxFor(m => m.Plancode, new { @class = "form-control", @placeholder = "Plan No", @readonly = "true" })
+
+                                    </td>
+                                </tr>
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="my-custom-scrollbar">
+                <table id="dsrlsttbl" class="table border fixed_header">
+                    <thead class="thead-lights">
+                        <tr>
+                            <th style="text-align: left">Srno</th>
+                            <th style="text-align: left">City</th>
+                            <th style="text-align: left">Customer Type</th>
+                            <th style="text-align: left">Customer</th>
+                            <th style="text-align: left">Shop No</th>
+                            <th style="text-align: left">Contact Person</th>
+                            <th style="text-align: left">Contact No</th>
+                            <th style="text-align: left">Visit Purpose</th>
+                            @if (Model.Requesttype == "FillActual")
+                            {
+                                <th style="text-align: left">
+                                    Actual  Time In
+                                </th>
+                                <th style="text-align: center">
+                                    Actual  Time Out
+                                </th>
+                            }
+                            else
+                            {
+                                <th style="text-align: left">
+                                    Time In
+                                </th>
+                                <th style="text-align: center">
+                                    Time Out
+                                </th>
+                            }
+                            <th style="text-align: center">
+                                Remarks
+                            </th>
+                            <th style="text-align: center">
+                                @*Action*@
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="text-align: left; ">
+                        @if (Model.dsrdetailMasterList != null)
+                        {
+                            foreach (var item in Model.dsrdetailMasterList)
+                            {
+                                i = i + 1;
+
+
+                                <tr id="partDtlRow_@i">
+                                    <td align="center">
+                                        @i
+                                        @Html.HiddenFor(m => item.DTLPLAN_ID, new { @class = "form-control from_bg", @Id = "planid_" + i, @Name = "planid_" + i })
+                                    </td>
+                                    <td align="center">
+
+                                        @Html.DropDownListFor(m => item.CITYID, new SelectList(Model.cityMasterList, "CITY_ID", "CITYNAME", item.CITYID), "--Select City--", new { @class = "form-control select-chosen", @Id = "Selectedcity_id_" + i, @Name = "Selectedcity_id_" + i, @onchange = "return GetCustomerData('" + i + "');" })
+
+                                    </td>
+                                    <td align="center"> @Html.DropDownListFor(m => item.PROSPECTTYPEID, new SelectList(Model.prospectTypeMasterList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME", item.PROSPECTTYPEID), "--Select Customer Type--", new { @class = "form-control select-chosen", @Id = "Selectedcustomer_id_" + i, @Name = "Selectedcustomer_id_" + i, @onchange = "return GetCustomerData('" + i + "');" })</td>
+
+                                    <td align="center"> @Html.DropDownListFor(m => item.CustomerID, new SelectList(Staticdata.GetCustomerlist(Convert.ToInt32(item.PROSPECTTYPEID), Convert.ToInt32(item.CITYID), currentUser.USER_ID), "cmid", "cname", item.CustomerID), "--Select Customer--", new { @class = "form-control select-chosen", @Id = "SelCustomermid_" + i, @Name = "SelCustomermid_" + i })</td>
+
+
+
+
+                                    <td align="center">
+                                        @Html.TextBoxFor(m => item.SHOPNO, new { @class = "form-control from_bg", title = "Enter Shop No", @Id = "shopno_" + i, @Name = "shopno_" + i, @style = "width:100px;", @maxlength = "100" })
+                                        @*<input type="text" class="form-control from_bg" placeholder="" id="shopno_1" name="shopno_1" />*@
+                                    </td>
+
+                                    <td align="center">
+                                        @Html.TextBoxFor(m => item.CONTACTPERSON, new { @class = "form-control from_bg", title = "Enter Contact Person", @Id = "contperson_" + i, @Name = "contperson_" + i, @style = "width:100px;", @maxlength = "100" })
+                                        @*<input type="text" class="form-control from_bg" placeholder="" id="contperson_1" name="contperson_1" />*@
+                                    </td>
+                                    <td align="center">
+                                        @Html.TextBoxFor(m => item.CONTACTNUMBER, new { @class = "form-control from_bg", title = "Enter Contact Number", @onkeypress = "return isNumber(event);", @maxLength = "10", @Id = "contactno_" + i, @Name = "contactno_" + i, @style = "width:100px;" })
+                                        @*<input type="text" class="form-control from_bg" placeholder="" id="contactno_1" name="contactno_1" />*@
+                                    </td>
+                                    <td align="center">
+                                        @Html.TextBoxFor(m => item.PURPOSE, new { @class = "form-control from_bg", title = "Enter PURPOSE", @Id = "visitpurpose_" + i, @Name = "visitpurpose_" + i, @style = "width:100px;", @maxlength = "100" })
+                                        @*<input type="text" class="form-control from_bg" placeholder="" id="visitpurpose_1" name="visitpurpose_1" />*@
+                                    </td>
+                                    <td align="center">
+                                        @Html.TextBoxFor(m => item._PLANINTIME, new { @class = "form-control from_bg timePicker", title = "Enter Intime", @Id = "ptimein_" + i, @maxLength = "5", @Name = "ptimein_" + i, @value = item.PLANINTIME, @onkeypress = "return timevalidate(event);", @onfocusout = "checktimeformat(this);", @style = "width:60px;" })
+                                        @*<input type="text" class="form-control from_bg" placeholder="11:30 PM" id="ptimein_1" name="ptimein_1" />*@
+                                    </td>
+                                    <td align="center">
+                                        @Html.TextBoxFor(m => item._PLANTOUTTIME, new { @class = "form-control from_bg ", title = "Enter Outtime", @Id = "ptimeout_" + i, @Name = "ptimeout_" + i, @onkeypress = "return timevalidate(event);", @maxLength = "5", @value = item.PLANTOUTTIME, @onfocusout = "checktimeformat(this);", @style = "width:60px;" })
+                                        @*<input type="text" class="form-control from_bg" placeholder="07:30 PM" id="ptimeout_1" name="ptimeout_1" />*@
+                                    </td>
+                                    <td align="center">
+                                        @Html.TextBoxFor(m => item.REMARKS, new { @class = "form-control from_bg", title = "Enter Remarks", @Id = "remarks_" + i, @Name = "remarks_" + i, @style = "width:120px;", @maxlength = "200" })
+                                        @*<input type="text" class="form-control from_bg" placeholder="Good" id="remarks_1" name="remarks_1" />*@
+                                    </td>
+                                    <td align="center">
+                                        @if (i == 1)
+                                        {
+                                            <a href="#">
+                                                @*<i class="fa fa-trash bg_red"></i>*@
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            if (Model.Requesttype != "UnPlanedCreate")
+                                            {
+                                                @*<a href="##" id="deleteRow_@(i)" name="deleteRow_@(i)" class="btndeleteRow" onclick="return deleteRow('@(i)');"><i class="fa fa-trash bg_red"></i></a>*@
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+
+
+        </div>
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-left">
+                    @if (Model.Requesttype != "FillActual")
+                    {
+                        <button id="btnaddddsr" class="btn btn-primary" onclick="Adddsrrow();" type="button">Add</button>
+                    }
+                </div>
+                <div class="float-right">
+                    @if (Model.Requesttype == "Create")
+                    {
+                        <button name="btnTyp" id="btnTypsave" onclick="return Checkonsubmit();" class="btn btn-primary" value="Submit" type="submit"> Submit</button>
+                    }
+                    else if (Model.Requesttype == "UnPlanedCreate")
+                    {
+                        <button name="btnTyp" class="btn btn-primary" onclick="return CheckonsubmitEdit();" value="UnPlanedCreate" type="submit">Submit</button>
+                    }
+                    else if (Model.Requesttype == "FillActual")
+                    {
+                        <button name="btnTyp" class="btn btn-primary" onclick="return Checkonsubmit();" value="FillActual" type="submit">Submit</button>
+                    }
+                    else if (Model.Requesttype == "edit")
+                    {
+                        <button name="btnTyp" class="btn btn-primary" onclick="return CheckonsubmitEdit();" value="Update" type="submit">Submit</button>
+                    }
+
+                    @*<button name="btnTyp" class="btn btn-primary" value="Complaint Request" type="submit">Complaint Request</button>
+                        <button name="btnTyp" class="btn btn-primary" value="Payment Collection" type="submit">Payment Collection</button>*@
+
+                </div>
+            </div>
+        </div>
+
+
+    }
+
+</div>
+
+<script src="~/Scripts/ProjectJS/ManageMaster_Common.js"></script>
+<script src="~/Scripts/ProjectJS/Common.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var Requesttype = '@Model.Requesttype';
+
+    $(document).ready(function () {
+        debugger;
+
+        var tblLen = $('#dsrlsttbl tbody tr').length;
+        for (var i = 1; i <= tblLen; i++) {
+            applyTimePicker(i);
+        }
+
+
+        var tdate = new Date();
+        if (Requesttype != "UnPlanedCreate") {
+            var nextday = tdate.setDate(tdate.getDate() + 1);
+            var tdate = new Date(nextday);
+        }
+
+        if (Requesttype != "UnPlanedCreate" && Requesttype !="edit") {
+            $(".datepicker").datepicker({
+                format: 'dd/M/yyyy', orientation: "bottom auto", autoclose: true, startDate: tdate, endDate: '+30d'
+            }).on('changeDate', function (e) {
+
+                    Checkdsrexist($('#plandate').val());
+
+                });
+
+
+        }
+
+        //implement future $('.meetingtime').datetimepicker({
+        //    format: 'LT', autoclose: true,
+        //});
+
+        $('#plandate').val(formatDate($('#plandate').val()));
+
+        if (Requesttype == "view") {
+            $("#frmcdsractualcrd :input").prop("disabled", true);
+            $("#frmcdsractualcrd select").attr("disabled", "disabled");
+
+        }
+        else {
+            $(".select-chosen").chosen();
+        }
+
+
+    });
+    function dsrblockinfo(selectedval) {
+        if (selectedval == 4 || selectedval == 6 || selectedval == 10) {
+            $("#dsrlsttbl").css("display", 'none');
+            $("#btnaddddsr").prop("disabled", true);
+        }
+        else {
+            $("#dsrlsttbl").css("display", 'block');
+            $("#btnaddddsr").prop("disabled", false);
+
+        }
+    }
+    function CheckonsubmitEdit() {
+        numrows = serialnumber;
+        var ptimein = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test($('#ptimein_' + numrows).val());
+        var ptimeout = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test($('#ptimeout_' + numrows).val());
+        if ($('#SelectedDaytype_id').val() != '4' && $('#SelectedDaytype_id').val() != '6' && $('#SelectedDaytype_id').val() != '10') {
+            if ($('#Selectedcity_id_' + numrows).val() == '' || $('#Selectedcustomer_id_' + numrows).val() == '' ) {
+                alert('please Select City and Customer Type');
+                return false;
+            }
+            //if ($('#Selectedcity_id_' + numrows).val() == '' || $('#Selectedcustomer_id_' + numrows).val() == '' || $('#contperson_' + numrows).val() == '' || $('#contactno_' + numrows).val() == '' || $('#ptimein_' + numrows).val() == '' || $('#ptimeout_' + numrows).val() == '') {
+            //    alert('please Select City and Customer and Contact Person and Contact No and Time In and Time Out ');
+            //    return false;
+            //}
+            //if ($('#ptimein_' + numrows).val().trim() != "") {
+            //    if (!ptimein) {
+            //        alert('Enter Valid Time In i.e HH:MM');
+            //        $('#ptimein_' + numrows).css('border-color', 'red');
+            //        $('#ptimein_' + numrows).focus();
+            //        return false;
+            //    }
+            //}
+            //if ($('#ptimeout_' + numrows).val().trim() != "") {
+            //    if (!ptimeout) {
+            //        alert('Enter Valid Time In i.e HH:MM');
+            //        $('#ptimeout_' + numrows).css('border-color', 'red');
+            //        $('#ptimeout_' + numrows).focus();
+            //        return false;
+            //    }
+            //}
+            //if ($('#contactno_' + numrows).val().length != 10) {
+            //    alert('Please Check contact No !');
+            //    $('#contactno_' + numrows).focus();
+            //    return false;
+            //}
+        }
+        if (compareTime($('#ptimein_' + numrows).val(), $('#ptimeout_' + numrows).val()) == 1) {
+            alert('InTime is Greater Than OutTime ');
+            $('#ptimein_' + numrows).focus();
+            return false;
+        }
+
+        if ($("#plandate").val().length==0) {
+            alert("Choose Plan Date!");
+            $("#plandate").focus();
+            return false;
+        }
+    }
+    function Checkonsubmit() {
+
+        var ptimein = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test($('#ptimein_' + numrows).val());
+        var ptimeout = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test($('#ptimeout_' + numrows).val());
+        if ($('#SelectedDaytype_id').val() != '4' && $('#SelectedDaytype_id').val() != '6' && $('#SelectedDaytype_id').val() != '10') {
+            if ($('#Selectedcity_id_' + numrows).val() == '' || $('#Selectedcustomer_id_' + numrows).val() == '' ) {
+                alert('please Select City and Customer Type');
+                return false;
+            }
+            //if ($('#Selectedcity_id_' + numrows).val() == '' || $('#Selectedcustomer_id_' + numrows).val() == '' || $('#contperson_' + numrows).val() == '' || $('#contactno_' + numrows).val() == '' || $('#ptimein_' + numrows).val() == '' || $('#ptimeout_' + numrows).val() == '') {
+            //    alert('please Select City and Customer and Contact Person and Contact No and Time In and Time Out ');
+            //    return false;
+            //}
+            //if ($('#ptimein_' + numrows).val().trim() != "") {
+            //if (!ptimein) {
+            //    alert('Enter Valid Time In i.e HH:MM');
+            //    $('#ptimein_' + numrows).css('border-color', 'red');
+            //    $('#ptimein_' + numrows).focus();
+            //    return false;
+            //    }
+            //}
+            //if ($('#ptimeout_' + numrows).val().trim() != "") {
+            //    if (!ptimeout) {
+            //        alert('Enter Valid Time In i.e HH:MM');
+            //        $('#ptimeout_' + numrows).css('border-color', 'red');
+            //        $('#ptimeout_' + numrows).focus();
+            //        return false;
+            //    }
+            //}
+            //if ($('#contactno_' + numrows).val().length != 10) {
+            //    alert('Please Check contact No !');
+            //    $('#contactno_' + numrows).focus();
+            //    return false;
+            //}
+        }
+
+        if (compareTime($('#ptimein_' + numrows).val(), $('#ptimeout_' + numrows).val()) == 1) {
+            alert('InTime is Greater Than OutTime ');
+            $('#ptimein_' + numrows).focus();
+            return false;
+        }
+
+
+
+        if ($("#plandate").val().length > 0) {
+            if (Checkdsrexist($("#plandate").val())) { return false;}
+        }
+        else {
+            alert("Choose Plan Date!");
+            $("#plandate").focus();
+            return false;
+        }
+
+    }
+    function Checkdsrexist(plandate) {
+        var checkUrl = '/dsr/checkdsrexist';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ plandate: plandate }),
+            dataType: "json",
+            success: function (returndata) {
+                if (returndata.PLANID > 0) {
+                    $("#btnTypsave").prop("disabled", true);
+                    $("#btnaddddsr").prop("disabled", true);
+                    //alert("This Date is Already Planed with Plancode " + returndata.PLANCODE);
+                    $("#dtpmsgshow").text("This Date is Already Planed with Plancode " + returndata.PLANCODE);
+                    $("#plandate").val("");
+                    return false;
+                }
+                else {
+                    $("#dtpmsgshow").text("");
+                    $("#btnTypsave").prop("disabled", false);
+                    $("#btnaddddsr").prop("disabled", false);
+                }
+            },
+
+        });
+    }
+
+
+
+
+     var numrows = @i; // because you are starting with 1 row visible
+        var serialnumber = @i;
+    var rowsarray = ["0", "0"];
+    function Adddsrrow() {
+        var ptimein = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test($('#ptimein_' + numrows).val());
+        var ptimeout = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test($('#ptimeout_' + numrows).val());
+
+        if ($('#Selectedcity_id_' + numrows).val() == '' || $('#Selectedcustomer_id_' + numrows).val() == '' ) {
+            alert('please Select City and Customer Type');
+            return false;
+        }
+        //if ($('#Selectedcity_id_' + numrows).val() == '' || $('#Selectedcustomer_id_' + numrows).val() == '' || $('#contperson_' + numrows).val() == '' || $('#contactno_' + numrows).val() == '' || $('#ptimein_' + numrows).val() == '' || $('#ptimeout_' + numrows).val() == '') {
+        //    alert('please Select City and Customer and Contact Person and Contact No and Time In and Time Out ');
+        //    return false;
+        //}
+        //if ($('#ptimein_' + numrows).val().trim() != "") {
+        //    if (!ptimein) {
+        //        alert('Enter Valid Time In i.e HH:MM');
+        //        $('#ptimein_' + numrows).css('border-color', 'red');
+        //        $('#ptimein_' + numrows).focus();
+        //        return false;
+        //    }
+        //}
+        //if ($('#ptimeout_' + numrows).val().trim() != "") {
+        //    if (!ptimeout) {
+        //        alert('Enter Valid Time In i.e HH:MM');
+        //        $('#ptimeout_' + numrows).css('border-color', 'red');
+        //        $('#ptimeout_' + numrows).focus();
+        //        return false;
+        //    }
+        //}
+        if (compareTime($('#ptimein_' + numrows).val(), $('#ptimeout_' + numrows).val()) == 1) {
+            alert('InTime is Greater Than OutTime ');
+            $('#ptimein_' + numrows).focus();
+            return false;
+        }
+        //if ($('#contactno_' + numrows).val().length!=10) {
+        //    alert('Please Check contact No !');
+        //    $('#contactno_' + numrows).focus();
+        //    return false;
+        //}
+
+        numrows = numrows + 1;
+        serialnumber = serialnumber + 1;
+
+        var table = document.getElementById("dsrlsttbl").getElementsByTagName('tbody')[0];
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+
+        row.id = "partDtlRow_" + numrows;
+        var cell0 = row.insertCell(0);
+        cell0.align = "center";
+        cell0.innerHTML = serialnumber;
+        var element0 = document.createElement("input");
+        element0.type = "hidden";
+        element0.className = "form-control from_bg";
+        element0.name = "planid_" + numrows;
+        element0.id = "planid_" + numrows;
+        element0.value = "0";
+        cell0.appendChild(element0);
+
+        var ddl = $('#HiddenCityid').clone(true);
+        var celldv2 = row.insertCell(1);
+        ddl[0].id = "Selectedcity_id_" + numrows;
+        ddl[0].name = "Selectedcity_id_" + numrows;
+        ddl[0].className = "form-control citychosen-select";
+        ddl[0].setAttribute("onchange", "return GetCustomerData('" + numrows + "');" );
+        celldv2.append(ddl[0]);
+
+
+        var ddl1 = $('#HiddenprospectTypeid').clone(true);
+        var celldv3 = row.insertCell(2);
+        ddl1[0].id = "Selectedcustomer_id_" + numrows;
+        ddl1[0].name = "Selectedcustomer_id_" + numrows;
+        //ddl1[0].className = "form-control prospectchosen-select";
+        ddl1[0].className = "form-control prospectchosen-select";
+        ddl1[0].setAttribute("onchange", "return GetCustomerData('" + numrows + "');");
+        celldv3.append(ddl1[0]);
+
+
+        /*----New Customer List---------------*/
+        var ddl2 = $('#HiddenCustomerid').clone(true);
+        var celldv4 = row.insertCell(3);
+        ddl2[0].id = "SelCustomermid_" + numrows;
+        ddl2[0].name = "SelCustomermid_" + numrows;
+        ddl2[0].className = "form-control customerchosen-select";
+        celldv4.append(ddl2[0]);
+        /*-------End New Customer List--------*/
+
+
+
+
+
+
+        var celldv5 = row.insertCell(4);
+        var element4 = document.createElement("input");
+        element4.type = "text";
+        element4.style = "width:100px";
+        element4.className = "form-control from_bg";
+        element4.setAttribute('maxlength', '100');
+        element4.name = "shopno_" + numrows;
+        element4.id = "shopno_" + numrows;
+        celldv5.appendChild(element4);
+
+        var celldv6 = row.insertCell(5);
+        var element5 = document.createElement("input");
+        element5.type = "text";
+        element5.style = "width:100px";
+        element5.className = "form-control from_bg";
+        element5.setAttribute('maxlength', '100');
+        element5.name = "contperson_" + numrows;
+        element5.id = "contperson_" + numrows;
+        celldv6.appendChild(element5);
+
+        var celldv7 = row.insertCell(6);
+        var element6 = document.createElement("input");
+        element6.type = "text";
+        element6.style = "width:100px";
+        element6.className = "form-control from_bg";
+        element6.name = "contactno_" + numrows;
+        element6.id = "contactno_" + numrows;
+        element6.setAttribute("onkeypress", "return isNumber(event)");
+        element6.setAttribute('maxlength', '10');
+        celldv7.appendChild(element6);
+
+        var celldv8 = row.insertCell(7);
+        var element7 = document.createElement("input");
+        element7.type = "text";
+        element7.style = "width:100px";
+        element7.className = "form-control from_bg";
+        element7.setAttribute('maxlength', '100');
+        element7.name = "visitpurpose_" + numrows;
+        element7.id = "visitpurpose_" + numrows;
+        celldv8.appendChild(element7);
+
+        var celldv9 = row.insertCell(8);
+        var element8 = document.createElement("input");
+        element8.type = "text";
+        element8.style = "width:60px";
+        element8.className = "form-control from_bg";
+        element8.name = "ptimein_" + numrows;
+        element8.id = "ptimein_" + numrows;
+        element8.setAttribute("onkeypress", "return timevalidate(event);");
+        element8.setAttribute("onfocusout", "return checktimeformat(this);");
+        element8.setAttribute("class", "timePicker");
+
+        element8.setAttribute('maxlength', '5');
+        celldv9.appendChild(element8);
+
+        var celldv10 = row.insertCell(9);
+        var element9 = document.createElement("input");
+        element9.type = "text";
+        element9.style = "width:60px";
+        element9.className = "form-control from_bg";
+        element9.name = "ptimeout_" + numrows;
+        element9.id = "ptimeout_" + numrows;
+        element9.setAttribute("onkeypress", "return timevalidate(event);");
+        element9.setAttribute("onfocusout", "return checktimeformat(this);");
+        element9.setAttribute('maxlength', '5');
+        celldv10.appendChild(element9);
+
+        var celldv11 = row.insertCell(10);
+        var element10 = document.createElement("input");
+        element10.type = "text";
+        element10.style = "width:120px";
+        element10.className = "form-control from_bg";
+        element10.setAttribute('maxlength', '200');
+        element10.name = "remarks_" + numrows;
+        element10.id = "remarks_" + numrows;
+        celldv11.appendChild(element10);
+
+        /*Commented Due to Customer Request
+
+        var cell12 = row.insertCell(11);
+        var elementhref = document.createElement("a");
+        elementhref.href = "##";
+        cell12.appendChild(elementhref);
+        elementhref.innerHTML = '<i class="fa fa-trash bg_red"></i>';
+        elementhref.id = "deleteRow_" + numrows;
+        elementhref.name = "deleteRow_" + numrows;
+        elementhref.className = "btndeleteRow";
+        $('#deleteRow_' + numrows).attr("onclick", "deleteRow(" + numrows + ")");
+
+        */
+
+        $(".citychosen-select").chosen();
+        $('#Selectedcity_id_' + numrows + '_chosen').attr("style", "width: 230px !important");
+        $(".prospectchosen-select").chosen();
+       $('#Selectedcustomer_id_' + numrows + '_chosen').attr("style", "width: 230px !important");
+
+        $(".customerchosen-select").chosen();
+        $('#SelCustomermid_' + numrows + '_chosen').attr("style", "width: 230px !important");
+
+        document.getElementById("loopcount").value = numrows;
+        applyTimePicker(numrows);
+    }
+    function deleteRow(Id) {
+        try {
+            var rowid = "partDtlRow_" + Id;
+            $("#" + rowid).remove();
+            var table = document.getElementById("dsrlsttbl").getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
+            var newserialnumber = 1;
+            for (var i = 1; i < rowCount; i++) {
+                newserialnumber = newserialnumber + 1;
+                var row = table.rows[i];
+                var serialtd = row.cells[0];
+                serialtd.innerHTML = newserialnumber;
+            }
+            serialnumber = newserialnumber;
+            numrows = newserialnumber;
+
+        }
+        catch (e) {
+            alert(e);
+        }
+    }
+    function timevalidate(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode > 43 && charCode > 45 && charCode!= 58) {
+            return false;
+        }
+        return true;
+    }
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode > 43 && charCode > 45 ) {
+            return false;
+        }
+        if (charCode >= 33 && charCode<=44) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function checktimeformat(frtval) {
+        var isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(frtval.value);
+        if (isValid == false) {
+            $("#" + frtval.id).css('border-color', 'red');
+            $("#" + frtval.id).focus();
+            return false;
+        } else {
+            $("#" + frtval.id).css('border-color', '');
+           // $("#" + frtval.id).focus();
+            return true;
+        }
+
+    }
+    function compareTime(str1, str2) {
+        if (str1 === str2) {
+            return 0;
+        }
+        var time1 = str1.split(':');
+        var time2 = str2.split(':');
+        if (eval(time1[0]) > eval(time2[0])) {
+            return 1;
+        } else if (eval(time1[0]) == eval(time2[0]) && eval(time1[1]) > eval(time2[1])) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+    function GetCustomerData(rownum) {
+        var ProspectTypeId = $('#Selectedcustomer_id_' + rownum).val();
+        var CityId = $('#Selectedcity_id_' + rownum).val();
+        var requesturl = '/DSR/GetCustomerListByProspectType';
+        $.ajax({
+            url: requesturl,
+            type: "GET",
+            dataType: "JSON",
+            data: { ProspectTypeId: ProspectTypeId, CityId: CityId },//, str: str
+            success: function (result) {
+                debugger;
+                $('#SelCustomermid_' + rownum).empty();
+                var v = "<option value=''>--Select Customer--</option>";
+
+                $.each(result, function (i, data) {
+                    v += "<option value=" + data.cmid + ">" + data.cname + "</option>";
+                });
+                $('#SelCustomermid_' + rownum).append(v);
+                $('#SelCustomermid_' + rownum).trigger("chosen:updated");
+
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        });
+
+    }
+
+    function applyTimePicker(i) {
+        $('#ptimein_'+i).timepicker({
+            format: 'HH.MM'
+        });
+        $('#ptimeout_'+i).timepicker({
+            format: 'HH.MM'
+        });
+    }
+</script>
+
+<script>
+    var whdsrtype = parseInt('@Model.SelectedDaytype_id');
+
+    if (whdsrtype==4) {
+        dsrblockinfo(whdsrtype);
+    }
+    if (whdsrtype == 6) {
+        dsrblockinfo(whdsrtype);
+    }
+    if (whdsrtype == 10) {
+        dsrblockinfo(whdsrtype);
+    }
+
+</script>

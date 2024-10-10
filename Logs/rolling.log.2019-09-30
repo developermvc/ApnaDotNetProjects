@@ -1,0 +1,10 @@
+2019-09-30 10:54:03,261 DEBUG DebugLogger - Insert PO end for po number WOTL1909200002
+2019-09-30 10:54:25,941 DEBUG DebugLogger - Insert PO end for po number WOTL1909300001
+2019-09-30 10:54:32,938 DEBUG DebugLogger - Insert PO end for po number WOTL1909300001
+2019-09-30 16:49:01,204 DEBUG DebugLogger - export enter
+2019-09-30 16:49:01,209 DEBUG DebugLogger - got file path
+2019-09-30 16:49:01,311 DEBUG DebugLogger - strat excel workbook created 
+2019-09-30 16:49:01,453 DEBUG DebugLogger - excel workbook created 
+2019-09-30 16:49:01,677 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\99428566-771c-4a09-9f4f-a1622481affb_ExportData.xls
+2019-09-30 16:49:01,794 DEBUG DebugLogger - file export complete
+2019-09-30 16:49:01,794 DEBUG DebugLogger - read file byte System.Byte[]

@@ -1,0 +1,41 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+<table class="table table-striped table-bordered" style="width: 100%">
+    <thead class="thead-lights">
+        <tr>
+            <th style="text-align: center">
+                SNo.
+            </th>
+            <th style="text-align: center">
+                DSR No.
+            </th>
+            <th style="text-align: center">
+                Name.
+            </th>
+            <th style="text-align: center">
+                DSR Date
+            </th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.dSR_DTLMastersList != null)
+        {
+
+            int i = 1;
+
+            foreach (var item in Model.dSR_DTLMastersList)
+            {
+                    <tr>
+                        <td align="center">@i</td>
+                        <td align="center"><input type="text" class="form-control" value="@item.PlanCode" readonly="readonly" /></td>
+                        <td align="center"><input type="text" value="@item.CONTACTPERSON" class="form-control" readonly="readonly" /></td>
+                        <td align="center"><input type="text" value="@item.Plandate.Value.ToString("dd/MMM/yyyy")" class="form-control" readonly="readonly" /></td>
+                                               
+                    </tr>
+                    i++;
+                }
+            }
+
+        
+        </tbody>
+</table>

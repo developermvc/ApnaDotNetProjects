@@ -1,0 +1,21 @@
+﻿<link href="~/Content/ProjectCSS/popupheader.css" rel="stylesheet" />
+<style type="text/css">
+    .black_overlay {
+        display: block;
+        position: fixed;
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        z-index: 1001;
+        -moz-opacity: 0.8;
+        opacity: .8;
+        filter: alpha(opacity=80);
+    }
+</style>
+<div class="white_contentblock" id="pleaseWaitDialog" style="display: block;">
+    <img src="~/Content/Images/ajax-loader.gif" style="display: block;"/>
+</div>
+<div id="pleaseWaitDialog_fade" class="black_overlay">
+</div>

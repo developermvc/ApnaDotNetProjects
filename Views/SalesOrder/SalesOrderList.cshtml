@@ -1,0 +1,218 @@
+﻿@model LumaxDMS.Models.SalesOrderModel
+@using LumaxDMS.AppCode
+@{
+    /**/
+
+    ViewBag.Title = "SalesOrderList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var color = "";
+}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">SALES ORDER LIST</div>
+    </div>
+    <div class="custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12 right_bottom">
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                    {
+                        <input name="input" type="button" class="mb-1 btn btn-success pull-right" value="Create New" onclick="return CreateNew();" />
+                    }
+
+                    <table id="Usertbl" class="table  table-bordered dt-responsive nowrap"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>SL</th>
+                                <th>
+                                    ORDER NO.
+                                </th>
+                                <th>
+                                    CUST CODE
+                                </th>
+                                <th>
+                                    CUST NAME
+                                </th>
+                                <th>
+                                    ORD. DT.
+                                </th>
+                                <th>
+                                    QTY
+                                </th>
+                                <th>
+                                    AMOUNT
+                                </th>
+                                <th>
+                                    STATUS
+                                </th>
+                                <th>
+                                    SAP
+                                </th>
+                                <th>
+                                    ORDER BY
+                                </th>
+                                <th>
+                                    ACTION
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int i = 1;}
+                            @foreach (var item in Model.salesOrderMasterList.OrderByDescending(m => m.PO_DATE))
+                            {
+                                if (!string.IsNullOrEmpty(@item.SAP_DOC_NOTE))
+                                {
+                                    if (@item.SAP_DOC_NOTE.ToUpper().Trim() == "TRUE")
+                                    {
+                                        color = "";
+                                    }
+                                    else
+                                    {
+                                        color = "background:#f05050;";
+                                    }
+                                }
+                                else
+                                {
+                                    color = "";
+                                }
+                                <tr>
+                                    <td>@i</td>
+                                    <td>
+                                        @item.PO_NO
+                                    </td>
+
+                                    <td>
+                                        @item.CUSTOMERCODE
+                                    </td>
+                                    <td>
+                                        @item.CUSTOMERNAME
+                                    </td>
+
+                                    <td>
+                                        @Html.DisplayDate(@item.PO_DATE)
+                                    </td>
+                                    <td>
+                                        @item.TOTAL_QTY
+                                    </td>
+                                    <td>
+                                        @item.FINAL_AMOUNT
+                                    </td>
+                                    <td>
+                                        @Html.DisplayPOStatus((int)@item.PO_STATUS)
+                                    </td>
+                                    <td>
+                                        @if (@item.SAP_STATUS == 1)
+                                        {
+                                            <span title="@item.SAP_DOC_NOTE">YES</span>
+                                        }
+                                        else
+                                        {
+                                            <span title="@item.SAP_DOC_NOTE">NO</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (@item.MODIFIED_BY == null)
+                                        {
+                                            @item.CREATED_BY
+                                        }
+                                        else
+                                        {
+                                            @item.MODIFIED_BY
+                                        }
+                                    </td>
+                                    <td class="text_center">
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT) && item.PO_STATUS == 1)
+                                        {
+                                            <a href="/SalesOrder/CreateSalesOrder?Id=@item.PO_HDR_ID&ActionName=EDIT&@Constants.HASH_SALEORDED" title="Edit Order Details">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+
+                                            <a href="#" title="Cancel Order Details" onclick="return CancelOrder(@item.PO_HDR_ID);">
+                                                <i class="fa fa-times"></i>
+                                            </a>
+                                        }
+                                        else if (Model.PermissionNameList.Contains(Constants.PermissionName.VIEW) && item.PO_STATUS == 2)
+                                        {
+                                            <a href="/SalesOrder/CreateSalesOrder?Id=@item.PO_HDR_ID&ActionName=VIEW&@Constants.HASH_SALEORDED" title="View Order Details">
+                                                <i class=" icon-eye"></i>
+                                            </a>
+                                        }
+
+                                        <a href="/SalesOrder/CreateSalesOrder?Id=@item.PO_HDR_ID&ActionName=COPY&@Constants.HASH_SALEORDED" title="Copy Order">
+                                            <i class="fa fa-clone" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="/SalesOrder/PrintPo?poNumber=@item.PO_NO" target="_blank" title="Print Sale order">
+                                            <i class="icon-cloud-download marginsm"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("CancelPO", "SalesOrder", FormMethod.Post, new { @Id = "PostCancel" }))
+{
+    @Html.HiddenFor(m => m.PO_HDR_ID, new { @Id = "Can_POId" });
+}
+
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+           
+            $('#Usertbl').DataTable({            
+                
+                "pageLength": 50,
+                "lengthMenu": [50, 75, 100, "All"],
+                "order": [[0, "asc"]],
+                
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    { "sType": "date" },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            });
+        });
+
+        function CreateNew() {
+            var myUrl = '@Url.Action("CreateSalesOrder", "SalesOrder")';
+            window.location.href = myUrl + "?ActionName=" + 'Create' + "@Constants.HASH_SALEORDED";
+        }
+
+
+        function CancelOrder(PoId) {
+
+        }
+
+        function CancelOrder(id) {
+            $('.modal-title').html("CANCEL SALE ORDER");
+            $('.modal-body').html("You are about to cancel a sale order. <br/> Do you want to continue.");
+            $('#Can_POId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostCancel").submit();
+
+        });
+
+    </script>
+}

@@ -1,0 +1,52 @@
+2019-06-07 15:33:47,683 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:33:47,715 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:33:57,190 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:33:57,196 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:34:00,280 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:34:00,294 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:34:04,775 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:34:04,781 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:34:10,525 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:34:10,540 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:34:28,291 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:34:28,297 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:34:32,137 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:34:32,143 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:34:56,614 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:34:56,620 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:35:20,595 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:35:20,601 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:35:24,005 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:35:24,032 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:35:54,879 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:35:54,895 DEBUG DebugLogger - export enter
+2019-06-07 15:35:54,895 DEBUG DebugLogger - got file path
+2019-06-07 15:35:54,909 DEBUG DebugLogger - strat excel workbook created 
+2019-06-07 15:35:54,986 DEBUG DebugLogger - excel workbook created 
+2019-06-07 15:35:55,162 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\fd68d0de-fa65-4987-9eef-413a5c1df931_SchemeReport.xls
+2019-06-07 15:35:55,278 DEBUG DebugLogger - file export complete
+2019-06-07 15:35:55,278 DEBUG DebugLogger - read file byte System.Byte[]
+2019-06-07 15:37:29,917 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:37:29,932 DEBUG DebugLogger - export enter
+2019-06-07 15:37:29,932 DEBUG DebugLogger - got file path
+2019-06-07 15:37:29,932 DEBUG DebugLogger - strat excel workbook created 
+2019-06-07 15:37:29,932 DEBUG DebugLogger - excel workbook created 
+2019-06-07 15:37:29,933 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\1bdb7c82-9a1d-49bd-9f63-7e55093ef6a2_SchemeReport.xls
+2019-06-07 15:37:29,936 DEBUG DebugLogger - file export complete
+2019-06-07 15:37:29,936 DEBUG DebugLogger - read file byte System.Byte[]
+2019-06-07 15:41:48,707 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:41:48,714 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:41:53,720 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:41:53,726 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-06-07 15:42:10,705 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-06-07 15:42:10,711 DEBUG DebugLogger - export enter
+2019-06-07 15:42:10,711 DEBUG DebugLogger - got file path
+2019-06-07 15:42:10,711 DEBUG DebugLogger - strat excel workbook created 
+2019-06-07 15:42:10,711 DEBUG DebugLogger - excel workbook created 
+2019-06-07 15:42:10,712 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\e41e79e7-ffe8-4d6f-ac8c-e13a947d486d_SchemeReport.xls
+2019-06-07 15:42:10,713 DEBUG DebugLogger - file export complete
+2019-06-07 15:42:10,713 DEBUG DebugLogger - read file byte System.Byte[]
+2019-06-07 16:32:16,095 DEBUG DebugLogger - Insert PO end for po number WOHR1906070004
+2019-06-07 16:33:37,079 DEBUG DebugLogger - Insert PO end for po number WOTN1906070005
+2019-06-07 17:29:11,170 DEBUG DebugLogger - Insert PO end for po number WSTN1906070006
+2019-06-07 17:50:18,664 DEBUG DebugLogger - Insert PO end for po number WOHR1906070004

@@ -1,0 +1,284 @@
+2019-09-18 09:27:26,246 DEBUG DebugLogger - export enter
+2019-09-18 09:27:26,251 DEBUG DebugLogger - got file path
+2019-09-18 09:27:26,469 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 09:27:26,604 DEBUG DebugLogger - excel workbook created 
+2019-09-18 09:27:26,850 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. A2:D2
+2019-09-18 09:27:26,850 DEBUG DebugLogger - file export complete
+2019-09-18 09:39:27,496 DEBUG DebugLogger - Insert PO end for po number WOOR1909130004
+2019-09-18 09:39:43,195 DEBUG DebugLogger - Insert PO end for po number WOOR1909180001
+2019-09-18 09:39:48,868 DEBUG DebugLogger - Insert PO end for po number WOOR1909180001
+2019-09-18 09:57:09,943 DEBUG DebugLogger - export enter
+2019-09-18 09:57:09,943 DEBUG DebugLogger - got file path
+2019-09-18 09:57:09,943 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 09:57:09,943 DEBUG DebugLogger - excel workbook created 
+2019-09-18 09:57:09,944 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. A2:D2
+2019-09-18 09:57:09,944 DEBUG DebugLogger - file export complete
+2019-09-18 10:04:05,062 DEBUG DebugLogger - Insert PO end for po number WOOR1909180001
+2019-09-18 10:05:12,324 DEBUG DebugLogger - export enter
+2019-09-18 10:05:12,324 DEBUG DebugLogger - got file path
+2019-09-18 10:05:12,324 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 10:05:12,324 DEBUG DebugLogger - excel workbook created 
+2019-09-18 10:05:12,325 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. A2:D2
+2019-09-18 10:05:12,325 DEBUG DebugLogger - file export complete
+2019-09-18 10:24:05,949 DEBUG DebugLogger - export enter
+2019-09-18 10:24:05,949 DEBUG DebugLogger - got file path
+2019-09-18 10:24:05,949 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 10:24:05,949 DEBUG DebugLogger - excel workbook created 
+2019-09-18 10:24:05,950 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. A2:D2
+2019-09-18 10:24:05,950 DEBUG DebugLogger - file export complete
+2019-09-18 10:50:48,923 DEBUG DebugLogger - Insert PO end for po number WSTN1906130008
+2019-09-18 10:50:58,489 DEBUG DebugLogger - Insert PO end for po number WSTN1906130008
+2019-09-18 10:51:35,040 DEBUG DebugLogger - Insert PO end for po number WSTN1906130009
+2019-09-18 10:51:40,355 DEBUG DebugLogger - Insert PO end for po number WSTN1906130009
+2019-09-18 10:52:16,740 DEBUG DebugLogger - Insert PO end for po number WSTN1906130010
+2019-09-18 10:52:23,518 DEBUG DebugLogger - Insert PO end for po number WSTN1906130010
+2019-09-18 10:52:43,812 DEBUG DebugLogger - Insert PO end for po number WSTN1906130011
+2019-09-18 10:52:48,268 DEBUG DebugLogger - Insert PO end for po number WSTN1906130011
+2019-09-18 10:53:07,045 DEBUG DebugLogger - Insert PO end for po number WSTN1906130012
+2019-09-18 10:53:11,855 DEBUG DebugLogger - Insert PO end for po number WSTN1906130012
+2019-09-18 10:53:34,731 DEBUG DebugLogger - Insert PO end for po number WSTN1906130016
+2019-09-18 10:53:39,933 DEBUG DebugLogger - Insert PO end for po number WSTN1906130016
+2019-09-18 10:54:36,761 DEBUG DebugLogger - Insert PO end for po number WOGJ1909180002
+2019-09-18 10:54:46,504 DEBUG DebugLogger - Insert PO end for po number WOGJ1909180002
+2019-09-18 10:54:54,558 DEBUG DebugLogger - Insert PO end for po number WOGJ1909180002
+2019-09-18 10:55:01,577 DEBUG DebugLogger - Insert PO end for po number WOGJ1909180002
+2019-09-18 11:14:18,318 DEBUG DebugLogger - export enter
+2019-09-18 11:14:18,318 DEBUG DebugLogger - got file path
+2019-09-18 11:14:18,318 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 11:14:18,318 DEBUG DebugLogger - excel workbook created 
+2019-09-18 11:14:18,319 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. A2:D2
+2019-09-18 11:14:18,319 DEBUG DebugLogger - file export complete
+2019-09-18 11:15:10,903 DEBUG DebugLogger - export enter
+2019-09-18 11:15:10,903 DEBUG DebugLogger - got file path
+2019-09-18 11:15:10,903 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 11:15:10,903 DEBUG DebugLogger - excel workbook created 
+2019-09-18 11:15:10,904 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. A2:D2
+2019-09-18 11:15:10,904 DEBUG DebugLogger - file export complete
+2019-09-18 11:21:53,664 DEBUG DebugLogger - Insert PO end for po number WOUP1909180003
+2019-09-18 11:22:01,270 DEBUG DebugLogger - Insert PO end for po number WOUP1909180003
+2019-09-18 11:35:02,597 DEBUG DebugLogger - export enter
+2019-09-18 11:35:02,597 DEBUG DebugLogger - got file path
+2019-09-18 11:35:02,597 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 11:35:02,597 DEBUG DebugLogger - excel workbook created 
+2019-09-18 11:35:02,598 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. A2:D2
+2019-09-18 11:35:02,598 DEBUG DebugLogger - file export complete
+2019-09-18 11:50:04,228 DEBUG DebugLogger - export enter
+2019-09-18 11:50:04,228 DEBUG DebugLogger - got file path
+2019-09-18 11:50:04,228 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 11:50:04,229 DEBUG DebugLogger - excel workbook created 
+2019-09-18 11:50:04,229 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. A2:D2
+2019-09-18 11:50:04,229 DEBUG DebugLogger - file export complete
+2019-09-18 11:52:54,326 DEBUG DebugLogger - export enter
+2019-09-18 11:52:54,331 DEBUG DebugLogger - got file path
+2019-09-18 11:52:54,339 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 11:52:54,377 DEBUG DebugLogger - excel workbook created 
+2019-09-18 11:52:54,511 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\792b1630-d303-4cbf-a0da-f7d2c4ec95ad_ExportData.xls
+2019-09-18 11:52:54,603 DEBUG DebugLogger - file export complete
+2019-09-18 11:52:54,603 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 12:19:01,084 DEBUG DebugLogger - Insert PO end for po number WSHR1909180001
+2019-09-18 12:19:11,320 DEBUG DebugLogger - Insert PO end for po number WSHR1909180001
+2019-09-18 12:19:18,950 DEBUG DebugLogger - Insert PO end for po number WSHR1909180001
+2019-09-18 12:20:11,136 DEBUG DebugLogger - Insert PO end for po number WSTN1906070006
+2019-09-18 12:20:35,638 DEBUG DebugLogger - Insert PO end for po number WSTN1909180004
+2019-09-18 12:20:44,684 DEBUG DebugLogger - Insert PO end for po number WSTN1909180004
+2019-09-18 12:20:54,413 DEBUG DebugLogger - Insert PO end for po number WSTN1909180004
+2019-09-18 14:19:15,968 DEBUG DebugLogger - export enter
+2019-09-18 14:19:15,974 DEBUG DebugLogger - got file path
+2019-09-18 14:19:15,981 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 14:19:16,016 DEBUG DebugLogger - excel workbook created 
+2019-09-18 14:19:16,151 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\24d2d288-1336-4392-bec2-35513dd297bf_ExportData.xls
+2019-09-18 14:19:16,259 DEBUG DebugLogger - file export complete
+2019-09-18 14:19:16,259 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 14:46:58,787 DEBUG DebugLogger - export enter
+2019-09-18 14:46:58,787 DEBUG DebugLogger - got file path
+2019-09-18 14:46:58,787 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 14:46:58,787 DEBUG DebugLogger - excel workbook created 
+2019-09-18 14:46:58,793 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\6842a375-6166-4b42-879f-0a1d77198c84_ExportData.xls
+2019-09-18 14:46:58,795 DEBUG DebugLogger - file export complete
+2019-09-18 14:46:58,796 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 14:50:43,770 DEBUG DebugLogger - export enter
+2019-09-18 14:50:43,770 DEBUG DebugLogger - got file path
+2019-09-18 14:50:43,775 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 14:50:43,775 DEBUG DebugLogger - excel workbook created 
+2019-09-18 14:50:43,791 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\980242c9-40e6-4f0e-8f1c-aad16b5840cf_ExportData.xls
+2019-09-18 14:50:43,796 DEBUG DebugLogger - file export complete
+2019-09-18 14:50:43,796 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 14:58:08,265 DEBUG DebugLogger - export enter
+2019-09-18 14:58:08,265 DEBUG DebugLogger - got file path
+2019-09-18 14:58:08,265 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 14:58:08,266 DEBUG DebugLogger - excel workbook created 
+2019-09-18 14:58:08,277 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\3c9c5948-f459-4204-af3e-21dce6e84211_ExportData.xls
+2019-09-18 14:58:08,280 DEBUG DebugLogger - file export complete
+2019-09-18 14:58:08,280 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 15:15:38,187 DEBUG DebugLogger - export enter
+2019-09-18 15:15:38,192 DEBUG DebugLogger - got file path
+2019-09-18 15:15:38,200 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 15:15:38,262 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 15:15:38,262 DEBUG DebugLogger - file export complete
+2019-09-18 15:15:51,310 DEBUG DebugLogger - export enter
+2019-09-18 15:15:51,310 DEBUG DebugLogger - got file path
+2019-09-18 15:15:51,310 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 15:15:51,310 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 15:15:51,310 DEBUG DebugLogger - file export complete
+2019-09-18 15:20:26,834 DEBUG DebugLogger - InterimReportController.cs System.IndexOutOfRangeException: There is no row at position 0.
+   at System.Data.RBTree`1.GetNodeByIndex(Int32 userIndex)
+   at LumaxDMS.Controllers.ClaimController.saveClaimEmailAttachmentFile(String claimNumber) in D:\LUMAX01\LumaxDMS\Controllers\ClaimController.cs:line 864
+2019-09-18 15:23:57,643 DEBUG DebugLogger - export enter
+2019-09-18 15:23:57,643 DEBUG DebugLogger - got file path
+2019-09-18 15:23:57,643 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 15:23:57,643 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 15:23:57,643 DEBUG DebugLogger - file export complete
+2019-09-18 15:47:43,823 DEBUG DebugLogger - export enter
+2019-09-18 15:47:43,823 DEBUG DebugLogger - got file path
+2019-09-18 15:47:43,823 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 15:47:43,823 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 15:47:43,823 DEBUG DebugLogger - file export complete
+2019-09-18 15:51:01,107 DEBUG DebugLogger - export enter
+2019-09-18 15:51:01,107 DEBUG DebugLogger - got file path
+2019-09-18 15:51:01,107 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 15:51:01,108 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 15:51:01,108 DEBUG DebugLogger - file export complete
+2019-09-18 15:52:37,725 DEBUG DebugLogger - export enter
+2019-09-18 15:52:37,726 DEBUG DebugLogger - got file path
+2019-09-18 15:52:37,728 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 15:52:37,760 DEBUG DebugLogger - excel workbook created 
+2019-09-18 15:52:37,889 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\c0187787-6e47-4e40-803d-6cb75e7c9a9f_ExportData.xls
+2019-09-18 15:52:37,975 DEBUG DebugLogger - file export complete
+2019-09-18 15:52:37,975 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 16:19:22,715 DEBUG DebugLogger - export enter
+2019-09-18 16:19:22,715 DEBUG DebugLogger - got file path
+2019-09-18 16:19:22,715 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:19:22,715 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:19:22,715 DEBUG DebugLogger - file export complete
+2019-09-18 16:23:31,476 DEBUG DebugLogger - export enter
+2019-09-18 16:23:31,476 DEBUG DebugLogger - got file path
+2019-09-18 16:23:31,476 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:23:31,476 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:23:31,476 DEBUG DebugLogger - file export complete
+2019-09-18 16:31:41,771 DEBUG DebugLogger - export enter
+2019-09-18 16:31:41,771 DEBUG DebugLogger - got file path
+2019-09-18 16:31:41,771 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:31:41,771 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:31:41,771 DEBUG DebugLogger - file export complete
+2019-09-18 16:36:36,197 DEBUG DebugLogger - export enter
+2019-09-18 16:36:36,202 DEBUG DebugLogger - got file path
+2019-09-18 16:36:36,210 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:36:36,210 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:36:36,210 DEBUG DebugLogger - file export complete
+2019-09-18 16:36:57,418 DEBUG DebugLogger - export enter
+2019-09-18 16:36:57,418 DEBUG DebugLogger - got file path
+2019-09-18 16:36:57,418 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:36:57,418 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:36:57,418 DEBUG DebugLogger - file export complete
+2019-09-18 16:38:23,350 DEBUG DebugLogger - export enter
+2019-09-18 16:38:23,350 DEBUG DebugLogger - got file path
+2019-09-18 16:38:23,350 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:38:23,350 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:38:23,350 DEBUG DebugLogger - file export complete
+2019-09-18 16:45:14,704 DEBUG DebugLogger - export enter
+2019-09-18 16:45:14,704 DEBUG DebugLogger - got file path
+2019-09-18 16:45:14,704 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:45:14,704 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:45:14,704 DEBUG DebugLogger - file export complete
+2019-09-18 16:51:45,751 DEBUG DebugLogger - export enter
+2019-09-18 16:51:45,751 DEBUG DebugLogger - got file path
+2019-09-18 16:51:45,751 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:51:45,751 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:51:45,751 DEBUG DebugLogger - file export complete
+2019-09-18 16:53:53,694 DEBUG DebugLogger - export enter
+2019-09-18 16:53:53,694 DEBUG DebugLogger - got file path
+2019-09-18 16:53:53,694 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 16:53:53,694 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 16:53:53,694 DEBUG DebugLogger - file export complete
+2019-09-18 17:00:40,179 DEBUG DebugLogger - export enter
+2019-09-18 17:00:40,179 DEBUG DebugLogger - got file path
+2019-09-18 17:00:40,179 DEBUG DebugLogger - ExportToExcel: Null or empty input table
+2019-09-18 17:00:40,179 DEBUG DebugLogger - ExportToExcel -Cannot find table 0.
+2019-09-18 17:00:40,179 DEBUG DebugLogger - file export complete
+2019-09-18 17:02:15,725 DEBUG DebugLogger - export enter
+2019-09-18 17:02:15,725 DEBUG DebugLogger - got file path
+2019-09-18 17:02:15,725 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:02:15,755 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:02:15,893 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\f5c2b508-43e5-46c5-9eeb-af8405c92133_ExportData.xls
+2019-09-18 17:02:15,979 DEBUG DebugLogger - file export complete
+2019-09-18 17:02:15,979 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:11:23,924 DEBUG DebugLogger - export enter
+2019-09-18 17:11:23,924 DEBUG DebugLogger - got file path
+2019-09-18 17:11:23,924 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:11:23,924 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:11:23,940 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\8bab833d-d4f1-4275-b15c-75d913cf6935_ExportData.xls
+2019-09-18 17:11:23,944 DEBUG DebugLogger - file export complete
+2019-09-18 17:11:23,944 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:19:35,345 DEBUG DebugLogger - export enter
+2019-09-18 17:19:35,345 DEBUG DebugLogger - got file path
+2019-09-18 17:19:35,345 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:19:35,345 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:19:35,354 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\c0a75ec8-09d2-4cdf-83d0-007aaa6b94bd_ExportData.xls
+2019-09-18 17:19:35,357 DEBUG DebugLogger - file export complete
+2019-09-18 17:19:35,357 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:22:33,193 DEBUG DebugLogger - export enter
+2019-09-18 17:22:33,193 DEBUG DebugLogger - got file path
+2019-09-18 17:22:33,193 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:22:33,193 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:22:33,201 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\addbc068-37bb-488b-b839-de128c5120c4_ExportData.xls
+2019-09-18 17:22:33,204 DEBUG DebugLogger - file export complete
+2019-09-18 17:22:33,204 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:24:22,772 DEBUG DebugLogger - export enter
+2019-09-18 17:24:22,772 DEBUG DebugLogger - got file path
+2019-09-18 17:24:22,772 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:24:22,772 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:24:22,781 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\cd7694f1-7dd9-49f6-8d0a-9de8aecfd78e_ExportData.xls
+2019-09-18 17:24:22,784 DEBUG DebugLogger - file export complete
+2019-09-18 17:24:22,784 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:24:58,869 DEBUG DebugLogger - export enter
+2019-09-18 17:24:58,869 DEBUG DebugLogger - got file path
+2019-09-18 17:24:58,869 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:24:58,869 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:24:58,877 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\1d93311f-bea7-46bf-af50-6c02c896af00_ExportData.xls
+2019-09-18 17:24:58,880 DEBUG DebugLogger - file export complete
+2019-09-18 17:24:58,880 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:28:54,031 DEBUG DebugLogger - export enter
+2019-09-18 17:28:54,031 DEBUG DebugLogger - got file path
+2019-09-18 17:28:54,031 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:28:54,031 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:28:54,039 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\a3c93ae1-d81f-41cf-8259-79ddf8bd6831_ExportData.xls
+2019-09-18 17:28:54,042 DEBUG DebugLogger - file export complete
+2019-09-18 17:28:54,042 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:33:10,440 DEBUG DebugLogger - Insert PO end for po number WOBR1909180005
+2019-09-18 17:33:18,656 DEBUG DebugLogger - export enter
+2019-09-18 17:33:18,656 DEBUG DebugLogger - got file path
+2019-09-18 17:33:18,656 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:33:18,656 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:33:18,665 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\a1d2c7df-be8e-4a6b-b8eb-c5194e91579f_ExportData.xls
+2019-09-18 17:33:18,668 DEBUG DebugLogger - file export complete
+2019-09-18 17:33:18,668 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:33:56,947 DEBUG DebugLogger - Insert PO end for po number WOBR1909180005
+2019-09-18 17:34:06,142 DEBUG DebugLogger - export enter
+2019-09-18 17:34:06,142 DEBUG DebugLogger - got file path
+2019-09-18 17:34:06,142 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:34:06,142 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:34:06,151 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\a58881ad-8f1d-4724-b6b5-f9b7497aef0e_ExportData.xls
+2019-09-18 17:34:06,171 DEBUG DebugLogger - file export complete
+2019-09-18 17:34:06,171 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:34:32,919 DEBUG DebugLogger - Insert PO end for po number WOBR1909180005
+2019-09-18 17:34:42,836 DEBUG DebugLogger - export enter
+2019-09-18 17:34:42,836 DEBUG DebugLogger - got file path
+2019-09-18 17:34:42,836 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:34:42,837 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:34:42,845 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\26e69f11-bbce-4a34-89b8-02e3a9c9f6fe_ExportData.xls
+2019-09-18 17:34:42,848 DEBUG DebugLogger - file export complete
+2019-09-18 17:34:42,848 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:37:44,902 DEBUG DebugLogger - export enter
+2019-09-18 17:37:44,902 DEBUG DebugLogger - got file path
+2019-09-18 17:37:44,902 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:37:44,902 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:37:44,911 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\90e5ee21-e6af-4a3d-b216-0c909749c25c_ExportData.xls
+2019-09-18 17:37:44,914 DEBUG DebugLogger - file export complete
+2019-09-18 17:37:44,914 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-18 17:38:05,493 DEBUG DebugLogger - export enter
+2019-09-18 17:38:05,493 DEBUG DebugLogger - got file path
+2019-09-18 17:38:05,493 DEBUG DebugLogger - strat excel workbook created 
+2019-09-18 17:38:05,493 DEBUG DebugLogger - excel workbook created 
+2019-09-18 17:38:05,500 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\ccec021e-1d3e-4580-83a6-ef4d09bb2dd8_ExportData.xls
+2019-09-18 17:38:05,503 DEBUG DebugLogger - file export complete
+2019-09-18 17:38:05,504 DEBUG DebugLogger - read file byte System.Byte[]

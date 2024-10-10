@@ -1,0 +1,216 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+@Html.DropDownList("HiddenlodgingCityId", new SelectList(Model.CityList, "CITY_ID", "CITYNAME"), "--Select City--", new { @class = "form-control", @Id = "HiddenlodgingCityId", @Name = "HiddenlodgingCityId", @Style = "display:none" })
+<style type="text/css">
+    .table td .chosen-single {
+        width: 120px !important;
+    }
+</style>
+<table id="lodegingexp" class="table table-striped table-bordered" style="width: 100%">
+    <thead class="thead-lights">
+        <tr>
+            <th style="text-align: center">
+                S.No
+            </th>
+            <th style="text-align: center">
+                City
+            </th>
+            <th>Locality</th>
+            <th style="text-align: center">
+                Check-In Date.
+            </th>
+            <th style="text-align: center">
+                In Time.
+            </th>
+            <th style="text-align: center">
+                Check-Out Date.
+            </th>
+            <th style="text-align: center">
+                Out Time.
+            </th>
+            <th style="text-align: center">
+                Night Stay
+            </th>
+            <th>Bill No</th>
+            <th style="text-align: center">
+                Lodging Amt
+            </th>
+            <th style="text-align: center">
+                On Arran-gement
+            </th>
+            <th style="text-align: center">
+                Remark
+            </th>
+            <th style="text-align: center; display:none">
+                Total
+            </th>
+            <th style="text-align: center">
+                Attachment
+            </th>
+            <th style="text-align: center">
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.travelLodgingList.Count > 0)
+        {
+            int k = 1;
+            foreach (var lodgingitem in Model.travelLodgingList)
+            {
+                decimal total = Convert.ToDecimal(lodgingitem.AMOUNT) + Convert.ToDecimal(lodgingitem.DAAMOUNT);
+
+        <tr id="lodgingrw_@k">
+            <td align="center">
+                @k
+            </td>
+            <td align="center">
+                @Html.DropDownList("lodgingCity_" + @k, new SelectList(Model.CityList, "CITY_ID", "CITYNAME", lodgingitem.CITYID), "--Select City--", new { @class = "form-control lodgingcity", @Id = "lodgingCity_" + @k, @Name = "lodgingCity_" + @k })
+
+            </td>
+            <td align="center">
+                <input type="text" id="locality_@k" style="border-color:red !important;" name="locality_@k" value="@lodgingitem.LOCALITY" class="form-control" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input type="text" id="lodgingfromdate_@k" style="border-color:red !important;" name="lodgingfromdate_@k" data-todate="lodgingtodate_@k" value="@lodgingitem.FROMDATE.Value.ToString("dd/MMM/yyyy")" class="form-control DatePicker" readonly="readonly" onchange="LodgingFromDateValidatin(this)" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input id="intime_@k" name="intime_@k" type='time' class="form-control text-center" value="@lodgingitem.INTIME" placeholder="Time(24hr)" />
+            </td>
+            <td align="center">
+                <input type="text" id="lodgingtodate_@k" style="border-color:red !important;" name="lodgingtodate_@k" data-fromdate="lodgingfromdate_@k" value="@lodgingitem.TODATE.Value.ToString("dd/MMM/yyyy")" onchange="LodgingToDateValidatin(this)" class="form-control DatePicker" readonly="readonly" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input id="outtime_@k" name="outtime_@k" type='time' class="form-control text-center" value="@lodgingitem.OUTTIME" placeholder="Time(24hr)" />
+            </td>
+            <td align="center">
+                <input type="text" id="nightspent_@k" name="nightspent_@k" value="@lodgingitem.NIGHTSPENT" class="form-control numberinput" readonly="readonly" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input type="text" id="lodgingbill_@k" name="lodgingbill_@k" value="@lodgingitem.BILLNO" class="form-control" autocomplete="off" />
+            </td>
+            @if (@lodgingitem.AMOUNT > 0)
+            {
+                <td align="center">
+                    <input type="text" id="lodgingamt_@k" name="lodgingamt_@k" value="@lodgingitem.AMOUNT" data-id="@k" onblur="suminline(this)" class="form-control decimalinput" style="text-align: right" autocomplete="off" />
+                </td>
+                <td align="center">
+                    <input type="text" id="daAmt_@k" readonly="readonly" name="daAmt_@k" data-id="@k" value="@lodgingitem.DAAMOUNT" onblur="suminline(this)" class="form-control decimalinput" style="text-align: right" autocomplete="off" />
+                </td>
+            }
+
+            @if (@lodgingitem.DAAMOUNT > 0)
+            {
+                <td align="center">
+                    <input type="text" id="lodgingamt_@k" readonly="readonly" name="lodgingamt_@k" value="@lodgingitem.AMOUNT" data-id="@k" onblur="suminline(this)" class="form-control decimalinput" style="text-align: right" autocomplete="off" />
+                </td>
+                <td align="center">
+                    <input type="text" id="daAmt_@k"  name="daAmt_@k" data-id="@k" value="@lodgingitem.DAAMOUNT" onblur="suminline(this)" class="form-control decimalinput" style="text-align: right" autocomplete="off" />
+                </td>
+            }
+            <td align="center">
+                <input type="text" id="lodgingremark_@k" name="lodgingremark_@k" value="@lodgingitem.REMARK" class="form-control" autocomplete="off" />
+            </td>
+            <td align="center" style="display:none">
+                <input type="text" id="totalamt_@k" name="totalamt_@k" value="@total" class="form-control numberinput" autocomplete="off" readonly="readonly" />
+            </td>
+            <td align="center">
+
+
+
+                @if (Model.ActionName != "display" && (Model.travelExpHDRMaster.status < 2 || Model.travelExpHDRMaster.status == null))
+                {
+                    <span>
+                        <input type="file" id="lodgingattachment_@k" name="lodgingattachment_@k" data-fileid="lodgingattachmentfile_@k" class="form-control" style="width:40%; float:left;" onchange="saveattachment(this)" />
+                    </span>
+                }
+                @if (!string.IsNullOrEmpty(lodgingitem.ATTACHMENT))
+                {
+                    <span>
+                        <a href="@Url.Action("DownloadAttachment", "Travel", new { fileName = lodgingitem.ATTACHMENT })" class="btn btn-primary" id="lodgingattachmentdownload_@k" style="float:left;margin: 0 2px 0 2px;"><i class="fa fa-download" style="padding: 4px 1px;"></i></a>
+                    </span>
+                }
+                <input type="text" style="display:none;" id="lodgingattachmentfile_@k" name="lodgingattachmentfile_@k" value="@lodgingitem.ATTACHMENT" class="form-control" />
+
+            </td>
+            <td align="center">
+                @if (k > 1)
+                {
+                    <a data-tbl="lodegingexp" data-name="lodgingrw_@k" class="btn btn-sm btn-secondary  pt-top " onclick="return deleteRow(this);"><i class="fa fa-trash bg_red"></i></a>
+                }
+            </td>
+        </tr>
+                k++;
+            }
+        }
+        else
+        {
+        <tr>
+            <td align="center">
+                1
+            </td>
+            <td align="center">
+                @Html.DropDownList("lodgingCity_1", new SelectList(Model.CityList, "CITY_ID", "CITYNAME"), "--Select City--", new { @class = "form-control lodgingcity", @Id = "lodgingCity_1", @Name = "lodgingCity_1" })
+
+            </td>
+            <td align="center">
+                <input type="text" id="locality_1" name="locality_1" value="" style="border-color:red !important;" class="form-control" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input type="text" id="lodgingfromdate_1" name="lodgingfromdate_1" style="border-color:red !important;" data-todate="lodgingtodate_1" class="form-control DatePicker" readonly="readonly" onchange="LodgingFromDateValidatin(this)" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input id="intime_1" name="intime_1" type='time' value="00:00" class="form-control text-center" placeholder="Time(24hr)" />
+            </td>
+            <td align="center">
+                <input type="text" id="lodgingtodate_1" name="lodgingtodate_1" style="border-color:red !important;" data-fromdate="lodgingfromdate_1" class="form-control DatePicker" onchange="LodgingToDateValidatin(this)" readonly="readonly" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input id="outtime_1" name="outtime_1" type='time' value="00:00" class="form-control text-center" placeholder="Time(24hr)" />
+            </td>
+            <td align="center">
+                <input type="text" id="nightspent_1" name="nightspent_1" class="form-control numberinput" readonly="readonly" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input type="text" id="lodgingbill_1" name="lodgingbill_1" value="" class="form-control" autocomplete="off" />
+            </td>
+            <td align="center">
+                <input type="text" id="lodgingamt_1" name="lodgingamt_1"  data-id="1" onblur="suminline(this)" class="form-control decimalinput" autocomplete="off" style="text-align: right" />
+            </td>
+            <td align="center">
+                <input type="text" id="daAmt_1" name="daAmt_1" data-id="1" onblur="suminline(this)" class="form-control decimalinput" autocomplete="off" style="text-align: right" />
+            </td>
+            <td align="center">
+                <input type="text" id="lodgingremark_1" name="lodgingremark_1" class="form-control" autocomplete="off" />
+            </td>
+            <td align="center" style="display:none">
+                <input type="text" id="totalamt_1" name="totalamt_1" class="form-control numberinput" autocomplete="off" readonly="readonly" style="text-align: right" />
+            </td>
+            <td align="center">
+                <span> 
+                <input type="file" id="lodgingattachment_1" name="lodgingattachment_1" data-fileid="lodgingattachmentfile_1" class="form-control" style="width:60%; float:left;" onchange="saveattachment(this)" />
+                    </span>
+                <input type="text" style="display:none;" id="lodgingattachmentfile_1" name="lodgingattachmentfile_1" class="form-control" />
+
+            </td>
+            <td align="center"></td>
+        </tr>
+        }
+
+    </tbody>
+</table>
+<div class="card-footer">
+    <div class="clearfix">
+        <div class="float-left">
+            @if (Model.ActionName != "display" && (Model.travelExpHDRMaster.status < 2 || Model.travelExpHDRMaster.status == null))
+            {
+                <a href="##" id="btnaddrow" value="AddMore" style="margin-right:40px" class="btn btn-primary" title="Add More Expense" onclick="return addLodgingrow();">Add More</a>
+            }
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".lodgingcity").chosen();
+    })
+</script>

@@ -1,0 +1,162 @@
+﻿@model LumaxDMS.Models.CountryModel
+@*@using LumaxDMS.AppCode*@
+@using (Html.BeginForm("CreateCountry", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Country_id)
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="frmlabel">CREATE COUNTRY</div>
+        </div>
+
+
+        <div id="dv_displaydetail" class="card-body" style="padding-top: 20px;">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Country Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.CountryCode, new { @class = "form-control from_bg", title = "Enter country Code" })
+                    @Html.ValidationMessageFor(model => model.CountryCode)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Country Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.CountryName, new { @class = "form-control from_bg ", onblur = "return CheckCountryValidation(this)", title = "Enter country Name" })
+                    @Html.ValidationMessageFor(model => model.CountryName)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Country Desc:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.CountryDesc, new { @class = "form-control from_bg ", title = "Enter country Desc" })
+                    @Html.ValidationMessageFor(model => model.CountryDesc)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn-primary" />
+                    <input type="submit" class="btn btn-primary" name="btntype" value="Update" style="display: none" id="btnupdate" />
+                    <input type="button" class="btn btn-primary"  name="btntype" value="Clear" onclick="resetValidation()" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+
+}
+<script type="text/javascript">
+
+
+    function CheckCountryValidation(country_id) {
+        debugger;
+        var checkUrl = '@Url.Action("CheckIscountryExist", "ManageMaster")';
+        var CountryId = $('#Country_id').val();
+        var countryName = $('#CountryName').val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ countryName: countryName, countryId: CountryId }),
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    alert("Country Name already exists");
+                    $('#CountryName').val('');
+                    $('#CountryName').focus();
+                }
+            },
+            error: function (data) {
+
+            }
+        });
+
+    }
+
+
+
+    function EditCountry(CountryId) {
+
+        var checkUrl = '@Url.Action("EditCountry", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ Country_Id: CountryId }),
+            dataType: "json",
+            success: EditCountrySucceeded,
+            error: EditCountryFailed
+        });
+
+
+    }
+
+    function EditCountrySucceeded(result) {
+        debugger;
+
+        $('#frmlabel').text('EDIT COUNTRY');
+        $('#Country_id').val(result.COUNTRY_ID);
+        $('#CountryName').val(result.COUNTRYNAME);
+        $('#CountryCode').val(result.COUNTRYCODE);
+        $('#CountryDesc').val(result.COUNTRYDESC);
+
+        if (result.ISACTIVE == "Y") {
+            $('#IsActive').prop('checked', true);
+        }
+        else {
+            $('#IsActive').prop('checked', false);
+        }
+
+        $('#btnupdate').show();
+        $('#btnadd').hide();
+        $('#countryformtitle').text("UPDATE COUNTRY");
+
+
+    }
+
+    function EditCountryFailed() {
+
+    }
+
+    function resetform() {
+         
+        window.location.href = "/ManageMaster/CountryList"
+    }
+    function resetValidation() {
+                
+        $("#CountryDesc-error").html('');
+        $("#CountryName-error").html('');
+        $("#CountryCode-error").html('');
+        
+    }
+    
+
+</script>

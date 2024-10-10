@@ -1,0 +1,20 @@
+2019-04-18 14:42:12,343 DEBUG DebugLogger - Insert Collection number end for Collection number CLN190418001
+2019-04-18 14:42:12,348 DEBUG DebugLogger - Insert Collection to SAP start for Collection number CLN190418001
+2019-04-18 14:42:12,349 DEBUG DebugLogger - found po details success 1
+2019-04-18 14:42:13,741 DEBUG DebugLogger - insert Collection to sap success with message 
+2019-04-18 14:42:13,759 DEBUG DebugLogger - Insert Collection number end for Collection number CLN190418001
+2019-04-18 14:42:13,759 DEBUG DebugLogger - Insert Collection to SAP start for Collection number CLN190418001
+2019-04-18 14:42:13,761 DEBUG DebugLogger - found po details success 1
+2019-04-18 14:42:13,916 DEBUG DebugLogger - insert Collection to sap success with message 
+2019-04-18 18:18:44,262 DEBUG DebugLogger - Insert PO end for po number WOTL1904180001
+2019-04-18 18:18:44,269 DEBUG DebugLogger - Insert PO to SAP start for po number WOTL1904180001
+2019-04-18 18:18:44,386 DEBUG DebugLogger - Po Send by dealer name HANUMAN AGENCIES
+2019-04-18 18:18:44,448 DEBUG DebugLogger - found po details success 1
+2019-04-18 18:18:45,586 DEBUG DebugLogger - insert po to sap success with message 
+2019-04-18 18:18:45,707 DEBUG DebugLogger - update po status to DMS for po 
+2019-04-18 18:30:08,669 DEBUG DebugLogger - Insert PO end for po number WOTL1904180002
+2019-04-18 18:30:08,676 DEBUG DebugLogger - Insert PO to SAP start for po number WOTL1904180002
+2019-04-18 18:30:08,786 DEBUG DebugLogger - Po Send by dealer name SHYAM AUTO INDUSTRIES
+2019-04-18 18:30:08,796 DEBUG DebugLogger - found po details success 1
+2019-04-18 18:30:09,839 DEBUG DebugLogger - insert po to sap success with message 
+2019-04-18 18:30:09,962 DEBUG DebugLogger - update po status to DMS for po 

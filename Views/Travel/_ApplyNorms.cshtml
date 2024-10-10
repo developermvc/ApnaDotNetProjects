@@ -1,0 +1,136 @@
+﻿@model LumaxDMS.Models.TravelExpNormedValModel
+@if (Model.travelExpNormedVal != null)
+{
+<div class="card-body">
+    <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-2"><b>Fare      </b></div>
+        <div class="col-lg-2"><b>Conveyance</b></div>
+        <div class="col-lg-2"><b>Lodging   </b></div>
+        <div class="col-lg-2"><b>Fda       </b></div>
+        <div class="col-lg-2"><b>Other Exp </b></div>
+
+
+    </div>
+    <div class="row">
+
+        <div class="col-lg-2">
+            Norms
+        </div>
+        @*<input onmousemove="" />*@
+        <div class="col-lg-2">
+             @Html.TextBoxFor(m => m.travelExpNormedVal.Fare, new { @class = "form-control decimalinput", @readonly = "readonly", @onmouseover = "fn_Getdetail()", @onmouseout = "closemodel()"}) 
+        </div>
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.travelExpNormedVal.Convence, new { @class = "form-control decimalinput", @readonly = "readonly" })
+        </div>
+
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.travelExpNormedVal.Lodging, new { @class = "form-control decimalinput", @readonly = "readonly" })
+        </div>
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.travelExpNormedVal.Tiffin, new { @class = "form-control decimalinput", @readonly = "readonly" })
+        </div>
+        @*<div class="col-lg-2">
+            @Html.TextBoxFor(m => m.travelExpNormedVal.Fda, new { @class = "form-control" })
+        </div>*@
+
+
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.travelExpNormedVal.Other, new { @class = "form-control decimalinput", @readonly = "readonly" })
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-lg-2">
+            Allow:
+
+        </div>
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.AllowtravelExpNormedVal.FareVal, new { @class = "form-control decimalinput",@onblur= "fn_normAttechment()" })
+        </div>
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.AllowtravelExpNormedVal.Convence, new { @class = "form-control decimalinput", @onblur = "fn_normAttechment()" })
+        </div>
+
+
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.AllowtravelExpNormedVal.Lodging, new { @class = "form-control decimalinput", @onblur = "fn_normAttechment()" })
+        </div>
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.AllowtravelExpNormedVal.Tiffin, new { @class = "form-control decimalinput", @onblur = "fn_normAttechment()" })
+        </div>
+        @*<div class="col-lg-2">
+            @Html.TextBoxFor(m => m.AllowtravelExpNormedVal.Fda, new { @class = "form-control" })
+        </div>*@
+
+
+        <div class="col-lg-2">
+            @Html.TextBoxFor(m => m.AllowtravelExpNormedVal.Other, new { @class = "form-control decimalinput", @onblur = "fn_normAttechment()" })
+        </div>
+    </div>
+
+</div>
+    }
+
+<script type="text/javascript"> 
+
+    function fn_Getdetail() {
+        var code = $("#travelExpHDRMaster_UserCode").val();
+        if (code != "") {
+            $.ajax({
+                url: "/Travel/GetNormsDTL",
+                type: "GET",
+                dataType: "JSON",
+                data: { UserCode: code},
+                success: function (result) {
+                    debugger;
+                    $("#normdtllist tbody").empty();
+                    var j = 1;
+                    $.each(result, function (i, item) {
+                         
+                        $("#normdtllist tbody").append(
+                            '<tr>' +
+                            '<td class="col-xs-2">' + j + '</td>' +
+                            '<td class="col-xs-2">' + item.travelModeName + '</td>' +
+                            
+                            '</tr>'
+                        );
+                        j++;
+
+                    });
+                     
+                    $("#normsdtlModal").show();
+                },
+                error: function (result) {
+                    console.log(result);
+                }
+            });
+            
+             
+        }
+        
+    }
+    function fn_normAttechment() {
+        var fare =parseFloat( $("#AllowtravelExpNormedVal_FareVal").val());
+        var localCon = parseFloat($("#AllowtravelExpNormedVal_Convence").val());
+        var lodg = parseFloat($("#AllowtravelExpNormedVal_Lodging").val());
+        var fda = parseFloat($("#AllowtravelExpNormedVal_Tiffin").val());
+        var othr = parseFloat($("#AllowtravelExpNormedVal_Other").val());
+
+        var tfare = parseFloat($("#total_fareexp").text());
+        var tlocalcon = parseFloat($("#total_travelexp").text());
+        var tlodging = parseFloat($("#total_lodgingexp").text());
+        var tfda = parseFloat($("#total_tiffenxp").text());
+        var tother = parseFloat($("#total_otherexp").text());
+        if (fare == tfare && localCon == tlocalcon && lodg == tlodging && fda == tfda && othr == tother) {
+            $("#normsfilediv").hide();
+        }
+        else {
+            $("#normsfilediv").show();
+        }
+       
+    }
+     
+</script>

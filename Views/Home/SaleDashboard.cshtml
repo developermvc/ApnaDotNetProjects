@@ -1,0 +1,240 @@
+﻿@model LumaxDMS.Models.DashboardModel
+
+<style type="text/css">
+    .margin4 {
+        margin-top: -4%;
+    }
+</style>
+@using (Html.BeginForm("ExportDashboard", "Home", FormMethod.Post, new { @Class = "DashboardForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.FromDate)
+    @Html.HiddenFor(m => m.ToDate) 
+    
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="departmenttitleid">DASHBOARD</div>
+        </div>
+
+        @{Html.RenderPartial("_CommonFilter", Model);}
+        <div class="row row_pt">
+            <div class="col-md-3" style="margin-left: 1%;margin-bottom: 1%;">
+                <div class="float-left">
+                    <input type="button" class="btn btn-primary" name="btntype" value="Search" id="btnSearchDashboard" />
+                    <input type="reset" class="btn btn-primary" name="btntype" value="Clear" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<div class="row row_pt">
+    <div class="col-md-4">
+        <div class="card card-default">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+                    Order and Sale (Lacs)
+                </div>
+            </div>
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_ordersaleid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card card-default">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+                    Area wise Order and Sale (Lacs)
+                </div>
+            </div>
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_areabudgetid"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<div class="row row_pt">
+    <div class="col-md-4">
+        <div class="card card-default" style="display:block!important">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+
+                    Budget Achievement
+
+                </div>
+            </div>
+
+            <div class="col-md-6" style="float:left!important;">
+                <div class="card bg-info-light pt-2 b0" style="margin: 20px 0 0 0!important;">
+                    <div class="px-2">
+
+                        <div class="margin4">Budget : 2032</div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6" style="float:left!important;">
+                <div class="card bg-info-light pt-2 b0" style="margin: 20px 0 0 0!important;">
+                    <div class="px-2">
+
+                        <div class="margin4">Sale : 1203</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_segmentbudgetid" style="margin-left:15%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4" id="dashboard4w">
+        <div class="card card-default">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+                    4W
+                </div>
+            </div>
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_ordersaleid_1"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4" id="dashboard2w">
+        <div class="card card-default">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+                    2W
+                </div>
+            </div>
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_ordersaleid_2"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row row_pt">
+    <div class="col-md-12">
+        <div id="chart_categorywiseid"></div>
+    </div>
+
+</div>
+
+<div class="row row_pt">
+    <div class="col-md-3" style="margin-left: 1%;margin-bottom: 1%;">
+        <div class="float-left">
+            <input type="button" onclick="return BackToDashboard();" class="btn btn-primary" name="btntype" value="BACK" />
+        </div>
+    </div>
+</div>
+
+@section JS {
+    <script src="~/Scripts/DateRange/moment.min.js"></script>
+    <script src="~/Scripts/DateRange/daterangepicker.js"></script>
+    <script src="~/Scripts/DateRange/DateTimeFormat.js"></script>
+    <script src="~/Scripts/ProjectJS/C_AreaJS.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="~/Scripts/ProjectJS/SalesDashboard.js"></script> 
+    <script type="text/javascript">
+             $(document).ready(function () {
+                 debugger; 
+                 var seg = $('#SelectedSegment option:selected').text();
+                  
+                 if (seg == "2W") {
+                     $("#dashboard4w").hide();
+                     $("#dashboard2w").show();
+                 }
+                 if (seg == "4W") {
+                     $("#dashboard4w").show();
+                     $("#dashboard2w").hide();
+                 }
+            $('#btnadd').hide();
+            var checkUrl = '@Url.Action("getAllArea", "Admin")';
+            //GetAllAreaById(checkUrl, 1);
+            //GetAllAreaById(checkUrl, 2);
+            //GetAllAreaById(checkUrl, 3);
+            //GetAllAreaById(checkUrl, 4);
+            //GetAllAreaById(checkUrl, 5);
+            //GetAllAreaById(checkUrl, 6);
+            //GetAllAreaById(checkUrl, 7);
+            FormatDateRangeMonthly(formatDate('@Model.FromDate'), formatDate('@Model.ToDate'), 'reportrange');
+            OnPageLoad();
+                 HideWaitingSymbol();
+
+                 
+            });
+
+            $(document).ready(function () {
+                //chart implementation start
+                google.charts.load('current', { 'packages': ['corechart', 'gauge', 'bar', 'table'] });
+                google.charts.setOnLoadCallback(drawDashboardChart);
+            });
+
+        function drawDashboardChart() {
+             
+                DrawOrderSale("chart_ordersaleid");
+                drawSegmentwiseBudget("chart_segmentbudgetid");
+                drawAreawiseBudget("chart_areabudgetid");
+            //Test("chart_areabudgetid");
+                drawCategorywiseTable("chart_categorywiseid");
+            }
+
+            function BackToDashboard() {
+                window.location.href = "/Home/Index"
+        }
+
+
+        function OnPageLoad() {
+
+            if ('@Model.IsDealer' == 'True') {
+                $('.emponlydv').hide();
+            }
+        }
+
+        function Test(input) {
+            google.charts.load("current", { packages: ["corechart"] });
+            var segmentid = $('#SelectedSegment').val();
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var c_SelectedAreaType = $('#C_SelectedAreaType').val();
+            var AreaId = $('#hdnSelectedUserArea').val();
+            $.getJSON("/Home/GetAreaWiseRecords/", { segid: segmentid, fDate: fromDate, tDate: toDate, AreaType: c_SelectedAreaType, AreaId: AreaId }, function (data) {
+
+                $.each(data, function (i, item) {
+                    debugger;
+                    $('#n_StateId').append($('<option/>', {
+                        value: item.Value,
+                        text: item.Text
+
+                    }));
+                });
+            });
+            var data = google.visualization.arrayToDataTable([
+                ['Area', 'TARGET', 'NETORDER', 'NETSALE', 'PENDING ORDER'],
+                ['EAST', 388, 233, 201, 31],
+                ['WEST', 1170, 460, 250, 43],
+                ['NORTH', 660, 1120, 300, 55],
+                ['SOUTH', 1030, 540, 350, 66]
+            ]);
+
+            var options = {
+                chart: {
+                    title: '',
+                    colors: ['rgb(66, 133, 244)', 'rgb(15, 157, 88)', 'rgb(244, 180, 0)', 'rgb(219, 68, 55)'],
+                    is3D: true
+                }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById(input));
+
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+    </script>
+}

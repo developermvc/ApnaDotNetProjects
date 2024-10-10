@@ -1,0 +1,335 @@
+﻿@model LumaxDMS.Models.PartModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CreateClaim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+
+@section CSS
+{
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <style>
+        #SelectedPart_Id_1_chosen {
+            width: 330px !important;
+        }
+    </style>
+}
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $('#FROM_DATE').datepicker({
+                format: 'dd/M/yyyy',
+                startDate: new Date()
+
+            });
+
+            $('#TO_DATE').datepicker({
+                format: 'dd/M/yyyy',
+                startDate: new Date()
+            });
+
+
+        })
+        function SetToDate() {
+
+            $('#TO_DATE').val('');
+
+        }
+
+        function checkDate() {
+            var fdt = new Date($('#FROM_DATE').val());
+            var ndt = new Date($('#TO_DATE').val());
+            if (Date.parse(ndt) < Date.parse(fdt)) {
+                alert('Please select grater than from date');
+                $('#TO_DATE').val('')
+            }
+        }
+        
+
+    </script>
+
+@{Html.RenderPartial("_WaitModal");}
+
+
+@using (@Html.BeginForm("UpdateItem", "ItemMaster", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @*@Html.AntiForgeryToken();*@
+
+    @Html.HiddenFor(m => m.PART_ID)
+    @*@Html.HiddenFor(m => m.ISSTDPACKAPPLICABLE)*@
+    @Html.HiddenFor(m => m.UOM_ID)
+    @Html.HiddenFor(m => m.VEHICLETYPE_ID)
+    @Html.HiddenFor(m => m.OEM_ID)
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            @if (Model.ActionName.ToLower() == "edit")
+            {
+                <div class="card-title card_tittle2">EDIT ITEM</div>
+            }
+            else
+            {
+                <div class="card-title card_tittle2">ITEM DETAIL</div>
+            }
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Item Code:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.PARTNUMBER, new { @class = "form-control", @readonly = "readonly" })
+
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Part Family:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.PARTFAMILY_ID, new { @class = "form-control", @readonly = "readonly" })
+
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Plant Code:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.HiddenFor(m => m.PLANT_ID)
+                            @Html.TextBoxFor(model => model.PlantCode, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Description:
+                            </label>
+                        </div>
+                        <div class="col-lg-6 col-xs-12">
+                            @Html.TextBoxFor(model => model.PARTDESCRIPTION, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                SAP Item No:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.SAP_PARTNUMBER, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Current Stock:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.CURRENTSTOCK, new { @class = "form-control", @readonly = "readonly" })
+
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                MRP:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.MRP, new { @class = "form-control", @readonly = "readonly" })
+
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                STD Pack:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.STD_PACK, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+                    <div class="row row_pt">
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                From Date:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @*@Html.TextBoxFor(model => model.FROM_DATE, new { @class = "form-control" })*@
+                            @Html.TextBoxFor(model => model.FROM_DATE, "{0:dd/MMM/yyyy}", new { @class = "form-control", @placeholder = "From Date", @onchange = "SetToDate()" })
+
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                To Date:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.TO_DATE, "{0:dd/MMM/yyyy}", new { @class = "form-control", @placeholder = "To Date",@onchange= "checkDate()" })
+
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Box Pack:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.BOXPACK, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+
+                    <div class="row row_pt">
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Material Type:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.MATERIALTYPE, new { @class = "form-control", @readonly = "readonly" })
+
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                HSN Code:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.HSNCODE, new { @class = "form-control", @readonly = "readonly" })
+
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Price Support:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @if (Model.ActionName == Constants.BTN_EDIT)
+                            {
+                                @Html.TextBoxFor(model => model.DISCOUNTAMOUNT, new { @class = "form-control" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(model => model.DISCOUNTAMOUNT, new { @class = "form-control", @readonly = "readonly" })
+                            }
+
+                        </div>
+                    </div>
+
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Vehicle Type:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.VehicleTypeName, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                UOM Code:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.UomCode, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Oem Name:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.OemName, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                IsActive:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @if (Model.ActionName == Constants.BTN_EDIT)
+                            {
+                                @Html.CheckBoxFor(model => model.ISACTIVE)
+                            }
+                            else
+                            {
+                                @Html.CheckBoxFor(model => model.ISACTIVE, new { @disabled = "disabled" })
+                            }
+
+                        </div>
+
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                IsStdPackApplicable:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.CheckBoxFor(model => model.ISSTDPACKAPPLICABLE)
+                        </div>
+
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                IsFeedBackApplicable:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.CheckBoxFor(model => model.ISFEEDBACKAPPLICABLE)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Current Stock
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.CURRENTSTOCK, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                MOQ
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.MOQ, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="clearfix">
+                            <div class="float-right">
+                                @*<button name="btnTyp" value="Save" class="btn btn-primary" type="submit" onclick="return CheckValidation();"> Save </button>*@
+                                @if (Model.ActionName == Constants.BTN_EDIT)
+                                {
+                                    <button type="submit" name="btnTypSave" value="Submit" class="btn btn-primary"> Update </button>
+                                }
+                                @Html.ActionLink("Back", "ItemList", "ItemMaster", new { @class = "btn btn-primary" })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        HideWaitingSymbol();
+    })
+    function savePart() {
+         
+        $("#btnTypSave").submit();
+    }
+</script>

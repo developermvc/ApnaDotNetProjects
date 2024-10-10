@@ -1,0 +1,414 @@
+﻿@model LumaxDMS.Models.ComplaintModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "CreateComplaintApproval";
+    var counter = 1;
+}
+
+@section CSS
+{
+    <link href="~/Content/css/bootstrap-datepicker.css" rel="stylesheet" />
+}
+@using (Html.BeginForm("CreateComplaintApproval", "Complaint", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.COMPLAINTID)
+    @Html.HiddenFor(m => m.ComplaintDate)
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        @Html.Partial("_WaitModal")
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    <span>COMPLAINT APPROVAL ( @Model.ComplaintCode )</span>
+                </div>
+                <div class="card-body custom_responsive2">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Customer City
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(m => m.City_ID, new SelectList(Model.CityList, "City_ID", "CITYNAME", Model.City_ID), "-- Select--", new { @class = "form-control", disabled = "disabled", @onchange = "return GetDealerByCityId(this);" })
+                            @Html.HiddenFor(model => model.COMPLAINTID)
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Customer Type
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.DropDownListFor(m => m.PROSPECTTYPE_ID, new SelectList(Model.ProspectTypeList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME"), "-- Select--", new { @class = "form-control", disabled = "disabled", @onchange = "return FillProspectData(this);" })
+                            @Html.HiddenFor(model => model.LoggedInUserProspectType)
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Select Customer
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12" id="DealerList">
+                            @if (Model.DEALER_ID > 0)
+                            {
+                                @Html.DropDownListFor(m => m.DEALER_ID, new SelectList(Model.DealerList, "DEALER_ID", "DEALERNAME"), "-- Select--", new { @class = "form-control", disabled = "disabled", })
+                            }
+                        </div>
+                        <div class="col-lg-2 col-xs-12" id="RetailerList">
+                            @if (Model.PROSPECT_ID > 0)
+                            {
+                                @Html.DropDownListFor(m => m.PROSPECT_ID, new SelectList(Model.ProspectList, "PROSPECT_ID", "PROSPECTNAME"), "-- Select--", new { @class = "form-control", disabled = "disabled", })
+                            }
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                COMPLAINT TYPE
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="input-group">
+                                @Html.DropDownListFor(m => m.CTYPEID, new SelectList(Model.ComplaintTypeList, "CTYPEID", "CTYPENAME", Model.CTYPEID), "-- Select--", new { @class = "form-control", disabled = "disabled", @onchange = "return GetComplaintReason(this);" })
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Case Type
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.DropDownListFor(m => m.CASETYPEID, new SelectList(Model.ReasonList, "CASETYPEID", "CASETYPENAME", Model.CASETYPEID), "-- Select--", new { @class = "form-control", disabled = "disabled", })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Approval Value
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @if (Model.IsValueFinalApproved)
+                            {
+                                @Html.TextBoxFor(model => model.ApproveValue, new { @class = "form-control", @readonly = "readonly" })
+
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(model => model.ApproveValue, new { @class = "form-control" })
+                            }
+
+                        </div>
+
+
+                    </div>
+                    @if (Model.DEALER_ID > 0)
+                    {
+                        @*<div class="row row_pt">
+                            <div class="col-lg-2" id="divInvoice">
+                                <label for="pwd">
+                                    Invoice No.
+                                </label>
+                            </div>
+                            <div class="col-lg-3" id="Invoicedrop">
+                                @Html.DropDownListFor(m => m.INVOICEID, new SelectList(Model.InvoiceList, "INVOICE_ID", "INVOICENUMBER", Model.INVOICEID), "-- Select--", new { @class = "form-control", disabled = "disabled", @onchange = "return GetPartByInvoiceId(this);" })
+                            </div>
+                            <div class="col-lg-1 col-xs-12" id="divLR">
+                                <label for="pwd">
+                                    LR / GR No.
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12" id="divLRText">
+                                @Html.TextBoxFor(model => model.LRNO, new { @class = "form-control", @disabled = "disabled" })
+                            </div>
+                            <div class="col-lg-2 col-xs-12" id="divLRDate">
+                                <label for="pwd">
+                                    LR / GR Date
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12" id="divDateText">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.LRDATE, new { @class = "form-control datepicker", @onchange = "return CheckValidateDate();", @disabled = "disabled" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>*@
+                        @*<div class="row row_pt complaintonlydata">
+                            <div class="col-lg-2 col-xs-12 ">
+                                <label for="pwd">
+                                    Transporter name
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12" id="divTransporter">
+                                @Html.TextBoxFor(model => model.TransporterName, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+
+                            <div class="col-lg-2 col-xs-12 ">
+                                <label for="pwd">
+                                    Material Receipt Date
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12" id="divTransporter">
+                               <label class = "form-control">@Model.RECEIPT_DATE</label>
+                                @Html.HiddenFor(model => model.RECEIPT_DATE, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>*@
+                    }
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Customer Remark
+                            </label>
+                        </div>
+                        <div class="col-lg-4 col-xs-12">
+                            @Html.TextAreaFor(model => model.COMPLAINTREMARK, new { @class = "disablecolor", disabled = "disabled" })
+                        </div>
+
+
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd" class="redlabel">
+                                Approval Remark
+                            </label>
+                        </div>
+                        <div class="col-lg-4 col-xs-12">
+                            @Html.TextAreaFor(model => model.ApprovalRemark, new { @class = "" })
+                        </div>
+
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Download Doc:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12 input-group">
+
+                            <a href="#" class="btn btn-info" onclick="return DownloadDocumentFile('complaintDoc');">Download  &nbsp; <i class="fa fa-download"></i></a>
+                        </div>
+                        <div class="col-md-2 ">
+                            <label for="pwd" class="">
+                                CREDIT NOTE NUMBER
+                            </label>
+                        </div>
+                        <div class="col-md-2 ">
+                            @if (Model.IsValueFinalApproved)
+                            {
+                                @Html.TextBoxFor(model => model.CREDITNOTENUMBER, new { @class = "form-control", @readonly = "true" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(model => model.CREDITNOTENUMBER, new { @class = "form-control" })
+
+                            }
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="pwd">
+                                CREDIT NOTE DATE
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                           
+
+                            <div class="input-group date" id="CREDITNOTEDATEpicker">
+                                @if (Model.IsValueFinalApproved)
+                                {
+                                    @Html.HiddenFor(@model => model.CREDITNOTEDATE)
+                                   
+                                    @Html.TextBox("Crdate", Model.CREDITNOTEDATE,new { @class = "form-control datepicker", @disabled = "disabled" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(@model => model.CREDITNOTEDATE, new { @class = "form-control datepicker" })
+
+                                }
+
+                                <span class="input-group-append input-group-addon">
+                                    <i class="input-group-text2 fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+
+
+                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.ApproveValue))
+                        {
+
+                            <input type="hidden" name="isApprovebtntype" value="1" id="btnadd" class="btn btn-primary" />
+
+                        }
+                        else
+                        {
+                            <input type="hidden" name="isApprovebtntype" value="0" id="btnadd" class="btn btn-primary" />
+                        }
+                    </div>
+                    <br />
+
+                    @{ Html.RenderPartial("_ComplaintPartDTL", Model);}
+
+
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+                            @if (Model.ActionName.ToUpper() == "EDIT")
+{
+                                <input type="submit" name="btntype" value="Approve" id="btnadd" class="btn btn-primary" onclick="return CheckValidation('Approve');" />
+                                if (Model.PermissionNameList.Contains(Constants.PermissionName.REJECT))
+                                {
+                                    <input type="submit" name="btntype" value="Close" id="btnadd" class="btn btn-primary" onclick="return CheckValidation('Reject');" />
+                                }
+                            }
+                            else
+                            {
+                                @Html.ActionLink("Back", "ApproveComplaintList", "Complaint", new { @class = "btn btn-primary" })
+                            }
+
+
+                            @*<input type="button" class="btn btn-primary" name="btntype" value="Clear" onclick="return Clear();" />*@
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                @{ Html.RenderPartial("_ComplaintApprovalHistoryDTL", Model);}
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+    {
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/ProjectJS/Complaint.js"></script>
+}
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            debugger;
+            if ($('#LoggedInUserProspectType').val() == "DEALER") {
+                $('#DealerList').show();
+                $('#DEALER_ID').chosen();
+                $('#RetailerList').hide();
+            }
+            else {
+                $('#RetailerList').show();
+                $('#PROSPECT_ID').chosen();
+                $('#DealerList').hide();
+            }
+            $('#City_ID').chosen();
+            if ($('#LoggedInUserProspectType').val() == "DEALER") {
+                $('#City_ID').attr('disabled', 'disabled');
+                $("#PROSPECTTYPE_ID option:contains(" + $('#LoggedInUserProspectType').val() + ")").attr('selected', 'selected');
+                $("#PROSPECTTYPE_ID").attr('disabled', 'disabled');
+            }
+            if ($("#CTYPEID :selected").text() != null) {
+                var dd = $("#CTYPEID :selected").text().toUpperCase().trim(); //
+                if (dd != "FEEDBACK") {
+                    $('#thRating').hide();
+                    $('#tdRating').hide();
+                    $('.feedbackonlydata').hide();
+                    $('.complaintonlydata').show();
+                }
+                else {
+                    $('#thRating').show();
+                    $('#tdRating').show();
+                    $('#divInvoice').hide();
+                    $('#Invoicedrop').hide();
+                    $('#divLR').hide();
+                    $('#divLRText').hide();
+                    $('#divLRDate').hide();
+                    $('#divDateText').hide();
+                    $('.feedbackonlydata').show();
+                    $('.complaintonlydata').hide();
+                }
+
+            }
+            var ctypename = $("#CTYPEID :selected").text().trim().toUpperCase();
+            $('#divhdr').text($("#CTYPEID :selected").text().trim().toUpperCase());
+            if ('@Model.ActionName.ToUpper()' == 'VIEW') {
+                $('.card-body input, textarea').attr('disabled', 'disabled');
+            } else {
+                $('#CREDITNOTEDATEpicker').datepicker({
+                    format: 'dd/M/yyyy'
+                });
+            }
+
+
+     HideWaitingSymbol();
+ });
+
+    function DownloadDocumentFile(FileType) {
+        debugger;
+            var checkUrl = '@Url.Action("CheckForFile", "Complaint")';
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: checkUrl,
+                data: JSON.stringify({ FileType: FileType }),
+                dataType: "json",
+                success: downloadFileSucceeded,
+                error: downloadFileFailed
+            });
+
+        function downloadFileSucceeded(filepath) {
+            if (filepath != null && filepath!="") {
+                    var myUrl = '@Url.Action("Downloadfile", "Admin")';
+                    window.location.href = myUrl + "?path=" + filepath+ "@Constants.HASH_COMPLAINT";
+                }
+                else {
+                    alert("File not Exists!.");
+                }
+            }
+
+            function downloadFileFailed(result) {
+            }
+    }
+
+    function CheckValidation(action) {
+        var valid = true;
+        var ApprovalRemark = $('#ApprovalRemark').val();
+        if (ApprovalRemark == '') {
+            alert("Please enter remarks");
+            valid = false;
+            $('#ApprovalRemark').focus();
+        }
+
+        if (valid) {
+            valid = confirm("You are about to " + action + " \n Do you want to continue?");
+        }
+        return valid;
+    }
+
+
+        function downloadFileFailed() {
+
+        }
+
+    function DownloadImageFile(FilePath) {
+        var checkUrl = '@Url.Action("CheckForFile", "Complaint")';
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ FileType: FilePath }),
+            dataType: "json",
+            success: downloadImageFileSucceeded,
+            error: downloadFileFailed
+        });
+    }
+
+    function downloadImageFileSucceeded(filepath) {
+        if (filepath && filepath.length > 0) {
+            var myUrl = '@Url.Action("DownloadImagefile", "Complaint")';
+            window.location.href = myUrl + "?path=" + JSON.stringify(filepath)+ "@Constants.HASH_SALEORDED";
+        }
+        else {
+            alert("File not Exists!.");
+        }
+    }
+</script>

@@ -1,0 +1,253 @@
+﻿@model LumaxDMS.Models.DashboardModel
+<link href="~/Content/css/DateRange/daterangepicker.css" rel="stylesheet" />
+
+<style type="text/css">
+    .px-2 a {
+        color: white;
+    }
+    tbody {
+        display: block;
+        max-height: 260px;
+         overflow-y: auto!important; 
+    }   
+</style>
+
+@{Html.RenderPartial("_WaitModal");}
+
+@using (Html.BeginForm("ExportDashboard", "Home", FormMethod.Post, new { @Class = "DashboardForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.FromDate)
+    @Html.HiddenFor(m => m.ToDate)
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="departmenttitleid">DASHBOARD</div>
+        </div>
+
+        @{Html.RenderPartial("_CommonFilter", Model);}
+         
+    </div>
+    <div id="dv_MainDashboard">
+        @{Html.RenderPartial("_MainDashboard", Model);}
+    </div>
+     
+    <div id="dv_commondashboard" style="margin-top:8px;">
+        @Html.Raw(Model.ComonDashboardData)
+    </div>
+
+}
+
+
+@section JS {
+    <script src="~/Scripts/DateRange/moment.min.js"></script>
+    <script src="~/Scripts/DateRange/daterangepicker.js"></script>
+    <script src="~/Scripts/DateRange/DateTimeFormat.js"></script>
+    <script src="~/Scripts/ProjectJS/C_AreaJS.js"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="~/Scripts/ProjectJS/SalesDashboard.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#btnadd').hide();
+            var checkUrl = '@Url.Action("getAllArea", "Admin")';
+            GetAllAreaById(checkUrl, 1);
+            //GetAllAreaById(checkUrl, 2);
+            GetAllAreaById(checkUrl, 3);
+            GetAllAreaById(checkUrl, 4);
+            GetAllAreaById(checkUrl, 5);
+            GetAllAreaById(checkUrl, 6);
+            GetAllAreaById(checkUrl, 7);
+            FormatDateRangeMonthly(formatDate('@Model.FromDate'), formatDate('@Model.ToDate'), 'reportrange');
+            OnPageLoad();
+            HideWaitingSymbol();
+        });
+
+
+        function OnPageLoad() {
+
+            if ('@Model.IsDealer' == 'True') {
+                $('.emponlydv').hide();
+            }
+        }
+
+        $(document).ready(function () {
+            //chart implementation start
+            google.charts.load('current', { 'packages': ['corechart', 'gauge', 'bar', 'table'] });
+            google.charts.setOnLoadCallback(drawDashboardChart);
+
+            //$('#categorywisedatatable').DataTable();
+        });
+
+        function GetDashboardData() {
+            
+            google.charts.load('current', { 'packages': ['corechart', 'gauge', 'bar', 'table'] });
+            google.charts.setOnLoadCallback(drawDashboardChart);
+           
+        }
+
+        function drawDashboardChart() {
+
+           DrawOrderSale("chart_ordersaleid");
+           // Draw4WOrderSale("chart_ordersaleid_1");
+           // Draw2WOrderSale("chart_ordersaleid_2");
+            drawSegmentwiseBudget("chart_segmentbudgetid");
+            drawSegmentwisePayment("chart_segmentpaymentid");
+           // drawAreawiseBudget("chart_areabudgetid");
+            drawCategorywiseTable("chart_categorywiseid");
+            var seg = $('#SelectedSegment option:selected').text();
+            $("#dashboard4w").hide();
+            $("#dashboard2w").hide();
+            $("#dashboardAll").show();
+            $("#al").addClass("active show");
+            $("#4w").removeClass("active show");
+            $("#2w").removeClass("active show");
+             
+            if (seg == "2W") {
+                 
+                $("#2w").show();
+                $("#4w").hide();
+                
+            }
+            if (seg == "4W") {
+                
+                $("#4w").show();
+                $("#2w").hide();
+            }
+            if (seg != "4W" && seg != "2W") {
+                
+                $("#4w").show();
+                $("#2w").show();
+                $("#al").show();
+            }
+
+        }
+
+
+        $('#btnProfileDetail').on('click', function () {
+            debugger;
+            var url = '@Url.Action("Profile", "Account")';
+
+            $.get(url, function (data) {
+                debugger;
+                $('#ProfileDetailModel').html(data);
+                $('#ProfileDetailModel').modal('show');
+            });
+        });
+
+        $('.btn-primary').click(function () {
+            debugger;
+            var daterange = $('#reportrange')[0].innerText;
+            var dt1 = $.trim(daterange.split('-')[0]);
+            var dt2 = $.trim(daterange.split('-')[1]);
+            document.getElementById("FromDate").value = "01/" + dt1;
+            document.getElementById("ToDate").value = "01/" + dt2;
+        });
+
+        $('#btnSearchDashboard').click(function () {
+            debugger;
+            ShowWaitingSymbol();
+            var checkUrl = '@Url.Action("GetCommonDashboard", "Home")';
+            var segmentid = $('#SelectedSegment').val();
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            GetDashboardData();
+            var c_SelectedAreaType = $('#C_SelectedAreaType').val();
+            var myData = { SelectedSegment: segmentid, FromDate: fromDate, ToDate: toDate, C_SelectedAreaType: c_SelectedAreaType};
+            $.ajax({
+                url: checkUrl,
+                type: "POST",
+                datatype: 'json',
+                ContentType: 'application/json;utf-8',
+                data: { model: myData, AreaId: $('#hdnSelectedUserArea').val() },
+                success: function (data) {
+                    debugger;
+                    $('#dv_commondashboard').html(data)
+                    HideWaitingSymbol();
+                },
+                error: function GetCommonDashboardFail() {
+                    HideWaitingSymbol();
+                    debugger;
+                }
+            });
+
+        });
+
+        function GetCommonDashboardSuccess(result) {
+            debugger;
+
+            $('#dv_commondashboard').html(result.responseText);
+        }
+
+        function callSecondDashboard(url) {
+
+            if (url != "") {
+                var daterange = $('#reportrange')[0].innerText;
+                var dt1 = $.trim(daterange.split('-')[0]);
+                var dt2 = $.trim(daterange.split('-')[1]);
+                var fromdate = "01/" + dt1;
+                var todate = "01/" + dt2;
+                var segmentid = $('#SelectedSegment').val();
+                var userAreaType = $("#C_SelectedAreaType").val();
+                var userAreaId = $("#hdnSelectedUserArea").val();
+                window.location.href = url + "?fromDate=" + fromdate + "&toDate=" + todate + "&segmentId=" + segmentid + "&userAreaTypeId=" + userAreaType + "&userAreaId=" + userAreaId;
+            }
+        }
+        
+    </script>
+
+    <script>
+        function Showfig(input) {
+             
+            var seg = $(input).attr("data-name");
+
+            if (seg == "2W") {
+
+                google.charts.load('current', { 'packages': ['corechart', 'gauge', 'bar', 'table'] });
+                google.charts.setOnLoadCallback(draw2WDashboardChart);
+                $("#dashboard4w").hide();
+                $("#dashboard2w").show();
+                $("#dashboardAll").hide();
+
+            }
+            if (seg == "4W") {
+                google.charts.load('current', { 'packages': ['corechart', 'gauge', 'bar', 'table'] });
+                google.charts.setOnLoadCallback(draw4WDashboardChart);
+                $("#dashboard4w").show();
+                $("#dashboard2w").hide();
+                $("#dashboardAll").hide();
+            }
+            if (seg == "ALL") {
+                google.charts.load('current', { 'packages': ['corechart', 'gauge', 'bar', 'table'] });
+                google.charts.setOnLoadCallback(drawAllDashboardChart);
+                $("#dashboard4w").hide();
+                $("#dashboard2w").hide();
+                $("#dashboardAll").show();
+            }
+        }
+
+        function draw2WDashboardChart() {
+            Draw2WOrderSale("chart_ordersaleid_2"); 
+            drawSegmentwiseBudget("chart_segmentbudgetid");
+            drawSegmentwisePayment("chart_segmentpaymentid");            
+            drawCategorywiseTable("chart_categorywiseid");
+        }
+        function draw4WDashboardChart() {
+            Draw4WOrderSale("chart_ordersaleid_1");
+            drawSegmentwiseBudget("chart_segmentbudgetid");
+            drawSegmentwisePayment("chart_segmentpaymentid");
+            drawCategorywiseTable("chart_categorywiseid");
+        }
+        function drawAllDashboardChart() {
+            DrawOrderSale("chart_ordersaleid");
+            drawSegmentwiseBudget("chart_segmentbudgetid");
+            drawSegmentwisePayment("chart_segmentpaymentid");
+            drawCategorywiseTable("chart_categorywiseid");
+
+        }
+    </script>
+
+
+}

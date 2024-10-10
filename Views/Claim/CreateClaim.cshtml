@@ -1,0 +1,1674 @@
+﻿@model LumaxDMS.Models.ClaimModel
+@using LumaxDMS.AppCode
+@using BusinessManager.Entities
+@{
+    ViewBag.Title = "CreateClaim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+
+@section CSS
+{
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <style>
+        #SelectedPart_Id_1_chosen {
+            width: 330px !important;
+        }
+
+        .scroll_btt {
+            overflow: unset !important;
+        }
+    </style>
+}
+
+@{Html.RenderPartial("_WaitModal");}
+
+@Html.DropDownList("HiddenPartId", new SelectList(Model.partMasterList, "PART_ID", "PARTFULLNAME"), "--Select Part--", new { @class = "form-control", @Id = "HiddenPartId", @Name = "HiddenPartId", @Style = "display:none" })
+@Html.DropDownList("HiddenClaimReason", Enumerable.Empty<SelectListItem>(), "--Select Claim Reason--", new { @class = "form-control", @Id = "HiddenClaimReason", @Name = "HiddenClaimReason", @Style = "display:none" })
+@using (@Html.BeginForm("CreateClaim", "Claim", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "FormCreateClaim" }))
+{
+    @Html.AntiForgeryToken();
+    @Html.HiddenFor(m => m.CLAIMID)
+
+
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+
+            <div class="card-title card_tittle2" id="pagetitle">CREATE SALES RETURN</div>
+        </div>
+        <input type="hidden" value="@Model.claimDtlMasterList.Count" id="loopcount" name="loopcount" />
+        @*<input type="hidden" value="@Model.poItemsAndQtyString" id="poItemsAndQtyString" name="poItemsAndQtyString" />*@
+        <div class="custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="createpanel">
+                        <div class="row  row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    CHANNEL PARTNER :
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12  poHdr forRetailer forDealer">
+                                @Html.DropDownListFor(model => model.SelectedDealer_ID, new SelectList(Model.dealerMasterList, "DEALER_ID", "DEALERFULLNAME"), "-SELECT CHANNEL PATNER-", new { @class = "form-control select-chosen", @title = "SELECT CHANNEL PARTNER", @onchange = "return onChangeDealer( );" })
+                                @Html.ValidationMessageFor(model => model.SelectedDealer_ID)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    TRANSPORTER NAME :
+                                </label>
+                            </div>
+                            <div id="trnsporter" class="col-lg-4 col-xs-12">
+                                @*@Html.TextBoxFor(m => m.TRANSPORTERNAME, new { @class = "form-control", @title = "TRANSPORTER NAME", @autocomplete = "off" })*@
+                                @Html.DropDownListFor(m => m.TRANSPORTERNAME, new SelectList(Model.TranseporterList, "TPT", "TPT"), "--SELECT TransePorter--", new { @class = "form-control select-chosen", @title = "TransePorter", @onchange = "showTransePorterTxtbox(this)" })
+
+                                @Html.ValidationMessageFor(model => model.TRANSPORTERNAME)
+                            </div>
+                            <div id="trnspname" style="display:none;" class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.TRANSPORTERNAME, new { @class = "form-control", @title = "TRANSPORTER NAME", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.TRANSPORTERNAME)
+                            </div>
+                        </div>
+                        <div class="row row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    GR/RR NUMBER :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.GR_RRNO, new { @class = "form-control", @title = "GR / RR NUMBER", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.GR_RRNO)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    DOC NUMBER :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.DOCNO, new { @class = "form-control", @title = "DOC NUMBER", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.DOCNO)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    INVOICE NUMBER :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.INVOICENO, new { @class = "form-control", @title = "INVOICE NUMBER", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.INVOICENO)
+                            </div>
+                        </div>
+                        <div class="row row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    GR/RR DATE :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <div class="input-group date fromdatepicker">
+                                    @Html.TextBoxFor(m => m.GRRRDATE, new { @class = "form-control datepicker", @title = "GR / RR DATE", @readonly = "readonly" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.GRRRDATE)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    DOC DATE :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <div class="input-group date fromdatepicker">
+                                    @Html.TextBoxFor(m => m.DOCDATE, new { @class = "form-control datepicker", @title = "DOC DATE", @readonly = "readonly" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.DOCDATE)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    INVOICE DATE:
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <div class="input-group date fromdatepicker">
+                                    @Html.TextBoxFor(m => m.INVOICEDATE, new { @class = "form-control datepicker", @title = "INVOICE DATE", @readonly = "readonly" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.INVOICEDATE)
+                            </div>
+                        </div>
+                        <div class="row row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    F PAID AMOUNT :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.F_TOAMT, new { @class = "form-control decimalinput", @title = "F PAID AMOUNT", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.F_TOAMT)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    NUMBER OF CASES :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.NOCASES, new { @class = "form-control numberinput", @title = "NUMBER OF CASES", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.NOCASES)
+                            </div>
+
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    INVOICE AMOUNT :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.INVOICEAMT, new { @class = "form-control decimalinput", @title = "INVOICE AMOUNT", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.INVOICEAMT)
+                            </div>
+
+                        </div>
+                        <div class="row row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    F TO PAID AMOUNT :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.F_TOPAIDAMT, new { @class = "form-control decimalinput", @title = "F TO PAID AMOUNT", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.F_TOPAIDAMT)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    WEIGHT (KG) :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.WEIGHTKG, new { @class = "form-control decimalinput", @title = "WEIGHT (KG)", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.WEIGHTKG)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd">
+                                    CUSTOMER TYPE :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.DropDownListFor(m => m.SelectedPROSPECTTYPEID, new SelectList(Model.prospectTypeMasterList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME", Model.SelectedPROSPECTTYPEID), "--SELECT CUSTOMER TYPE--", new { @class = "form-control", @title = "CUSTOMER TYPE", @onchange = "return onChangeProspectType();" })
+                                @Html.ValidationMessageFor(model => model.SelectedPROSPECTTYPEID)
+                            </div>
+
+                        </div>
+                        <div class="row row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd">
+                                    CP REMARKS :
+                                </label>
+                            </div>
+                            <div class="col-lg-6 col-xs-12">
+                                @Html.TextBoxFor(m => m.BP_REMARKS, new { @class = "form-control", @title = "BP REMARKS", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.BP_REMARKS)
+                            </div>
+                        </div>
+                        <div class="row row_pt">
+                            <div class="col-lg-2 col-xs-12 prospect forMechanic forProspect">
+                                <label for="pwd">
+                                    MECHANIC NAME :
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12  prospect forMechanic forProspect">
+                                @Html.DropDownListFor(m => m.SelectedMECHANICId, new SelectList(Model.MechanicList, "PROSPECT_ID", "PROSPECTFULLNAME"), "--SELECT MECHANIC--", new { @class = "form-control select-chosen", @title = "MECHANIC", @onchange = "return onchangeProspect(this);" })
+                                @Html.ValidationMessageFor(model => model.SelectedMECHANICId)
+                            </div>
+                            <div class="col-lg-2 col-xs-12  prospect forRetailer forProspect">
+                                <label for="pwd">
+                                    RETAILER NAME :
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12  prospect forRetailer forProspect">
+                                @Html.DropDownListFor(m => m.SelectedRETAILERId, new SelectList(Model.RetailerList, "PROSPECT_ID", "PROSPECTFULLNAME"), "--SELECT RETAILER--", new { @class = "form-control select-chosen", @title = "RETAILER", @onchange = "return onchangeProspect(this);" })
+                                @Html.ValidationMessageFor(model => model.SelectedRETAILERId)
+                            </div>
+                            <div class="col-lg-2 col-xs-12 forProspect Other">
+                                <label for="pwd">
+                                    CUSTOMER NAME :
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12 forProspect Other">
+                                @Html.TextBoxFor(m => m.PROSPECTNAME, new { @class = "form-control", @placeholder = "CUSTOMER NAME", @title = "CUSTOMER NAME" })
+                                @Html.ValidationMessageFor(model => model.PROSPECTNAME)
+                            </div>
+                            <div class="col-lg-2 col-xs-12 forProspect forRetailer forMechanic Other">
+                                <label for="pwd">
+                                    ADDRESS :
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12 forProspect forRetailer forMechanic Other">
+                                @Html.TextBoxFor(m => m.PROSPECTADDRESS, new { @class = "form-control", @placeholder = "ADDRESS", @title = "ADDRESS" })
+                                @Html.ValidationMessageFor(model => model.PROSPECTADDRESS)
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="rmpanel">
+                        <hr />
+                        <div class="row  row_pt row_pt2">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    RM REMARK :
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12">
+                                @Html.TextBoxFor(m => m.RM_REMARKS, new { @class = "form-control forRM", @title = "RM REMARK", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.RM_REMARKS)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gatepasspanelmain">
+                        <hr />
+                        <div class="row  row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    Gate Entry No :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12  poHdr forRetailer forDealer">
+                                @Html.TextBoxFor(m => m.GATEENTRYNO, new { @class = "form-control forGatePass", @title = "GATE ENTRY NUMBER", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.GATEENTRYNO)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    Gate Entry Date :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <div class="input-group date fromdatepicker">
+                                    @Html.TextBoxFor(m => m.GATEENTRYDATE, new { @class = "form-control datepicker", @title = "GATE ENTRY DATE", @readonly = "readonly" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.GATEENTRYDATE)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    OUR SR DATE :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <div class="input-group date fromdatepicker">
+                                    @Html.TextBoxFor(m => m.OURSRDATE, new { @class = "form-control datepicker", @title = "OUR SERIAL DATE", @readonly = "readonly" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.OURSRDATE)
+                            </div>
+
+                        </div>
+                        <div class="row  row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    OUR SR NO. :
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12  poHdr forRetailer forDealer">
+                                @Html.TextBoxFor(m => m.OURSRNO, new { @class = "form-control forGatePass", @title = "OUR SERIAL NUMBER", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.OURSRNO)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd">
+                                    OUR REMARK :
+                                </label>
+                            </div>
+                            <div class="col-lg-4 col-xs-12">
+                                @Html.TextBoxFor(m => m.OURREMARK, new { @class = "form-control forGatePass", @title = "OUR REMARK", @autocomplete = "off" })
+                                @Html.ValidationMessageFor(model => model.OURREMARK)
+                            </div>
+                        </div>
+
+                        <hr />
+
+                    </div>
+                    <div class="createpanel">
+
+
+                        <div style="width:100%; overflow:auto;" class="my-custom-scrollbar">
+                            <table class="table border fixed_header custom_responsive" id="dynamictbl">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            SL
+                                        </th>
+                                        <th class="redlabel" style="white-space:nowrap">
+                                            ITEM CODE
+                                        </th>
+
+                                        <th style="white-space:nowrap">
+                                            CLAIM REASON
+                                        </th>
+
+                                        <th class="gatepasspanel redlabel" style="white-space:nowrap">
+                                            ACTUAL REASON
+                                        </th>
+                                        <th style="white-space:nowrap">
+                                            REMARK.
+                                        </th>
+                                        <th class="redlabel">
+                                            CLM BREAK QTY.
+                                        </th>
+                                        <th class="gatepasspanel redlabel">
+                                            RECV BREAK QTY.
+                                        </th>
+                                        <th class="redlabel">
+                                            CLM FRESH.QTY.
+                                        </th>
+                                        <th class="gatepasspanel redlabel">
+                                            RECV FRESH.QTY.
+                                        </th>
+                                        <th class="redlabel">
+                                            CLM MFD.QTY.
+                                        </th>
+                                        <th class="gatepasspanel redlabel">
+                                            RECV MFD.QTY.
+                                        </th>
+
+
+                                        <th class="redlabel">
+                                            TOTAL CLM.QTY.
+                                        </th>
+                                        <th class="gatepasspanel redlabel">
+                                            TOTAL RECV.QTY.
+                                        </th>
+                                        <th class="gatepasspanel redlabel">
+                                            TOTAL DIFF.QTY.
+                                        </th>
+                                        <th class="redlabel" style="white-space:nowrap">
+                                            ITEM RATE
+                                        </th>
+                                        <th class="redlabel" style="white-space:nowrap">
+                                            CLM TOT VAL
+                                        </th>
+                                        <th class="gatepasspanel redlabel" style="white-space:nowrap">
+                                            RECV TOT VAL
+                                        </th>
+                                        <th></th>
+                                    </tr>
+
+                                </thead>
+                                <tbody style="text-align: left; ">
+                                    @if (Model.claimDtlMasterList != null)
+                                    {
+                                        foreach (var item in Model.claimDtlMasterList)
+                                        {
+                                            i = i + 1;
+                                            <tr id="partDtlRow_@i">
+                                                <td>
+                                                    @i
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(m => item.CLAIMDTLID, new { @Id = "CLAIMDTLID_" + i, @class = "form-control", @Name = "CLAIMDTLID_" + i })
+                                                    @Html.DropDownListFor(m => item.SelectedPart_Id_, new SelectList(Model.partMasterList, "PART_ID", "PARTFULLNAME", item.PART_ID), "--Select Part--", new { @class = "form-control", @onchange = "return CheckDuplicatePartIDSelection(" + i + ");", @Style = "width: 160px!important;", @Id = "SelectedPart_Id_" + i, @Name = "SelectedPart_Id_" + i })
+
+                                                </td>
+                                                <td>
+
+                                                    @Html.DropDownListFor(m => item.SelectedREASONID, new SelectList(Model.ClaimReasonMasterList, "CLAIMREASONID", "CLAIMREASONFULLNAME", item.CLAIMREASONID), "--Select Reason--", new { @class = "form-control", @Style = "width: 130px!important;", @Id = "SelectedREASONID_" + i, @Name = "SelectedREASONID_" + i })
+
+
+                                                </td>
+                                                <td class="gatepasspanel">
+                                                    @Html.DropDownListFor(m => item.SelectedACTCLAIMREASONID, new SelectList(Model.ClaimReasonMasterList, "CLAIMREASONID", "CLAIMREASONFULLNAME", item.ACTCLAIMREASONID), "--Select Reason--", new { @class = "form-control hideForCreate", @Id = "SelectedACTCLAIMREASONID_" + i, @Name = "SelectedACTCLAIMREASONID_" + i })
+
+                                                </td>
+                                                <td>
+
+                                                    @Html.TextBoxFor(M => item.REMARKS, new { @class = "form-control txtclaimdtl remrk", @Name = "txtREMARK_" + i, title = "Remark", @Id = "txtREMARK_" + i, @autocomplete = "off" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(M => item.REJECTEDQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtREJECTEDQTY_" + i, title = "REJECTED QTY", @Id = "txtREJECTEDQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();" })
+                                                </td>
+                                                <td class="gatepasspanel">
+                                                    @Html.TextBoxFor(M => item.RCVREJECTEDQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtRCVREJECTEDQTY_" + i, title = "RECEIVED REJECTEDQTY QTY", @Id = "txtRCVREJECTEDQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(M => item.FRESHQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtFRESHQTY_" + i, title = "FRESH QTY", @Id = "txtFRESHQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();" })
+                                                </td>
+                                                <td class="gatepasspanel">
+                                                    @Html.TextBoxFor(M => item.RCVFRESHQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtRCVFRESHQTY_" + i, title = "RECEIVED FRESH QTY", @Id = "txtRCVFRESHQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(M => item.FOCQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtFOCQTY_" + i, title = "MFD QTY", @Id = "txtFOCQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();" })
+                                                </td>
+                                                <td class="gatepasspanel">
+                                                    @Html.TextBoxFor(M => item.RCVFOCQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtRCVFOCQTY_" + i, title = "RECEIVED MFD QTY", @Id = "txtRCVFOCQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();" })
+                                                </td>
+
+
+
+                                                <td>
+                                                    @Html.TextBoxFor(M => item.TOTALQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtTOTALQTY_" + i, title = "TOTAL QTY", @Id = "txtTOTALQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();", @readonly = "true" })
+                                                </td>
+                                                <td class="gatepasspanel">
+                                                    @Html.TextBoxFor(M => item.RCVTOTALQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtRCVTOTALQTY_" + i, title = "RECEIVED TOTAL QTY", @Id = "txtRCVTOTALQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();", @readonly = "true" })
+                                                </td>
+                                                <td class="gatepasspanel">
+                                                    @Html.TextBoxFor(M => item.TOTALDIFFQTY, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtTOTALDIFFQTY_" + i, title = "TOTAL DIFFRANCE IN QTY", @Id = "txtTOTALDIFFQTY_" + i, @autocomplete = "off", @onblur = "return showTotals();", @readonly = "true" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(M => item.ITEMRATE, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtITEMRATE_" + i, title = "ITEM RATE", @Id = "txtITEMRATE_" + i, @autocomplete = "off", @onblur = "return showTotals();", @readonly = "true" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(M => item.ITEMVALUECLAIM, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtITEMVALUECLAIM_" + i, title = "TOTAL VALUE CLAIM", @Id = "txtITEMVALUECLAIM_" + i, @autocomplete = "off", @onblur = "return showTotals();", @readonly = "true" })
+                                                </td>
+                                                <td class="gatepasspanel">
+                                                    @Html.TextBoxFor(M => item.ITEMVALUERECIVED, new { @class = "form-control numberinput txtclaimdtl", @Name = "txtITEMVALUERECIVED_" + i, title = "RECEIVED TOTAL QTY", @Id = "txtITEMVALUERECIVED_" + i, @autocomplete = "off", @onblur = "return showTotals();", @readonly = "true" })
+                                                </td>
+                                                <td>
+                                                    @if (i != 1)
+                                                    {
+                                                        <a href="##" id="deleteRow_@i" name="deleteRow_@i" onclick="deleteRow(@i)" class="btndeleteRow">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td>Item Line Totals: </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="gatepasspanel"></td>
+                                        <td>
+                                            <label id="lblLineItemTotalREJECTEDQTY"><b></b>0</label>
+                                        </td>
+                                        <td class="gatepasspanel">
+                                            <label id="lblLineItemTotalRCVREJECTEDQTY"><b></b>0</label>
+                                        </td>
+                                        <td>
+                                            <label id="lblLineItemTotalFRESHQTY"><b></b>0</label>
+                                        </td>
+                                        <td class="gatepasspanel">
+                                            <label id="lblLineItemTotalRCVFRESHQTY"><b></b>0</label>
+                                        </td>
+                                        <td>
+                                            <label id="lblLineItemTotalFOCQTY"><b></b>0</label>
+                                        </td>
+                                        <td class="gatepasspanel">
+                                            <label id="lblLineItemTotalRCVFOCQTY"><b></b>0</label>
+                                        </td>
+                                        <td>
+                                            <label id="lblLineItemTotalTOTALQTY"><b></b>0</label>
+                                        </td>
+                                        <td class="gatepasspanel">
+                                            <label id="lblLineItemTotalRCVTOTALQTY"><b></b>0</label>
+                                        </td>
+                                        <td class="gatepasspanel">
+                                            <label id="lblLineItemTotalTOTALDIFFQTY"><b></b>0</label>
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <label id="lblLineItemTotalITEMVALUECLAIM"><b></b>0</label>
+                                        </td>
+                                        <td class="gatepasspanel">
+                                            <label id="lblLineItemTotalITEMVALUERECIVED"><b></b>0</label>
+                                        </td>
+
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="addmoreclm" style="display:none;">
+                        <div class="card-footer">
+                            <div class="clearfix">
+                                <div class="float-left">
+
+
+                                    <a href="##" value="AddMore" style="margin-right:160px" class="btn btn-primary" title="Add More Item" onclick="return AddDynamicRow();">Add More Item</a>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="ExtraPanel">
+                        <div class="card-footer">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    @*<button name="input" name="AddMore" class="btn btn-primary" onclick="return AddDynamicRow();">Add More</button>*@
+
+                                    <a href="##" value="AddMore" style="margin-right:160px" class="btn btn-primary" title="Add More Item" onclick="return AddDynamicRow();">Add More Item</a>
+
+                                </div>
+                                <div class="float-right">
+                                    <input type="file" name="fileField" id="fileField" class="btn btn-primary" style="padding: 0.200rem 0.80rem;" />
+                                    <button type="submit" name="btnTyp" value="UploadExcel" title="Upload Excel" class="btn btn-primary" onclick="return checkFileValidation('fileField');">
+                                        Upload Excel &nbsp; <i class="fa fa-upload"></i>
+                                    </button>
+                                    <a href="##" value="DownloadSampleExcel" class="btn btn-primary"
+                                       title="Download Sample Excel"
+                                       onClick="window.location.href='/Content/LumaxData/SampleFiles/SalesReturnSample.xlsx'">
+                                        Download Sample Excel &nbsp; <i class="fa fa-download"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>
+
+                        <div class="card-footer">
+                            <div class="clearfix">
+                                <div class="float-right">
+                                    @*<button name="btnTyp" value="Save" class="btn btn-primary" type="submit" onclick="return CheckValidation();"> Save </button>*@
+                                    @if (Model.CLAIMID == 0)
+                                    {
+                                        <button name="btnTyp" value="Save" class="btn btn-primary" type="submit" onclick="return CheckValidation();"> Save </button>
+                                        <button name="btnTyp" value="Create" class="btn btn-primary" type="submit" onclick="return CheckValidation();"> Submit </button>
+                                    }
+                                    else if (Model.ActionName == "edit" && Model.CLAIMSTATUSID == (int)CommonFunction.ClaimStatus.CreatedDraft)
+                                    {
+                                        <button name="btnTyp" value="Save" class="btn btn-primary" type="submit" onclick="return CheckValidation();"> Save </button>
+                                        <button name="btnTyp" value="Create" class="btn btn-primary" type="submit" onclick="return CheckValidation();"> Submit </button>
+
+                                    }
+                                    else if (Model.ActionName == "edit" && Model.CLAIMSTATUSID == (int)CommonFunction.ClaimStatus.Created)
+                                    {
+                                        <button name="btnTyp" value="RMApproved" class="btn btn-primary" type="submit" onclick="return CheckApproveValidation('Approve');"> Approve </button>
+                                        <button name="btnTyp" value="RMRejected" class="btn btn-primary" type="submit" onclick="return CheckApproveValidation('Reject');"> Reject </button>
+                                    }
+                                    else if (Model.ActionName == "edit" && Model.CLAIMSTATUSID == (int)CommonFunction.ClaimStatus.RMApproved)
+                                    {
+                                        <a target="_blank" href="/Claim/PrintClaim?claimNumber=@Model.CLAIMNO" title="Print Claim" class="btn btn-primary">
+                                            Print
+                                        </a>
+                                        <button name="btnTyp" value="Update" class="btn btn-primary" type="submit" onclick="return CheckGatePassValidation();"> Update </button>
+                                    }
+                                    else if (Model.ActionName == "edit" && Model.CLAIMSTATUSID == (int)CommonFunction.ClaimStatus.GatePassed)
+                                    {
+                                        <a target="_blank" href="/Claim/PrintClaim?claimNumber=@Model.CLAIMNO" title="Print Claim" class="btn btn-primary">
+                                            Print
+                                        </a>
+                                        <button name="btnTyp" value="FinalSubmit" class="btn btn-primary" type="submit" onclick="return CheckFinalValidation();"> Submit </button>
+                                    }
+                                    else
+                                    {
+                                        <a target="_blank" href="/Claim/PrintClaim?claimNumber=@Model.CLAIMNO" title="Print Claim" class="btn btn-primary">
+                                            Print
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS {
+    <script src="~/Scripts/ProjectJS/ManageMaster_Common.js"></script>
+    <script src="~/Scripts/ProjectJS/UploadFile.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('#Usertbl').DataTable();
+
+            $('.forProspect').hide();
+            $(".select-chosen").chosen();
+            $('#SelectedPart_Id_1_chosen').attr("style", "width: 330px !important");
+
+            $('#GRRRDATE').val(formatDate($('#GRRRDATE').val()));
+            $('#DOCDATE').val(formatDate($('#DOCDATE').val()));
+            $('#INVOICEDATE').val(formatDate($('#INVOICEDATE').val()));
+
+            if ($('#OURSRDATE') != undefined && $('#OURSRDATE') != null) {
+                $('#GATEENTRYDATE').val(formatDate($('#GATEENTRYDATE').val()));
+                $('#OURSRDATE').val(formatDate($('#OURSRDATE').val()));
+            }
+
+            $('.fromdatepicker').datepicker({
+                format: 'dd/M/yyyy',
+                endDate: new Date()
+            });
+//*****************************
+             if ('@Model.ActionName' != 'VIEW') {
+
+                var errorlist = @Html.Raw(Json.Encode(Model.ErrorList));
+                if (errorlist != null && errorlist.length > 0) {
+                    debugger;
+                    $('.modal-title').html("Bellow Item/s NOT available as of now");
+
+                    var v = "<div><table class='table border'><tr><th>SNO.</th><th>PARTNUMBER</th><th>ERRORMSG</th></tr>";
+                    $.each(errorlist, function (i, error) {
+
+                        v += "<tr><td>" + (parseInt(i) + 1) + "</td><td>" + error.PARTNUMBER + "</td><td>" + error.ERRORMSG + "</td></tr>";
+                    });
+                    v += "</table></div>";
+                    $('.modal-body').html(v);
+                    $('#myModal').modal('show');
+                }
+
+             }
+
+//*****************************
+
+
+
+
+
+            DisableControl();
+            showTotals();
+            ShowHideControls();
+            HideWaitingSymbol();
+        });
+
+        $(document).on('keydown', '.numberinput', function (e) {
+            //	$('.numberinput').keydown(function (e) {
+            var key = e.which || e.keyCode;
+            var curuntThis = this;
+            var textboxName;
+            var textboxValue;
+
+            if (!e.shiftKey && !e.altKey && !e.ctrlKey &&
+                // numbers
+                key >= 48 && key <= 57 ||
+                // Numeric keypad
+                key >= 96 && key <= 105 ||
+                // comma, period and minus, . on keypad
+                //key == 190 || key == 109 ||  key == 110 ||
+            //    key == 188 ||
+                // Backspace and Tab and Enter
+                key == 8 || key == 9 || key == 13 ||
+                // Home and End
+                key == 35 || key == 36 ||
+                // left and right arrows
+                key == 37 || key == 39 ||
+                // Del and Ins
+                key == 46 || key == 45) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+
+         function onChangeProspectType(obj) {
+             ShowHideControls();
+             $("#PROSPECTADDRESS").val('')
+         }
+         function FillDealerAddressDdl() {
+            debugger;
+            var DEALERID = $('#SelectedDealer_ID').val();
+            var checkUrl = '@Url.Action("GetDealerAddressByDealerId", "SalesOrder")';
+            ShowWaitingSymbol();
+             $.ajax({
+                 url: checkUrl,
+                 type: "GET",
+                 dataType: "JSON",
+                 data: { DEALERID: DEALERID},
+                 success: FillDealerAddressDdlSuccess,
+                 error: function FillDealerAddressDdlFail() { //debugger;
+                 }
+             });
+             GetDealerCreditTargetInfo();
+         }
+        function FillDealerAddressDdlSuccess(List) {
+            debugger;
+            $("#SelecteDealerAddress_Id").empty();
+            var v = "<option value=''>--SELECT CHANNEL PARTNER SHIPPING ADDRESS--</option>";
+            $.each(List.Data, function (i, item) {
+                v += "<option value=" + item.DEALER_ADDRESS_ID + ">" + item.DEALERADDRESS1 + " : " + item.DEALERADDRESS2 + "</option>";
+                //debugger;
+            });
+            $("#SelecteDealerAddress_Id").html(v);
+            HideWaitingSymbol();
+        }
+
+        function onChangeDealer() {
+            FillPartData();
+            FillProspectData();
+        }
+        function FillPartData() {
+
+            debugger;
+            var DealerId = $('#SelectedDealer_ID').val();
+             var checkUrl = '@Url.Action("GetAllInvoicedPartByDealerId", "Claim")';
+
+             var table = document.getElementById("dynamictbl").getElementsByTagName('tbody')[0];
+             var rowCount = table.rows.length;
+             for (var i = 1; i <= rowCount; i++) {
+                 var partid = $("#SelectedPart_Id_" + i);
+                 if (partid != null && partid != undefined) {
+
+                     if ('@Model.IsDealerLogeedIn' != "True") {
+                         $("#SelectedPart_Id_" + i).empty();
+                         $("#SelectedPart_Id_" + i).chosen();
+                         $("#SelectedPart_Id_" + i).trigger("chosen:updated");
+                         resetLineItemValues(i);
+                     }
+
+                 }
+             }
+
+
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { DealerId: DealerId },//, str: str
+                success: function FillPartDataSuccess(result) {
+                    debugger;
+
+                    $("#HiddenPartId").empty();
+                    if (result != null && result != undefined) {
+                        $('#HiddenPartId').append('<option value="">--SELECT PART--</option>');
+                        for (var i = 0; i < result.length; i++) {
+                            $('#HiddenPartId').append('<option value="' + result[i].PART_ID + '">' + result[i].PARTFULLNAME + '</option>');
+                        }
+
+                        var table = document.getElementById("dynamictbl").getElementsByTagName('tbody')[0];
+                        var rowCount = table.rows.length;
+                        for (var j = 1;j <= rowCount; j++) {
+                            var partid = $("#SelectedPart_Id_" + j);
+                            if (partid != null && partid != undefined) {
+                                $('#SelectedPart_Id_' + j).append('<option value="">--SELECT PART--</option>');
+                                for (var i = 0; i < result.length; i++) {
+                                    $('#SelectedPart_Id_' + j).append('<option value="' + result[i].PART_ID + '">' + result[i].PARTFULLNAME + '</option>');
+
+                                }
+                                $("#SelectedPart_Id_" + j).chosen();
+                                $("#SelectedPart_Id_" + j).trigger("chosen:updated");
+
+                            }
+                        }
+                    }
+                },
+                error: function FillPartDataFail(){ }
+            });
+         }
+
+        function FillProspectData() {
+            var DealerId = $('#SelectedDealer_ID').val();
+            var checkUrl = '@Url.Action("FillProspectDataByDealerId", "Claim")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { DealerId: DealerId },//, str: str
+                success: function FillProspectDataSuccess(result) {
+                    debugger;
+                    $("#SelectedRETAILERId").empty();
+                    $("#SelectedMECHANICId").empty();
+
+                    if (result != null && result != undefined) {
+                        $('#SelectedRETAILERId').append('<option value="">--SELECT RETAILER--</option>');
+                        $('#SelectedMECHANICId').append('<option value="">--SELECT MECHANIC--</option>');
+                        for (var i = 0; i < result.mechanicList.length; i++) {
+                            $('#SelectedMECHANICId').append('<option value="' + result.mechanicList[i].PROSPECT_ID + '">' + result.mechanicList[i].PROSPECTFULLNAME + '</option>');
+                        }
+                        for (var i = 0; i < result.retailerList.length; i++) {
+                            $('#SelectedRETAILERId').append('<option value="' + result.retailerList[i].PROSPECT_ID + '">' + result.retailerList[i].PROSPECTFULLNAME + '</option>');
+                        }
+                        $("#SelectedMECHANICId").chosen();
+                        $("#SelectedMECHANICId").trigger("chosen:updated");
+                        $("#SelectedRETAILERId").chosen();
+                        $("#SelectedRETAILERId").trigger("chosen:updated");
+                    }
+                },
+                error: function FillProspectDataFail() { }
+            });
+        }
+
+
+
+
+        function CheckDuplicatePartIDSelection(rownumber) {
+            debugger;
+
+            var selectedPartID = $("#SelectedPart_Id_" + rownumber).val();
+            GetReasonBypartId(selectedPartID, rownumber);
+            GetActualReasonBypartId(selectedPartID, rownumber);
+            var valid = true;
+            for (var i = 1; i <= numrows; i++) {
+                var alreadySelectedID = $('#SelectedPart_Id_' + i).val();
+                //if (i != rownumber && selectedPartID == alreadySelectedID) {
+                //    alert("Part already Selected")
+                //    $("#SelectedPart_Id_" + rownumber).val("");
+                //    $("#SelectedPart_Id_" + rownumber).trigger("chosen:updated");
+                //    valid = false;
+                //}
+                if ($("#SelectedPart_Id_" + rownumber + " option:selected").text() == "--SELECT PART--") {
+                    $("#txtITEMRATE_" + rownumber).val("");
+                }
+            }
+            if (valid) {
+                getPartbyPartId(rownumber, selectedPartID);
+            }
+
+            showTotals();
+            return valid;
+        }
+//Bind Reason by partId
+        function GetReasonBypartId(input, row) {
+
+            debugger;
+            $('#SelectedREASONID_' + row).html('<option>---Select---</option>');
+
+            if (input > 0) {
+                $.getJSON("/Claim/GetReasonByPartId/", { partId:input}, function (data) {
+                    $('#SelectedREASONID_' + row).empty();
+
+                    $.each(data, function (i, item) {
+                        debugger;
+                        $('#SelectedREASONID_' + row).append($('<option/>', {
+                            value: item.Value,
+                            text: item.Text
+
+                        }));
+
+                    });
+                    $('#SelectedREASONID_' + row+' option:first').before('<option value="">--Select Reason--</option>');
+                    $('#SelectedREASONID_' + row).val($('#SelectedREASONID_'+row + "option:contains('Select')").val());
+                    $('#SelectedREASONID_' + row)[0].attr('selected', 'selected');
+
+
+
+
+                })
+            }
+
+
+            else {
+
+                $('#SelectedREASONID_' + row).html('<option value=" ">--Select--</option>');
+
+
+            }
+        }
+
+        function GetActualReasonBypartId(input, row) {
+
+            debugger;
+            $('#SelectedACTCLAIMREASONID_' + row).html('<option>---Select---</option>');
+
+            if (input > 0) {
+                $.getJSON("/Claim/GetReasonByPartId/", { partId: input }, function (data) {
+                    $('#SelectedACTCLAIMREASONID_' + row).empty();
+
+                    $.each(data, function (i, item) {
+                        debugger;
+                        $('#SelectedACTCLAIMREASONID_' + row).append($('<option/>', {
+                            value: item.Value,
+                            text: item.Text
+
+                        }));
+
+                    });
+                    $('#SelectedACTCLAIMREASONID_' + row + ' option:first').before('<option value="">--Select ActualReason--</option>');
+                    $('#SelectedACTCLAIMREASONID_' + row).val($('#SelectedACTCLAIMREASONID_' + row + "option:contains('Select')").val());
+                    $('#SelectedACTCLAIMREASONID_' + row)[0].attr('selected', 'selected');
+
+
+
+
+                })
+            }
+
+
+            else {
+
+                $('#SelectedACTCLAIMREASONID_' + row).html('<option value=" ">--Select--</option>');
+
+
+            }
+        }
+//end
+
+        var numrows = @i; // because you are starting with 1 row visible
+        var serialnumber = @i;
+        var rowsarray = ["0", "0"];
+        function AddDynamicRow() {
+            if ($('#SelectedPart_Id_' + numrows).val() == '' || $('#txtQty_' + numrows).val() == '') {
+                alert('please Select Item and Fill Qty');
+                return false;
+            }
+
+
+            numrows = numrows + 1;
+            serialnumber = serialnumber + 1;
+            rowsarray[numrows] = "0";
+
+            var table = document.getElementById("dynamictbl").getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            row.id = "partDtlRow_" + numrows;
+
+            var cell0 = row.insertCell(0);
+            cell0.align = "center";
+            cell0.innerHTML = serialnumber;
+            cell0.className = "";
+
+            var ddl = $('#HiddenPartId').clone(true);
+            var celldv = row.insertCell(1);
+            ddl[0].id = "SelectedPart_Id_" + numrows;
+            ddl[0].name = "SelectedPart_Id_" + numrows;
+            ddl[0].className = "form-control partchosen-select";
+            ddl[0].setAttribute("onchange", "return CheckDuplicatePartIDSelection(" + numrows + ")");
+
+
+
+            celldv.append(ddl[0]);
+
+            var ddl1 = $('#HiddenClaimReason').clone(true);
+            var celldv = row.insertCell(2);
+            ddl1[0].id = "SelectedREASONID_" + numrows;
+            ddl1[0].name = "SelectedREASONID_" + numrows;
+            ddl1[0].className = "form-control";
+            ddl1[0].removeAttribute("Style","display:none")
+            celldv.append(ddl1[0]);
+
+            var ddl3 = $('#HiddenClaimReason').clone(true);
+            var celldv3 = row.insertCell(3);
+            ddl3[0].id = "SelectedACTCLAIMREASONID_" + numrows;
+            ddl3[0].name = "SelectedACTCLAIMREASONID_" + numrows;
+            ddl3[0].className = "form-control";
+            ddl3[0].removeAttribute("Style", "display:none")
+            celldv3.append(ddl3[0]);
+            celldv3.className = "gatepasspanel";
+
+            var cell4 = row.insertCell(4);
+            var element4 = document.createElement("input");
+            element4.type = "text";
+            element4.className = "form-control";
+            element4.name = "txtREMARK_" + numrows;
+            element4.id = "txtREMARK_" + numrows;
+
+            element4.setAttribute("autocomplete", "off");
+            cell4.appendChild(element4);
+            $("#txtREMARK_" + numrows).val("");
+
+            var cell5 = row.insertCell(5);
+            var element5 = document.createElement("input");
+            element5.type = "text";
+            element5.className = "form-control numberinput";
+            element5.name = "txtREJECTEDQTY_" + numrows;
+            element5.id = "txtREJECTEDQTY_" + numrows;
+
+            element4.setAttribute("autocomplete", "off");
+            element4.setAttribute("onblur", "return showTotals()");
+            cell5.appendChild(element5);
+            $("#txtREJECTEDQTY_" + numrows).val(0);
+
+            var cell6 = row.insertCell(6);
+            var element6 = document.createElement("input");
+            element6.type = "text";
+            element6.className = "form-control numberinput";
+            element6.name = "txtRCVREJECTEDQTY_" + numrows;
+            element6.id = "txtRCVREJECTEDQTY_" + numrows;
+            element6.setAttribute("autocomplete", "off");
+            element6.setAttribute("onblur", "return showTotals()");
+            cell6.appendChild(element6);
+            cell6.className = "gatepasspanel";
+            $("#txtRCVREJECTEDQTY_" + numrows).val(0);
+
+            var cell7 = row.insertCell(7);
+            var element7 = document.createElement("input");
+            element7.type = "text";
+            element7.className = "form-control numberinput";
+            element7.name = "txtFRESHQTY_" + numrows;
+            element7.id = "txtFRESHQTY_" + numrows;
+            element7.setAttribute("autocomplete", "off");
+            element7.setAttribute("onblur", "return showTotals()");
+            cell7.appendChild(element7);
+            $("#txtFRESHQTY_" + numrows).val(0);
+
+            var cell8 = row.insertCell(8);
+            var element8 = document.createElement("input");
+            element8.type = "text";
+            element8.className = "form-control numberinput";
+            element8.name = "txtRCVFRESHQTY_" + numrows;
+            element8.id = "txtRCVFRESHQTY_" + numrows;
+            element8.setAttribute("autocomplete", "off");
+            element8.setAttribute("onblur", "return showTotals()");
+            cell8.appendChild(element8);
+            cell8.className = "gatepasspanel";
+            $("#txtRCVFRESHQTY_" + numrows).val(0)
+
+            var cell9 = row.insertCell(9);
+            var element9 = document.createElement("input");
+            element9.type = "text";
+            element9.className = "form-control numberinput";
+            element9.name = "txtFOCQTY_" + numrows;
+            element9.id = "txtFOCQTY_" + numrows;
+            element9.setAttribute("autocomplete", "off");
+            element9.setAttribute("onblur", "return showTotals()");
+            cell9.appendChild(element9);
+            $("#txtFOCQTY_" + numrows).val(0);
+
+            var cell10 = row.insertCell(10);
+            var element10 = document.createElement("input");
+            element10.type = "text";
+            element10.className = "form-control numberinput";
+            element10.name = "txtRCVFOCQTY_" + numrows;
+            element10.id = "txtRCVFOCQTY_" + numrows;
+            element10.setAttribute("autocomplete", "off");
+            element10.setAttribute("onblur", "return showTotals()");
+            cell10.appendChild(element10);
+            cell10.className = "gatepasspanel";
+            $("#txtRCVFOCQTY_" + numrows).val(0);
+
+
+
+            var cell11 = row.insertCell(11);
+            var element11 = document.createElement("input");
+            element11.type = "text";
+            element11.className = "form-control numberinput";
+            element11.name = "txtTOTALQTY_" + numrows;
+            element11.id = "txtTOTALQTY_" + numrows;
+            element11.setAttribute("autocomplete", "off");
+            element11.setAttribute("readonly", "true");
+            cell11.appendChild(element11);
+            $("#txtTOTALQTY_" + numrows).val(0);
+
+            var cell12 = row.insertCell(12);
+            var element12 = document.createElement("input");
+            element12.type = "text";
+            element12.className = "form-control numberinput";
+            element12.name = "txtRCVTOTALQTY_" + numrows;
+            element12.id = "txtRCVTOTALQTY_" + numrows;
+            element12.setAttribute("autocomplete", "off");
+            element12.setAttribute("readonly", "true");
+            cell12.appendChild(element12);
+            cell12.className = "gatepasspanel";
+            $("#txtRCVTOTALQTY_" + numrows).val(0);
+
+            var cell13 = row.insertCell(13);
+            var element13 = document.createElement("input");
+            element13.type = "text";
+            element13.className = "form-control";
+            element13.name = "txtTOTALDIFFQTY_" + numrows;
+            element13.id = "txtTOTALDIFFQTY_" + numrows;
+            element13.setAttribute("autocomplete", "off");
+            element13.setAttribute("readonly", "true");
+            cell13.appendChild(element13);
+            cell13.className = "gatepasspanel";
+            $("#txtTOTALDIFFQTY_" + numrows).val(0);
+
+            var cell14 = row.insertCell(14);
+            var element14 = document.createElement("input");
+            element14.type = "text";
+            element14.className = "form-control";
+            element14.name = "txtITEMRATE_" + numrows;
+            element14.id = "txtITEMRATE_" + numrows;
+            element14.setAttribute("autocomplete", "off");
+            element14.setAttribute("readonly", "true");
+            cell14.appendChild(element14);
+            $("#txtITEMRATE_" + numrows).val(0);
+
+            var cell15 = row.insertCell(15);
+            var element15 = document.createElement("input");
+            element15.type = "text";
+            element15.className = "form-control";
+            element15.name = "txtITEMVALUECLAIM_" + numrows;
+            element15.id = "txtITEMVALUECLAIM_" + numrows;
+            element15.setAttribute("autocomplete", "off");
+            element15.setAttribute("readonly", "true");
+            cell15.appendChild(element15);
+            $("#txtITEMVALUECLAIM_" + numrows).val(0)
+
+            var cell16 = row.insertCell(16);
+            var element16 = document.createElement("input");
+            element16.type = "text";
+            element16.className = "form-control";
+            element16.name = "txtITEMVALUERECIVED_" + numrows;
+            element16.id = "txtITEMVALUERECIVED_" + numrows;
+            element16.setAttribute("autocomplete", "off");
+            element16.setAttribute("readonly", "true");
+            cell16.appendChild(element16);
+            cell16.className = "gatepasspanel";
+            $("#txtITEMVALUERECIVED_" + numrows).val(0);
+
+            var cell17 = row.insertCell(17);
+            var elementhref = document.createElement("a");
+            elementhref.href = "##";
+            cell17.appendChild(elementhref);
+            elementhref.innerHTML = '<i class="fa fa-trash"></i>';
+            elementhref.id = "deleteRow_" + numrows;
+            elementhref.name = "deleteRow_" + numrows;
+            elementhref.className = "btndeleteRow";
+            $('#deleteRow_' + numrows).attr("onclick", "deleteRow(" + numrows + ")");
+
+            $(".partchosen-select").chosen();
+            $('#SelectedPart_Id_' + numrows + '_chosen').attr("style", "width: 330px !important");
+            $('#SelectedREASONID_' + numrows).attr("disabled", false);
+
+            document.getElementById("loopcount").value = numrows;
+            DisableControl();
+            debugger;
+            if ('@Model.CLAIMSTATUSID' == '2') {
+                $('#SelectedPart_Id_' + numrows).prop('disabled', false).trigger("chosen:updated");
+                $('#SelectedPart_Id_' + numrows + '_chosen a').removeClass("disablecolor");
+                $('#txtREJECTEDQTY_' + numrows).prop('disabled', false);
+                $('#txtFRESHQTY_' + numrows).prop('disabled', false);
+                $('#txtFOCQTY_' + numrows).prop('disabled', false);
+                $('#SelectedREASONID_' + numrows).prop('disabled', false);
+
+            }
+        }
+
+        function ShowHideControls() {
+            var selectedProspectType = $('#SelectedPROSPECTTYPEID option:selected').text();
+            $('.forProspect').hide();
+            if (selectedProspectType.toLowerCase().trim() == "@Constants.PROSPECT_TYPE_RETAILER.ToLower().Trim()") {
+                $('.forRetailer').show();
+            }
+            else if (selectedProspectType.toLowerCase().trim() == "@Constants.PROSPECT_TYPE_MECHANIC.ToLower().Trim()") {
+                $('.forMechanic').show();
+            }
+            else if (selectedProspectType.toLowerCase().trim() == "@Constants.PROSPECT_TYPE_Other.ToLower().Trim()") {
+                $('.Other').show();
+            }
+        }
+
+        function CheckValidation() {
+            debugger;
+            var validagg = true;
+            var numrow = document.getElementById("loopcount").value;
+            var dealerID = $("#SelectedDealer_ID").val()
+            var transporter = $("#TRANSPORTERNAME").val()
+            if (dealerID == '' || dealerID == undefined) {
+                validagg = false;
+                $("#SelectedDealer_ID_chosen").focus();
+                validagg = false;
+                alert("Please select Dealer");
+            }
+            else if (transporter == '' || transporter == undefined || transporter == 0) {
+                validagg = false;
+                $("#TRANSPORTERNAME").focus();
+                validagg = false;
+                alert("Please select transporter");
+            }
+            else {
+                for (var i = 1; i <= numrow; i++) {
+                    var ddlpart = $('#SelectedPart_Id_' + i).val();
+                    var ddlReason = $('#SelectedREASONID_' + i).val();
+                    var txtREJECTEDQTY = $('#txtREJECTEDQTY_' + i).val();
+                    var txtFOCQTY = $('#txtFOCQTY_' + i).val();
+                    var txtFRESHQTY = $('#txtFRESHQTY_' + i).val();
+                    if (ddlpart == "") {
+                        $("#SelectedPart_Id_" + i).focus();
+                        validagg = false;
+                        alert("Please Select Part number");
+                    }
+                    else if (ddlReason == "") {
+                        $("#SelectedREASONID_" + i).focus();
+                        validagg = false;
+                        alert("Please Select Reason");
+                    }
+                    else if ((txtREJECTEDQTY == "") && (txtFRESHQTY == "") && (txtFOCQTY=="")) {
+                        $("#txtREJECTEDQTY_" + i).focus();
+                        validagg = false;
+                        alert("Please enter Rejected Qty OR Fresh Qty OR MFD Qty");
+                    }
+                }
+            }
+            if (validagg == true) {
+                validagg = confirm("Yor are about to save this data \n Do you want to continue?");
+            }
+            return validagg;
+        }
+
+        function showTotals() {
+            debugger;
+            var totalAmount=0;
+            var txtAmount = 0;
+
+            $('#lblLineItemTotalQty').text(totalAmount.toFixed(2));
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtREJECTEDQTY_' + i).val() != "" ? $('#txtREJECTEDQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalREJECTEDQTY').text(totalAmount.toFixed(2));
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtFRESHQTY_' + i).val() != "" ? $('#txtFRESHQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalFRESHQTY').text(totalAmount.toFixed(2));
+
+            var totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                var txtAmountREJECTEDQTY = $('#txtREJECTEDQTY_' + i).val() != "" ? $('#txtREJECTEDQTY_' + i).val() : 0;
+                var txtAmountFRESHQTY = $('#txtFRESHQTY_' + i).val() != "" ? $('#txtFRESHQTY_' + i).val() : 0;
+                var txtAmountFOCQTY = $('#txtFOCQTY_' + i).val() != "" ? $('#txtFOCQTY_' + i).val() : 0;
+
+                totalAmount = parseFloat(txtAmountREJECTEDQTY) + parseFloat(txtAmountFRESHQTY) + parseFloat(txtAmountFOCQTY);
+                $('#txtTOTALQTY_' + i).val(totalAmount.toFixed(2));
+            }
+            var totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                var txtAmountRCVREJECTEDQTY = $('#txtRCVREJECTEDQTY_' + i).val() != "" ? $('#txtRCVREJECTEDQTY_' + i).val() : 0;
+                var txtAmountRCVFRESHQTY = $('#txtRCVFRESHQTY_' + i).val() != "" ? $('#txtRCVFRESHQTY_' + i).val() : 0;
+                var txtAmountRCVFOCQTY = $('#txtRCVFOCQTY_' + i).val() != "" ? $('#txtRCVFOCQTY_' + i).val() : 0;
+
+                totalAmount = parseFloat(txtAmountRCVREJECTEDQTY) + parseFloat(txtAmountRCVFRESHQTY) + parseFloat(txtAmountRCVFOCQTY);
+                $('#txtRCVTOTALQTY_' + i).val(totalAmount.toFixed(2));
+            }
+            var totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                var txtAmountTOTALQTY = $('#txtTOTALQTY_' + i).val() != "" ? $('#txtTOTALQTY_' + i).val() : 0;
+                var txtAmountRCVTOTALQTY = $('#txtRCVTOTALQTY_' + i).val() != "" ? $('#txtRCVTOTALQTY_' + i).val() : 0;
+
+                totalAmount = parseFloat(txtAmountTOTALQTY) - parseFloat(txtAmountRCVTOTALQTY) ;
+                $('#txtTOTALDIFFQTY_' + i).val(totalAmount.toFixed(2));
+            }
+            debugger;
+
+            var totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                var txtAmountTOTALQTY = $('#txtTOTALQTY_' + i).val() != "" ? $('#txtTOTALQTY_' + i).val() : 0;
+                var txtAmountITEMRATE = $('#txtITEMRATE_' + i).val() != "" ? $('#txtITEMRATE_' + i).val() : 0;
+
+                totalAmount = parseFloat(txtAmountTOTALQTY) * parseFloat(txtAmountITEMRATE);
+                $('#txtITEMVALUECLAIM_' + i).val(totalAmount.toFixed(2));
+            }
+
+            var totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                var txtAmountRCVTOTALQTY = $('#txtRCVTOTALQTY_' + i).val() != "" ? $('#txtRCVTOTALQTY_' + i).val() : 0;
+                var txtAmountITEMRATE = $('#txtITEMRATE_' + i).val() != "" ? $('#txtITEMRATE_' + i).val() : 0;
+
+                totalAmount = parseFloat(txtAmountRCVTOTALQTY) * parseFloat(txtAmountITEMRATE);
+                $('#txtITEMVALUERECIVED_' + i).val(totalAmount.toFixed(2));
+            }
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtTOTALQTY_' + i).val() != "" ? $('#txtTOTALQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+                $('#lblLineItemTotalTOTALQTY').text(totalAmount.toFixed(2));
+            }
+
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtRCVREJECTEDQTY_' + i).val() != "" ? $('#txtRCVREJECTEDQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalRCVREJECTEDQTY').text(totalAmount.toFixed(2));
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtRCVFOCQTY_' + i).val() != "" ? $('#txtRCVFOCQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalRCVFOCQTY').text(totalAmount.toFixed(2));
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtRCVFRESHQTY_' + i).val() != "" ? $('#txtRCVFRESHQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalRCVFRESHQTY').text(totalAmount.toFixed(2));
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtRCVTOTALQTY_' + i).val() != "" ? $('#txtRCVTOTALQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalRCVTOTALQTY').text(totalAmount.toFixed(2));
+
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtFOCQTY_' + i).val() != "" ? $('#txtFOCQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalFOCQTY').text(totalAmount.toFixed(2));
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtTOTALDIFFQTY_' + i).val() != "" ? $('#txtTOTALDIFFQTY_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalTOTALDIFFQTY').text(totalAmount.toFixed(2));
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtITEMVALUECLAIM_' + i).val() != "" ? $('#txtITEMVALUECLAIM_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalITEMVALUECLAIM').text(totalAmount.toFixed(2));
+
+            totalAmount = 0;
+            for (var i = 1; i <= numrows; i++) {
+                txtAmount = $('#txtITEMVALUERECIVED_' + i).val() != "" ? $('#txtITEMVALUERECIVED_' + i).val() : 0;
+                if (txtAmount != undefined) {
+                    totalAmount = totalAmount + parseFloat(txtAmount);
+                }
+            }
+            $('#lblLineItemTotalITEMVALUERECIVED').text(totalAmount.toFixed(2));
+
+
+        }
+
+        function deleteRow(Id) {
+            try {
+                debugger;
+                var rowid = "partDtlRow_" + Id;
+                $("#" + rowid).remove();
+                var table = document.getElementById("dynamictbl").getElementsByTagName('tbody')[0];
+                var rowCount = table.rows.length;
+                var newserialnumber = 1;
+                for (var i = 1; i < rowCount; i++) {
+                    newserialnumber = newserialnumber + 1;
+                    var row = table.rows[i];
+                    var serialtd = row.cells[0];
+                    serialtd.innerHTML = newserialnumber;
+                }
+                serialnumber = newserialnumber;
+                showTotals();
+            }
+            catch (e) {
+                alert(e);
+            }
+        }
+        function DisableControl() {
+            debugger;
+
+            if ('@Model.ActionName.ToUpper()' == 'VIEW') {
+                $('.createpanel input, select').attr("disabled", true);
+                $('.rmpanel input, select').attr("disabled", true);
+
+                $('.gatepasspanelmain input, select').attr("disabled", true);
+                $('.gatepasspanel input, select').attr("disabled", true);
+
+                $('#SelectedDealer_ID').prop('disabled', true).trigger("chosen:updated");
+                $('#SelectedRETAILERId').prop('disabled', true).trigger("chosen:updated");
+                $('#SelectedMECHANICId').prop('disabled', true).trigger("chosen:updated");
+                $('#TRANSPORTERNAME').prop('disabled', true).trigger("chosen:updated");
+
+
+                $('#SelectedDealer_ID_chosen a').addClass("disablecolor");
+                $('#SelectedMECHANICId_chosen a').addClass("disablecolor");
+                $('#SelectedRETAILERId_chosen a').addClass("disablecolor");
+                $('#TRANSPORTERNAME_chosen a').addClass("disablecolor");
+
+                $('.ExtraPanel').hide();
+                $('.btndeleteRow').hide();
+                $('#pagetitle').html('VIEW SALE RETURN DETAIL');
+            }
+            else {
+
+                if ('@Model.CLAIMSTATUSID' != '' && '@Model.CLAIMSTATUSID' != 0) {
+
+                    $('#pagetitle').html('APPROVE SALE RETURN DETAIL');
+                    $('.ExtraPanel').hide();
+                    $('.btndeleteRow').hide();
+                    $('.createpanel input, select').attr("disabled", true);
+                    $('#SelectedDealer_ID').prop('disabled', true).trigger("chosen:updated");
+                    $('#SelectedRETAILERId').prop('disabled', true).trigger("chosen:updated");
+                    $('#SelectedMECHANICId').prop('disabled', true).trigger("chosen:updated");
+                    $('#TRANSPORTERNAME').prop('disabled', true).trigger("chosen:updated");
+                    $('#SelectedDealer_ID_chosen a').addClass("disablecolor");
+                    $('#SelectedMECHANICId_chosen a').addClass("disablecolor");
+                    $('#SelectedRETAILERId_chosen a').addClass("disablecolor");
+                    $('#TRANSPORTERNAME_chosen a').addClass("disablecolor");
+
+                    if ('@Model.CLAIMSTATUSID' == '1') {
+
+                        $('.gatepasspanel').hide();
+                        $('.gatepasspanelmain').hide();
+                        $('#TRANSPORTERNAME').prop('disabled', false).trigger("chosen:updated");
+                        $('#GR_RRNO').prop('disabled', false);
+                        $('#GRRRDATE').prop('disabled', false);
+                        $(".remrk").prop('disabled', false)
+                        $(".remrk").prop('readonly', true)
+
+                    } else if ('@Model.CLAIMSTATUSID' == '2') {
+
+                        $('.rmpanel input, select').attr("disabled", true);
+                        $('.gatepasspanel input').attr("disabled", false);
+                        $('.gatepasspanelmain input').attr("disabled", false);
+                        $('.createpanel').attr("disabled", false);
+                        $('.createpanel input, select').attr("disabled", false);
+                        $("#addmoreclm").show();
+                        EnableDropDown();
+                        $('#TRANSPORTERNAME').prop('disabled', false).trigger("chosen:updated");
+                        $('#GR_RRNO').prop('disabled', false);
+                        $('#GRRRDATE').prop('disabled', false);
+                        $(".remrk").prop('disabled', false)
+                        $(".remrk").prop('readonly', true)
+
+                    } else if ('@Model.CLAIMSTATUSID' == '3') {
+                        debugger;
+                        $('.rmpanel input, select').attr("disabled", true);
+                        $('.gatepasspanel input, select').attr("disabled", false);
+                        $('.gatepasspanelmain input, select').attr("disabled", false);
+                        $(".remrk").prop('disabled', false)
+                        $(".remrk").prop('readonly', true)
+                        DisabledDropDown();
+                    }
+                }
+                else {
+
+                    $(".rmpanel").hide();
+                    $('.gatepasspanel').hide();
+                    $('.gatepasspanelmain').hide();
+                    if ('@Model.IsDealerLogeedIn' == "True") {
+                        $('#SelectedDealer_ID').prop('disabled', true).trigger("chosen:updated");
+                        $('#SelectedDealer_ID_chosen a').addClass("disablecolor");
+                        FillPartData();
+                        FillProspectData();
+                    }
+
+                }
+
+                $('input[type=hidden]').attr("disabled", false);
+            }
+        }
+
+        function EnableDropDown() {
+            var numrow = document.getElementById("loopcount").value;
+            for (var i = 1; i <= numrow; i++) {
+                var ddlact = $('#SelectedACTCLAIMREASONID_' + i);
+                if (ddlact != undefined && ddlact != null) {
+                    $('#SelectedACTCLAIMREASONID_' + i).attr("disabled", false);
+                }
+
+
+            }
+
+
+        }
+
+        function DisabledDropDown() {
+            var numrow = document.getElementById("loopcount").value;
+            for (var i = 1; i <= numrow; i++) {
+                var ddlact = $('#SelectedREASONID_' + i);
+                if (ddlact != undefined && ddlact != null) {
+                    $('#SelectedREASONID_' + i).attr("disabled", true);
+                    $('#SelectedPart_Id_' + i).prop('disabled', true).trigger("chosen:updated");
+                    $('#SelectedPart_Id_' + i + '_chosen a').addClass("disablecolor");
+
+                }
+
+
+            }
+
+
+        }
+
+
+        function CheckApproveValidation(action) {
+            var valid = true;
+            var RM_REMARKS = $('#RM_REMARKS').val();
+            if (RM_REMARKS == "") {
+                alert("Please enter remarks");
+                valid = false;
+            }
+            if (valid) {
+                valid = confirm("You are about to " + action+" claim.  \n Do you want to continue?");
+            }
+            return valid;
+        }
+
+        function CheckFinalValidation() {
+            var valid = confirm("You are about to approve claim \n Do you want to continue?");
+
+            return valid;
+        }
+
+        function CheckGatePassValidation() {
+            debugger;
+            var valid = true;
+            var GATEENTRYNO = $('#GATEENTRYNO').val();
+            var GATEENTRYDATE = $('#GATEENTRYDATE').val();
+            var OURSRDATE = $('#OURSRDATE').val();
+            var OURSRNO = $('#OURSRNO').val();
+            var GATEENTRYNO = $('#GATEENTRYNO').val();
+
+            /////SelectedACTCLAIMREASONID_1
+
+            $('#dynamictbl tbody tr').each(function (i, tr) {
+
+               // ($(tr).find("td:nth-child(1) input[type=text]")).val();
+
+            });
+            //////
+
+            if (GATEENTRYNO == "") {
+                alert("Please enter entry number");
+                $('#GATEENTRYNO').focus();
+                valid = false;
+            } else if (GATEENTRYDATE == "") {
+                alert("Please select gate entry date");
+                valid = false;
+            } else if (OURSRDATE == "") {
+                alert("Please select sr date");
+                valid = false;
+            } else if (OURSRNO == "") {
+                alert("Please enter sr no");
+                valid = false;
+            }
+            if (valid) {
+                valid = CheckValidation();
+                //valid = confirm("You are about to submit claim \n Do you want to continue?");
+            }
+
+            return valid;
+        }
+        function onchangeProspect(obj)
+        {
+            getDefalutProspectAddressByProspectId(obj);
+        }
+
+        function getDefalutProspectAddressByProspectId(obj) {
+            debugger;
+            var ProspectId = obj.value;
+            var checkUrl = '@Url.Action("GetDefalutProspectAddressByProspectId", "Claim")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { ProspectId: ProspectId },//, str: str
+                success: function FillPartDataSuccess(result) {
+                    $("#PROSPECTADDRESS").val(result.PROSPECT_ADDRESS1)
+                    },
+                error: function FillPartDataFail(){ }
+            });
+         }
+
+        function getPartbyPartId(rownumber, selectedPartID) {
+            debugger;
+            var dealerId = $('#SelectedDealer_ID').val();
+            var checkUrl = '@Url.Action("GetItemLineDiscount", "Scheme")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { PARTID: selectedPartID, FROMID: dealerId, PROSPECTTYPRID: 1, PARTQTY: 1, RowNumber: rownumber },//, str: str
+                success: function FillPartDataSuccess(result)
+                {
+                    debugger;
+                    $("#txtITEMRATE_" + rownumber).val(result.RATE)
+                },
+                error: function FillPartDataFail() { debugger;}
+            });
+        }
+
+        function resetLineItemValues(rownumber) {
+
+            $("#SelectedREASONID_" + rownumber).val("");
+            $("#txtREJECTEDQTY" + rownumber).val("");
+            $("#txtFRESHQTY_" + rownumber).val("");
+            $("#txtFOCQTY_" + rownumber).val("");
+            $("#txtTOTALQTY_" + rownumber).val(0);
+            $("#txtITEMRATE_" + rownumber).val(0);
+            $("#txtITEMVALUECLAIM_" + rownumber).val(0);
+        }
+
+        function showTransePorterTxtbox(input) {
+
+            if ($(input).val() == "Other") {
+                $("#trnspname").show();
+                $(input).attr("id", "temp")
+                $(input).attr("name", "temp")
+                $("#trnsporter").removeClass("col-lg-4");
+                $("#trnsporter").addClass("col-lg-2");
+            }
+            else {
+
+                $("#trnspname").hide();
+                $(input).attr("id", "TRANSPORTERNAME")
+                $(input).attr("name", "TRANSPORTERNAME")
+                $("#trnsporter").removeClass($("#trnsporter").attr("class"));
+                $("#trnsporter").addClass("col-lg-4 col-xs-12");
+            }
+        }
+
+
+    </script>
+}
+
+
+

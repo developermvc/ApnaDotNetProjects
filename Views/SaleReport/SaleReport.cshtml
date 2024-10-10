@@ -1,0 +1,114 @@
+﻿@model LumaxDMS.Models.SaleReportModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Sale Order Report";
+
+}
+@{Html.RenderPartial("_WaitModal");}
+
+@*<link href="~/Scripts/Choosen/Choosen.css" rel="stylesheet" />*@
+<link href="~/Content/css/DateRange/daterangepicker.css" rel="stylesheet" />
+<style>
+    .table {
+        margin-bottom: 28px !important;
+    }
+</style>
+
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">SALE ORDER REPORT</div>
+    </div>
+    @using (Html.BeginForm("SaleReport", "SaleReport", FormMethod.Post, new { @Id = "POFormId" }))
+    {
+        @*@Html.HiddenFor(m => m.hdnSelectedUserArea)*@
+        @Html.HiddenFor(m => m.FROMDATE)
+        @Html.HiddenFor(m => m.TODATE)
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-1">
+                    <label for="pwd">
+                        Date :
+                    </label>
+                </div>
+                <div class='col-md-3'>
+                    <div class="">
+                        <div id="reportrange" class="form-control" style="clear: both">
+                            <i class="fa fa-calendar" style="float: left"></i>&nbsp;
+                            <span style="font-size:11px;"></span><b class="caret"></b>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<button class="btn btn-green icon-cloud-download myButton" style="margin:0px 3px 0px 3px;" name="btn" value="download" type="submit"></button>*@
+                <button class="btn btn-success myButton" value="Search" style="margin:0px 3px 0px 3px;" name="btn" type="submit"> Search </button>
+
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4 float-left">
+                    @{Html.RenderPartial("_PartialSaleSummary");}
+                </div>
+                <div class="col-md-4 float-left">
+                    @{Html.RenderPartial("_PartialSubSegmentSale");}
+                </div>
+                <div class="col-md-4 float-left">
+                    @{Html.RenderPartial("_PartialSegmnetSale");}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 float-left">
+                    @{Html.RenderPartial("_PartialSaleDealer");}
+                </div>
+
+                <div class="col-md-4 float-left">
+                    @{Html.RenderPartial("_PartialNPDSale");}
+                </div>
+                <div class="col-md-4 float-left">
+                    @{Html.RenderPartial("_PartialCategorySale");}
+                </div>
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="col-md-12 float-left">
+                @{Html.RenderPartial("_PartialSaleStateWise", Model);}
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@section JS {
+    <script src="~/Scripts/DateRange/moment.min.js"></script>
+    <script src="~/Scripts/DateRange/daterangepicker.js"></script>
+    <script src="~/Scripts/DateRange/DateTimeFormat.js"></script>
+    <script src="~/Scripts/ProjectJS/C_AreaJS.js"></script>
+    <script src="~/Scripts/ProjectJS/SaleReport.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+            debugger;
+            $('#tableStateWise').DataTable();
+            loadTables();
+            HideWaitingSymbol();
+        })
+
+        function loadTables() {
+            var url = '@Url.Action("SaleReportsData", "SaleReport")';
+            loadAllTables(url)
+        }
+        function onStateClick(obj) {
+            debugger;
+            var stateID = obj.id;
+            var fromDate = $('#FROMDATE').val();
+            var toDate = $('#TODATE').val();
+            var url = '/SaleReport/SaleStateReport/' + stateID + '?FromDate=' + fromDate + '&ToDate=' + toDate;
+            debugger;
+            var finalUrl = url.replace('_id_', stateID).replace('_FromDate_', fromDate).replace('_ToDate_', toDate);
+            window.location.href = url;
+        }
+    </script>
+}

@@ -1,0 +1,336 @@
+﻿@model LumaxDMS.Models.CategoryWiseDealerTargetModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "CategoryWiseDealerTarget";
+    var counter = 1;
+}
+
+@using (Html.BeginForm("CategoryWiseDealerTarget", "Admin", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.DealerTargetId, new { @Id= "DealerTargetId", @Name = "DealerTargetId" })
+
+    @Html.DropDownList("HiddenProdCategory", new SelectList(Model.ProductCategoryList, "AREAID", "AREANAME"), "-- Select--", new { @id = "hiddenProdCategory", @Name = "hiddenProdCategory", @Style="display:none" })
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    <span>CATEGORY WISE DEALER TARGET</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Channel Partner Code:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.DealerCode, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Channel Partner Name:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.DealerName, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Year:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @*<div class="input-group date" id="fromdatepicker">*@
+                                @Html.TextBoxFor(@model => model.Year, new { @class = "form-control datepicker", @disabled = "disabled" })
+                                @*<span class="input-group-append input-group-addon">
+                                    <i class="input-group-text2 fa fa-calendar"></i>
+                                </span>
+                            </div>*@
+                        </div>
+                    </div>
+
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Month:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.Month, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Monthly Target:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.MonthlyTarget, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="card-body">
+                            <table id="CategoryDealerTargettbl" class="table table-striped table-bordered dt-responsive nowrap"
+                                   style="width: 100%">
+                                <thead class="thead-lights">
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" id="chkSelectAllCategory" class="pull-left" />
+                                            <a href="#" onclick="return removeCheckedCategory();" title="Remove Checked Rows"><i class="fa fa-trash bg_red"></i></a>
+                                        </th>
+                                        <th>
+                                            Product Category
+                                        </th>
+                                        <th>
+                                            Target
+                                        </th>
+                                        <th>
+                                            Cumulative Target
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.CategoryWiseDealerTargetList != null)
+                                {
+                                    <tbody>
+                                        @Html.Hidden("CategoryDealerTargetCount", Model.CategoryWiseDealerTargetList.Count(), new { @Name = "CategoryDealerTargetCount" })
+                                        @foreach (var item in Model.CategoryWiseDealerTargetList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" />&nbsp;
+                                                    @Html.HiddenFor(m => item.DEALER_CATTARGETID, new { @Id="hdnDealerCategory_"+counter, @Name="hdnDealerCategory_"+counter})
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.PRODUCTCATEGORY_ID, new SelectList(Model.ProductCategoryList, "AREAID", "AREANAME", item.PRODUCTCATEGORY_ID), "-- Select--", new { @id = "ProductCategoryId_" + counter, @Name = "ProductCategoryId_" + counter, @class = "form-control chosen-select", @onchange="return CheckDuplicateProductCategory(this);" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.MONTHLYTARGET, new { @class = "form-control decimal", @Id = "Monthlytarget_" + counter, @Name = "Monthlytarget_" + counter, @Style="text-align:right;", @maxlength = "13", @onchange ="return MapCulDiscount(this);" })
+                                                    @Html.ValidationMessageFor(m=>item.MONTHLYTARGET)
+                                                </td>
+                                                <td id="culdiscount_@counter" class="culdiscount" style="text-align:right">
+                                                    @item.MONTHLYTARGET
+                                                </td>
+                                            </tr>
+                                            counter++;
+                                        }
+                                    </tbody>
+                                }
+
+                            </table>
+                            <br />
+                            <div class="clearfix">
+                                <input type="button" name="btntype" value="Add Row" id="btnaddrow" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+                            <input type="submit" name="btntype" value="Submit" onclick="return CheckValidate();" id="btnadd" class="btn btn-primary" />
+                            <input type="reset" class="btn btn-primary" name="btntype" value="Clear" onclick="return Clear();" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+{
+    <script type="text/javascript">
+        var valid = true;
+        var numrows = Number(@counter);
+        var serialnumber = 1;
+        var rowsarray = ["0", "0"];
+
+        $(document).ready(function () {
+            $('.chosen-select').chosen();
+        });
+
+        $('#btnaddrow').on('click', function () {
+            var validate = CheckAggregate();
+            if (validate) {
+                numrows = numrows +1;
+                serialnumber = serialnumber + 1;
+                rowsarray[numrows] = "0";
+                var table = document.getElementById("CategoryDealerTargettbl");
+                var rowcount = table.rows.length;
+                var row = table.insertRow(rowcount);
+                row.id = "catdealertarget_" + numrows;
+
+                var cell1 = row.insertCell(0);
+                var element0 = document.createElement("input");
+                element0.type = "checkbox";
+                var element1 = document.createElement("input");
+                element1.type = "hidden";
+                element1.name = "hdnDealerCategory_" + numrows;
+                element1.id = "hdnDealerCategory_" + numrows;
+                cell1.appendChild(element0);
+                $(element0).append(element1);
+                cell1.align = "centre";
+
+                var ddl = $('#hiddenProdCategory').clone(true);
+                var celldv = row.insertCell(1);
+                ddl[0].id = "ProductCategoryId_" + numrows;
+                ddl[0].name = "ProductCategoryId_" + numrows;
+                ddl[0].value = "";
+                //ddl[0].setAttribute('onchange', 'return CheckDuplicateData(this);');
+                ddl[0].className = "form-control chosen-select";
+                ddl[0].setAttribute("onchange", "return CheckDuplicateProductCategory(this);");
+                celldv.append(ddl[0]);
+                $('#ProductCategoryId_' + numrows).chosen();
+                $('#ProductCategoryId_' + numrows).trigger("chosen:updated");
+
+
+                var cell2 = row.insertCell(2);
+                var element2 = document.createElement("input");
+                element2.type = "text";
+                element2.className = "form-control decimal";
+                element2.name = "Monthlytarget_" + numrows;
+                element2.id = "Monthlytarget_" + numrows;
+                element2.style = "text-align:right;";
+                element2.setAttribute("maxlength", "13");
+                element2.setAttribute("onchange", "return MapCulDiscount(this);");
+                cell2.append(element2);
+
+                var cell3 = row.insertCell(3);
+                cell3.id = "culdiscount_" + numrows;
+                cell3.style = "text-align:right;";
+                cell3.className = "culdiscount";
+
+                document.getElementById("CategoryDealerTargetCount").value = numrows;
+            }
+        });
+
+        $('#chkSelectAllCategory').on('click', function () {
+            var checkedstatus = this.checked;
+            $('#CategoryDealerTargettbl tbody tr').find('td:first :checkbox').each(function () {
+                $(this).prop('checked', checkedstatus);
+            });
+        });
+
+        $('body').on('keyup paste', ".decimal", function () {
+            this.value = this.value.replace(/[^0-9\.]/g, '');
+        });
+
+        function Clear() {
+            $('#CategoryDealerTargettbl tbody tr').find('select').val('').trigger("chosen:updated");
+            $('#CategoryDealerTargettbl tbody tr :input[type="text"]').attr('value', '');
+            $('#CategoryDealerTargettbl tbody tr').find('td.culdiscount').text('');
+        }
+
+        //$('#CategoryDealerTargettbl tbody tr :input[type="text"]').bind('keyup paste', function (e) {
+        //    this.value = this.value.replace(/[^0-9\.]/g, '');
+        //});
+
+
+        //$('#CategoryDealerTargettbl tbody tr :input[type="text"]').on('keypress keyup paste', function () {
+        //    this.value = this.value.replace(/[^0-9\.]/g, '');
+        //});
+
+        function removeCheckedCategory() {
+            if ($('#CategoryDealerTargettbl tbody tr').length > 1 && $('#CategoryDealerTargettbl tbody tr').find('input[type="checkbox"]:checked').length != $('#CategoryDealerTargettbl tbody tr').length) {
+                $('#CategoryDealerTargettbl tbody tr').each(function () {
+                    if ($(this).find('td:first').find('input[type="checkbox"]').is(':checked')) {
+                        $(this).remove();
+                    }
+                    //$('#CategoryDealerTargetCount').val($('#CategoryDealerTargettbl tbody tr').length);
+                });
+                
+            }
+            else {
+                alert("Atleast one row is required");
+            }
+        }
+
+        function CheckAggregate() {
+
+            valid = true;
+
+            var mtable = document.getElementById("CategoryDealerTargettbl");
+            var mrowCount = document.getElementById("CategoryDealerTargetCount").value;
+
+            for (var i = 1; i <= mrowCount; i++) {
+                var newcheckboxtd = document.getElementById("DealerTargetId_" + i);
+                var ProductCategoryId = document.getElementById("ProductCategoryId_" + i);
+                var MonthlyTarget = document.getElementById("Monthlytarget_" + i);
+
+                if (ProductCategoryId != undefined) {
+
+                    if (ProductCategoryId.value == "") {
+                        if (i >= 1) {
+                            alert('Please select product category');
+                            $('#ProductCategoryId_' + i).focus();
+                            valid = false;
+                        }
+                    }
+                }
+
+                if (MonthlyTarget != undefined && MonthlyTarget.value == "") {
+                    if (i >= 1) {
+                        alert('Please enter target');
+                        $('#Monthlytarget_' + i).focus();
+                        valid = false;
+                    }
+                }
+            }
+
+            return valid;
+
+        }
+
+        function MapCulDiscount(obj) {
+            var id = $(obj).attr('id').split('_');
+            var culdiscountval = $(obj).val();
+            $('#culdiscount_' + id[1]).text(culdiscountval);
+            
+
+        }
+
+        function CheckDuplicateProductCategory(obj) {
+            var id = $(obj).attr('id').split('_');
+            var ProductCategoryId = $(obj).val();
+
+            $('#CategoryDealerTargettbl tbody tr').each(function (i, data) {
+                    if ($(obj).attr('id') != $(this).find('td').eq(1).find('select').attr('id') && $(this).find('td').eq(1).find('select').val() == ProductCategoryId) {
+                        alert("Already selected");
+                        $(obj).val('').trigger("chosen:updated");
+                        $(obj).focus();
+                    }
+            });
+
+        }
+
+        function CheckTotalTarget() {
+            valid = true;
+            var TotalCulDiscount = 0;
+            if ($('#MonthlyTarget').val() != 0 || $('#MonthlyTarget').val() != 0.00) {
+                $('#CategoryDealerTargettbl tbody tr').each(function () {
+                    TotalCulDiscount += Number($(this).find('td').eq(3).text());
+                });
+
+                if (Number(TotalCulDiscount) > Number($('#MonthlyTarget').val())) {
+                    alert("Cumulative target can not be greater then monthly target");
+                    valid = false;
+                }
+            }
+            else {
+                alert("Please set monthly target first of this month");
+                valid = false;
+            }
+            return valid;
+        }
+
+        function CheckValidate() {
+            valid = CheckAggregate();
+            if (valid) {
+              valid = CheckTotalTarget();
+            }
+            return valid;
+        }
+    </script>
+}

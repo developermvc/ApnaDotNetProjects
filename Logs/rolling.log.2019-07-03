@@ -1,0 +1,9 @@
+2019-07-03 11:57:52,409 DEBUG DebugLogger - export enter
+2019-07-03 11:57:52,414 DEBUG DebugLogger - got file path
+2019-07-03 11:57:52,420 DEBUG DebugLogger - strat excel workbook created 
+2019-07-03 11:57:52,525 DEBUG DebugLogger - excel workbook created 
+2019-07-03 11:57:52,756 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\3476cb43-7ef9-455f-af22-50ef6823ca0a_ExportData.xls
+2019-07-03 11:57:52,945 DEBUG DebugLogger - file export complete
+2019-07-03 11:57:52,945 DEBUG DebugLogger - read file byte System.Byte[]
+2019-07-03 12:40:29,937 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-07-03 12:40:29,952 DEBUG DebugLogger - IRController.cs search ir post method end

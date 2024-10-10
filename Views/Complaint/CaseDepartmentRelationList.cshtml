@@ -1,0 +1,124 @@
+﻿@model LumaxDMS.Models.CaseTypeModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CaseDepartmentRelationList";
+}
+
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>CASE DEPARTMENT RELATION LIST</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+
+                    <div class="col-sm-12 col-md-12">
+                        @*<div class="panel-heading" style="padding: 10px;">*@
+                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                        {
+                            <a class="mb-1 btn btn-success pull-right right_bottom" href="/Complaint/CreateCaseDepartmentRelation?@Constants.HASH_COMPLAINT">Create New</a>
+                        }
+
+                        <table id="CaseRelationList" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        Case Type
+                                    </th>
+                                    <th>
+                                        Case Type Code
+                                    </th>
+                                    <th>
+                                        Case Type Name
+                                    </th>
+                                    <th>
+                                        Approval Days
+                                    </th>
+                                    <th>
+                                        Zone Name
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CaseDepartmentRelationList)
+                                {
+                                <tr>
+                                    <td>
+                                        @item.CTYPENAME
+
+                                    </td>
+                                    <td>
+                                        @item.CASETYPECODE
+
+                                    </td>
+                                    <td>
+                                        @item.CASETYPENAME
+                                    </td>
+                                    <td>
+                                        @item.APPROVALDAYS
+                                    </td>
+                                    <td>
+                                        @item.ZoneName
+                                    </td>
+                                    <td>
+                                        @Html.HiddenFor(m => m.CaseDepartmentRelationList)
+                                        @Html.HiddenFor(m => m.CaseDepartmentRelationList[0].CASETYPEID, new { id = "hdnCaseTypeId" })
+                                        @Html.HiddenFor(m => m.CaseDepartmentRelationList[0].Revision, new { @id = "hdnRevision" })
+
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                        {
+                                            <a href="/Complaint/CreateCaseDepartmentRelation?CaseTypeId=@item.CASETYPEID&Revision=@item.Revision&ActionName=Edit&@Constants.HASH_COMPLAINT" title="Edit Case Relation">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                        }
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                        {
+                                            <a href="#" onclick="return DeleteCaseTypeRelation('@item.CASETYPEID','@item.Revision')" title="InActive Case Relation"><i class="fa fa-trash bg_red"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("DeleteCaseTypeRelation", "Complaint", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.CASETYPEID, new { @Id = "Del_CASETYPE" });
+    @Html.HiddenFor(m => m.Revision, new { @Id = "Del_Revision" });
+}
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#CaseRelationList').DataTable();
+        });
+
+        function DeleteCaseTypeRelation(id, revision) {
+            $('.modal-title').html("DELETE CASE TYPE");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_CASETYPE').val(id);
+            $('#Del_Revision').val(revision);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+    </script>
+}
+

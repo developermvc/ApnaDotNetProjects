@@ -1,0 +1,144 @@
+﻿@model LumaxDMS.Models.POSModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "Employee Expense Relation";
+    var empexplist = ViewBag.ExcelErrorMsg;
+}
+
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>EMPLOYEE EXPENSE RELATION LIST</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="padding: 10px;">
+                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                        {
+                            <a class="mb-1 btn btn-success pull-right" href="/POS/CreateEmployeeExpense?@Constants.HASH_POS">Create New</a>
+                        }
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <table id="POStbl" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        Employee Name
+                                    </th>
+                                    <th>
+                                        Financial Year
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                    <th>
+                                        Created By
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.POSHDRList)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.EMPLOYEENAME
+                                        </td>
+                                        <td>
+                                            @item.FINANCIALYEARNAME
+                                        </td>
+                                        <td>
+                                            @item.STATUS
+                                        </td>
+                                        <td>
+                                            @item.CREATEDBY
+                                        </td>
+                                        <td>
+                                            @Html.HiddenFor(m => m.POSHDRList[0].POSID, new { id = "hdnPOSID" })
+                                            @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                            {
+                                                <a href="/POS/CreateEmployeeExpense?POSID=@item.POSID&ActionName=edit&@Constants.HASH_POS" title="Edit employee expense relation"><i class="fa fa-pencil"></i></a>
+                                            }
+                                            @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                            {
+                                                <a href="##" onclick="return DeleteEmpExpense(@item.POSID)" title="Delete POS">
+                                                    <i class="fa fa-trash bg_red"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal" id="myModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title"></h4>
+                                    @*<button type="button" class="close" data-dismiss="modal">
+                        &times;</button>*@
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body"></div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("DeleteEmpExpense", "POS", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.POSID, new { @Id = "Del_EmpExp" });
+}
+
+@section JS {
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#POStbl').DataTable();
+        });
+
+    var excelerrorlist = @Html.Raw(Json.Encode(empexplist));
+    if (excelerrorlist != null && excelerrorlist != '') {
+        debugger;
+            $('.modal-title').text('These months and account name are wrong');
+            var table = "<div class='card-body'><div class='panel panel-default'><div class='col-sm-12 col-md-12'><table class='table table-striped table-bordered dt-responsive nowrap' style = 'width: 100%' >" +
+            "<thead class='thead-lights'><tr><th>Month</th><th>Account</th></tr></thead><tbody>";
+        $.each(JSON.parse(excelerrorlist), function (i, data) {
+            table += "<tr><td>" + data.ERMONTHNAME + "</td><td>" + data.ACCOUNTNAME + "</td></tr>";
+            });
+            $(table).append("</tbody></table></div></div></div>");
+            $('.modal-body').html(table);
+            $('#myModal').modal('show');
+        }
+
+        function DeleteEmpExpense(id) {
+            $('.modal-title').html("DELETE EMPLOYEE EXPENSE");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_EmpExp').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+</script>
+}

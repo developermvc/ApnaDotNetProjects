@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = "EmployeeExpenseRelation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card card-default">
+<div class="panel panel-default panel_pt">
+<div class="card-header card_bg">
+<div class="card-title card_tittle2">SALARY EXPENSE RELATION</div>
+</div> 
+
+<div class="card-body">
+<div class="row">
+                    <div class="col-lg-2">
+                    <label for="pwd">
+                        Employee :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd"/>
+                </div>
+                @*<div class="col-lg-2">
+                    <label for="pwd">
+                        Financial Year :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd"/>
+                </div>*@
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        Financial Year :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd" />
+                </div>
+                <div class="col-lg-2">
+				<button type="button" class="btn"> Show Details</button>
+
+    </div>
+                </div>
+
+                <div class="row row_pt">
+                     <div class="col-lg-2">
+                    <label for="pwd">
+                        Account :</label>
+                </div>
+                <div class="col-lg-2">
+                    <select class="form-control from_bg from_bg2" id="sel1">
+                        <option>Attendent : PLE0007000234</option>
+                        <option>Leave Travel Allowance : PLE000700025</option>
+                        <option>Medical Expenses : PLE000700010123</option>
+                        </select>
+                </div>      
+                </div>
+              
+            
+
+  </div>
+  
+  
+     <div class="card-footer">
+                           <div class="clearfix">
+                              <div class="float-right">
+                                  <button class="btn btn-primary" type="submit">Submit</button>
+								 <button class="btn btn-primary" type="submit">Clear</button>
+                              </div>
+                            
+                           </div>
+                        </div>
+  
+             
+  
+
+
+
+
+
+  <div class="panel panel-default panel_pt">
+  
+  <div class="card-header card_bg">
+<div class="card-title card_tittle2">TRAVEL MODE LIST</div>
+</div> 
+       
+            <div class="card-body">
+
+
+
+            <table class="table table-responsive table-bordered" style="display: inline-table !important;">
+<thead class="thead-lights">
+                       <tr> 
+                           <th style="text-align: center">
+                                <input type="checkbox" />
+                            </th>
+                        <th style="text-align: center">
+                               S.No 
+                            </th>
+                           
+                            <th style="text-align: center">
+                               Month 
+                            </th>
+                            <th style="text-align: center">
+                                Amount 
+                            </th>
+                            <th style="text-align: center">
+                              Remark 
+                            </th>
+                            <th style="text-align: center">
+                                Account 
+                            </th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                           <td align="center">
+                                <input type="checkbox"/>
+                            </td>
+                            <td align="center">
+                                 1
+                            </td>
+                            <td align="center">
+                                    Jan
+                            </td>
+                           <td align="center">
+                                50000
+                            </td>
+                            <td align="center">
+                                Good
+                            </td>
+                              <td align="center">
+                                PLE000700013
+                            </td>
+                        </tr>
+                    </tbody>
+					
+                </table>
+				</div>
+				
+				
+				   <div class="card-footer">
+                           <div class="clearfix">
+                              <div class="float-left">
+                                  <button class="btn btn-primary" type="submit">Add Row</button>
+								 <button class="btn btn-primary" type="submit">Delete</button>
+                              </div>
+							  
+							   <div class="float-right">
+                                  <button class="btn btn-primary" type="submit">Submit</button>
+								 <button class="btn btn-primary" type="submit">Cancel</button>
+                              </div>
+                            
+                           </div>
+                        </div>
+
+
+
+
+       
+ </div>
+
+
+</div>
+</div>
+
+<script src="/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".datepicker").datepicker({ orientation: "bottom auto" });
+        $(".timepicker").datetimepicker();
+
+    });
+</script>

@@ -1,0 +1,484 @@
+﻿@model LumaxDMS.Models.DsrhdrdtlModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "DSR Itemwise Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 1;
+
+}
+<style>
+    .form-control {
+        margin-bottom: 10px !important;
+        width: 100% !important
+    }
+    .multidiv {
+        height:150px;
+        width:100%;
+    }
+    .multidiv  option{padding:10px;}
+</style>
+
+
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">DSR ITEM DETAILS</div>
+    </div>
+    @Html.Partial("_WaitModal")
+    @using (@Html.BeginForm("FillActualDSR", "DSR", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+    {
+        //  @Html.HiddenFor(m => m.hdnSelectedIGroup)
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-2">
+                    <label for="pwd">PLAN  DATE :</label>
+                </div>
+                @Html.HiddenFor(m => m.from)
+                @Html.HiddenFor(m => m.Planid)
+                @Html.HiddenFor(m => m.SelectedPlanDtlId)
+                @Html.HiddenFor(m => m.empId)
+                @Html.HiddenFor(m => m.Selectedcity_id, new { @Name = "Selectedcity", @Id = "Selectedcity" })
+                @Html.HiddenFor(m => m.Isholiday)
+                <div class="col-lg-2">
+                    @*@if (string.IsNullOrEmpty(Model.from))
+                        {
+                            @Html.TextBoxFor(m => m.plandate, new { @class = "form-control from_bg from_bg2", @placeholder = "Plan Date", @readonly = "true" })
+                        }
+                        else
+                        {
+                            if (Model.from.ToUpper() == Constants.DSR_UN_PLANNED)
+                            {
+                                <div class="input-group date datepicker">
+                                    @Html.TextBoxFor(m => m.plandate, new { @class = "form-control datepicker", @placeholder = "Plan Date", @readonly = "true" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(m => m.plandate, new { @class = "form-control from_bg from_bg2", @placeholder = "Plan Date", @readonly = "true" })
+                            }
+                        }*@
+                    @Html.TextBoxFor(m => m.plandate, new { @class = "form-control from_bg from_bg2", @placeholder = "Plan Date", @readonly = "true" })
+
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd" class="redlabel">
+                        VISIT TYPE :
+                    </label>
+                </div>
+                <div class="col-lg-2">
+                    @Html.DropDownListFor(m => m.SelectedDaytype_id, new SelectList(Model.daytypeMasterList, "DAYTYPE_ID", "DAYTYPENAME"), "--Select Day type--", new { @class = "form-control", @onchange = "return dsrblockinfo(this.value);" })
+
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        PLANCODE :
+                    </label>
+                </div>
+                <div class="col-lg-2">
+                    @Html.TextBoxFor(m => m.Plancode, new { @class = "form-control from_bg from_bg2", @placeholder = "Plan No", @readonly = "true" })
+
+                </div>
+            </div>
+            <div id="dsrlsttbl">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="pwd" class="redlabel">City :</label>
+                    </div>
+                    <div class="col-lg-2">
+                        @Html.DropDownListFor(m => m.Selectedcity_id, new SelectList(Model.cityMasterList, "CITY_ID", "CITYNAME", Model.Selectedcity_id), "--Select City--", new { @class = "form-control select-chosen", @Id = "Selectedcity_id_" + i, @Name = "Selectedcity_id_" + i, @onchange = "return FillProspectData();" })
+
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Customer Type :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        @Html.DropDownListFor(m => m.DsrDtl.PROSPECTTYPEID, new SelectList(Model.prospectTypeMasterList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME", Model.DsrDtl.PROSPECTTYPEID), "--Select Customer Type--", new { @class = "form-control", @Id = "SelectedcustomerType_id_" + i, @Name = "SelectedcustomerType_id_" + i, @onchange = "return onCustomerTypeSelect( );" })
+                    </div>
+
+                    <div class="col-md-4" id="DealerList">
+                        @Html.DropDownListFor(m => m.DEALER_ID, new SelectList(Model.DealerList, "DEALER_ID", "DEALERFULLNAME"), "-- Select--", new { @class = "form-control select-chosen", @onChange = "return onCustomerSelect(this);" })
+                        @Html.ValidationMessageFor(m => m.DEALER_ID)
+                    </div>
+                    <div class="col-md-4" id="RetailerList">
+                        @Html.DropDownListFor(m => m.PROSPECT_ID, new SelectList(Model.ProspectList, "PROSPECT_ID", "PROSPECTFULLNAME"), "-- Select--", new { @class = "form-controlselect-chosen", @onChange = "return onCustomerSelect(this);" })
+                        @Html.ValidationMessageFor(m => m.PROSPECT_ID)
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            CONTACT PERSON :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        @Html.TextBoxFor(m => m.DsrDtl.CONTACTPERSON, new { @class = "form-control from_bg", title = "Enter Contact Person", @Id = "contperson_" + i, @Name = "contperson_" + i })
+
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">CONTACT NUMBER :</label>
+                    </div>
+                    <div class="col-lg-2">
+                        @Html.TextBoxFor(m => m.DsrDtl.CONTACTNUMBER, new { @class = "form-control number from_bg", title = "Enter Contact Number", @onkeypress = "return isNumber(event);", @maxLength = "10", @Id = "contactno_" + i, @Name = "contactno_" + i })
+
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            PLAN REMARKS :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        @Html.TextBoxFor(m => m.DsrDtl.REMARKS, new { @class = "form-control from_bg", title = "Enter Remarks", @Id = "remarks_" + i, @Name = "remarks_" + i })
+                    </div>
+                    @*<div class="col-lg-2">
+                            <label for="pwd">
+                                PURPOSE :
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(m => m.DsrDtl.PURPOSE, new { @class = "form-control from_bg", title = "Enter PURPOSE", @Id = "visitpurpose_" + i, @Name = "visitpurpose_" + i })
+                        </div>*@
+
+
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-2">
+                        <label for="pwd"> SHOP ADDRESS:</label>
+                    </div>
+                    <div class="col-lg-2">
+
+                        @Html.TextBoxFor(m => m.DsrDtl.SHOPADDRESS, new { @class = "form-control", title = "shop Address", @Id = "shopadd_" + i, @Name = "shopadd_" + i })
+
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd" class="redlabel"> ACTUAL TIME IN:</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input id="atimein_@i" name="atimein_@i" type='time' class="form-control" value="@Model.DsrDtl._CHECKINTIME" placeholder="Time(24hr)" title="Enter Actual Time In" />
+                        @*@Html.TextBoxFor(m => m.DsrDtl._CHECKINTIME, new { @class = "form-control from_bg  meetingtime", title = "Enter Actual Time In", @Id = "atimein_" + i, @Name = "atimein_" + i, @onkeypress = "return timevalidate(event);", @onfocusout = "checktimeformat(this);", @placeholder = "HH:MM", @maxlength = "5" })*@
+
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd" class="redlabel">
+                            ACTUAL TIME OUT :
+                        </label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input id="atimeout_@i" name="atimeout_@i" type='time' class="form-control" value="@Model.DsrDtl._CHECKOUTTIME" placeholder="Time(24hr)" title="Enter Actual Time Out" />
+                        @*@Html.TextBoxFor(m => m.DsrDtl._CHECKOUTTIME, new { @class = "form-control from_bg", title = "Enter Actual Time Out", @Id = "atimeout_" + i, @Name = "atimeout_" + i, @onkeypress = "return timevalidate(event);", @onfocusout = "checktimeformat(this);", @placeholder = "HH:MM", @maxlength = "5" })*@
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-2">
+                        <label for="pwd" class="redlabel">
+                            ACTUAL REMARKS
+                        </label>
+                    </div>
+                    <div class="col-lg-10">
+                        @Html.TextAreaFor(m => m.DsrDtl.ACTUAL_REMARKS, 100, 40, new { @class = "form-control from_bg", @Id = "actualremarks_" + i, @Name = "actualremarks_" + i, @rows = "10", @cols = "50", @maxlength = "450" })
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="pwd" class="redlabel">
+                            MARKET VISIT TYPE :
+                        </label>
+                    </div>
+                    <div class="col-lg-6">
+                        @Html.HiddenFor(m => m.SelectedVisitType)
+                        @*@Html.DropDownListFor(m => m.SelectedVisitType, new SelectList(Model.marketVisitTypeMasterList, "ID", "TYPENAME", Model.DsrDtl.MARKETVISITTYPE), new { @class = "form-control multi", @multiple = "multiple" })*@
+                        @Html.DropDownList("SelectedMType", new SelectList(Model.marketVisitTypeMasterList, "ID", "TYPENAME"), new { @class = "multi multidiv", @Id = "SelectedMType", @Name = "SelectedMType", @multiple = "multiple" })
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.DsrDtl.CHECKOUTIMAGE))
+                    {
+                        <div class="col-lg-1 signpic"><label for="pwd">Picture:</label></div>
+                        <div class="col-lg-1 signpic"><a href="@Url.Action("DownloadAttachment", "DSR", new { fileName = Model.DsrDtl.CHECKOUTIMAGE,imgfor="IMG" })" class="btn btn-primary"><i class="fa fa-download" style="padding: 4px 0px;"></i></a></div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.DsrDtl.CHECKOUTSIGNATURE))
+                    {
+                        <div class="col-lg-1 signpic"><label for="pwd">Sign:</label></div>
+                        <div class="col-lg-1 signpic"><a href="@Url.Action("DownloadAttachment", "DSR", new { fileName = @Model.DsrDtl.CHECKOUTSIGNATURE,imgfor="SIGN" })" class="btn btn-primary"><i class="fa fa-download" style="padding: 4px 0px;"></i></a></div>
+                    }
+                </div>
+            </div>
+            @if (Model.ActionName == Constants.BTN_EDIT)
+            {
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-left">
+                            <button onclick="return CheckValidation()" class="btn btn-primary" type="submit">Submit</button>
+
+                        </div>
+
+                        <div class="float-right">
+                            <button onclick="return CreateProspect()" class="btn btn-primary" type="button" id="btn_creteprospect" style="display:none">Create New</button>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+        </div>
+
+
+    }
+
+</div>
+@*<div id="rescheduleinfodv">
+        <form id="rescheduledata" name="rescheduledata">
+            <div id="reschedulebody">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <label for="pwd">DATE :</label>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" id="rescheduledate" name="rescheduledate" class="form-control from_bg from_bg2 datepicker" readonly value="" />
+                        @Html.HiddenFor(m => m.Planid)
+
+                    </div>
+                </div>
+
+                <br />
+
+                <div class="row">
+                    <div class="col-lg-3">
+                        <label for="pwd">Day Type :</label>
+                    </div>
+                    <div class="col-lg-3">
+
+                        @Html.DropDownListFor(m => m.SelectedDaytype_id, new SelectList(Model.daytypeMasterList, "DAYTYPE_ID", "DAYTYPENAME"), "--Select Day type--", new { @class = "form-control", @onchange = "return dsrblockinfo(this.value);" })
+                        @Html.ValidationMessageFor(model => model.SelectedDaytype_id)
+                    </div>
+                </div>
+                <br />
+
+                <div class="row">
+                    <div class="col-lg-3">
+                        <label for="pwd">
+                            TIME IN  :
+                        </label>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" id="restimein" onkeypress="return timevalidate(event);" placeholder="HH:MM"  maxlength="5" name="restimein" class="form-control from_bg from_bg2" />
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="pwd">
+                            TIME OUT  :
+                        </label>
+                    </div>
+                    <div class="col-lg-3">
+                        <input type="text" id="restimeout" onkeypress="return timevalidate(event);"  placeholder="HH:MM" maxlength="5" name="restimeout" class="form-control from_bg from_bg2" />
+                    </div>
+                </div>
+            </div>
+
+            <div id="reschedulefooter">
+                <button type="button" class="btn btn-info btn-lg" onclick="reschedueplan();" value="button">Submit</button>
+
+            </div>
+
+        </form>
+    </div>*@
+
+<script src="/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="~/Scripts/ProjectJS/ManageMaster_Common.js"></script>
+<script src="~/Scripts/ProjectJS/Common.js"></script>
+<script src="~/Scripts/ProjectJS/ActualDSR.js"></script>
+@*<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<link href="http://cdn.rawgit.com/davidstutz/bootstrap-multiselect/master/dist/css/bootstrap-multiselect.css"
+      rel="stylesheet" type="text/css" />
+<script src="http://cdn.rawgit.com/davidstutz/bootstrap-multiselect/master/dist/js/bootstrap-multiselect.js"
+        type="text/javascript"></script>*@
+<script type="text/javascript">
+    $(function () {
+
+
+        $('[id*=SelectedMType]').multiselect({
+            enableFiltering: true,
+            includeSelectAllOption: true,
+            maxHeight: 200,
+            enableCaseInsensitiveFiltering: true
+        });
+
+
+    });
+    $(document).ready(function () {
+        $('.input-group').attr('style', 'display: none');
+          if ('@Model.SelectedVisitType' != "") {
+            var citydata = $("#SelectedVisitType").val();
+              var cityarray = citydata.split(",");
+                                                    // Set the value
+            $("#SelectedMType").val(cityarray);
+                                                            // Then refresh
+            $("#SelectedMType").multiselect('rebuild')
+        }
+
+    })
+
+</script>
+
+
+<script type="text/javascript">
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+    $(document).ready(function () {
+
+
+
+
+
+        var IsCityEnable = true;
+        debugger;
+        if ('@Model.from' == 'FILLCITY') {
+            $('#Selectedcity_id_1').attr('disabled', 'disabled').trigger("chosen:updated");
+            $('#SelectedDaytype_id').prop('disabled', true);
+            $('#remarks_1').prop('readonly', true);
+           // $('.signpic').hide();
+        }
+        else if ('@Model.from' == 'UNPLANNED')
+        {
+            if ($('#Plancode').val() != "") {
+                $('#SelectedDaytype_id').prop('disabled', true);
+            }
+          //  $('.signpic').hide();
+        }
+        else {
+
+            $('#SelectedDaytype_id').prop('disabled', true);
+            $('#Selectedcity_id_1').attr('disabled', 'disabled').trigger("chosen:updated");
+            $('#remarks_1').prop('readonly', true);
+           // $('.signpic').show();
+            //$('#SelectedcustomerType_id_1').prop('disabled', true);
+            //$('#contperson_1').prop('disabled', true);
+            //$('#contactno_1').prop('disabled', true);
+            //$('#visitpurpose_1').prop('disabled', true);
+            //$('#remarks_1').prop('disabled', true);
+        }
+
+
+        var requesttype = '@(Model.ActionName)';
+        if (requesttype == 'view') {
+            $("#DSRApprovalDetail :input").prop("disabled", true);
+            $("#DSRApprovalDetail select").attr("disabled", "disabled");
+            $("#actualremarks_1").attr("disabled", "disabled");
+        }
+
+        HideWaitingSymbol();
+    });
+    function onCustomerTypeSelect() {
+
+        FillProspectData();
+        ShowHideCustomer($("#SelectedcustomerType_id_1").val());
+
+    }
+
+
+    function onCustomerSelect(objcustomer) {
+        debugger;
+        var customertypeId = $("#SelectedcustomerType_id_1").val();
+        var customerId = objcustomer.value;
+        if (customertypeId != "") {
+            $.ajax({
+                url: '@Url.Action("GetDSRCustomerDtl", "DSR")',
+                type: "GET",
+                dataType: "JSON",
+                data: { customertypeId: customertypeId, customerId: customerId },
+                success: onCustomerSelectSusccess,
+                error: function onCustomerSelectFail() {
+                }
+            });
+        } else {
+            alert("Please select customer type");
+            $("#" + objcustomer.Id).Val("");
+        }
+
+    }
+    function onCustomerSelectSusccess(result) {
+        if (result != null) {
+            $("#contperson_1").val(result.CPerson);
+            $("#contactno_1").val(result.CNumber);
+            $("#shopadd_1").val(result.Caddress);
+        }
+
+    }
+
+    function FillProspectData() {
+        debugger;
+        var CityId = $('#Selectedcity_id_1').val();
+        var ProspectTypeId = $('#SelectedcustomerType_id_1').val();
+        if (ProspectTypeId == null) {
+            return false;
+        }
+        var checkUrl = '@Url.Action("GetCustomerListByProspectType", "Complaint")';
+        if (ProspectTypeId != "" && CityId != "") {
+            GetProspectData(ProspectTypeId, CityId, checkUrl)
+        }
+    }
+
+
+    //function reschededata(planid) {
+    //    $('.modal-title').html("RESCHEDULE PLAN");
+    //    $('.modal-body').html($("#reschedulebody").html());
+    //    $('.modal-footer').html($("#reschedulefooter").html());
+    //    $('#myModal').modal('show');
+    //    $(".datepicker").datepicker({ format: 'dd/M/yyyy', orientation: "bottom auto", autoclose: true, startDate: new Date(), endDate: '+7d' }).on('changeDate', function (e) {
+    //        Checkdsrexist($('#rescheduledate').val());
+    //    });;
+
+    //}
+
+    function paymentcollection(planid) {
+
+       window.location.href = "/Collection/CollectionEntry/" + planid+ "@Constants.HASH_COLLECTION";
+
+    }
+    function compalintregister(planid) {
+
+       window.location.href = "/Claim/CreateClaimReason?ActionName=create&id=" + planid+ "@Constants.HASH_COLLECTION";
+
+    }
+    function Checkdsrexist(plandate) {
+        if (plandate.length==0) {
+            alert("Choose Plan Date!"); return false;
+        }
+        var checkUrl = '/dsr/checkdsrexist';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ plandate: plandate }),
+            dataType: "json",
+            success: function (returndata) {
+                if (returndata.PLANID > 0) {
+                    alert("This Date is Already Planed with Plancode " + returndata.PLANCODE);
+                    return false;
+                }
+
+            },
+
+        });
+    }
+
+</script>
+

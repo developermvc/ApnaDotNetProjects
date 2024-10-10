@@ -1,0 +1,381 @@
+﻿@model LumaxDMS.Models.TerritoryModel
+@using (Html.BeginForm("CreateTerritory", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Territory_Id)
+    @Html.HiddenFor(m => m.selectedDistrictIds)
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+             
+            <div id="creatpindiv" style="display:none" class="card-title card_tittle2">CREATE TERRITORY</div>
+            <div id="updatepindiv" style="display:none" class="card-title card_tittle2">UPDATE TERRITORY</div>
+        </div>
+        <div id="dv_displaydetail" class="card-body">
+            <div class="row">
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Country Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedCountryId, new SelectList(Model.countryMasterList, "Country_Id", "CountryName"), "--Select--", new { @class = "form-control chosen-select", @onchange = "return GetDistrictByCountryId(this);" })
+                    @Html.ValidationMessageFor(model => model.SelectedCountryId)
+                </div>
+                @*<div class="col-lg-2 col-xs-12">
+                        <label class="redlabel">
+                            State Name:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.DropDownListFor(model => model.SelectedStateId, new SelectList(Model.stateMasterList, "State_Id", "StateName", Model.SelectedStateId), "--Select--", new { @class = "form-control chosen-select", @onchange = "return GetDistrictBySateId(this);" })
+                        @Html.ValidationMessageFor(model => model.SelectedStateId)
+                    </div>*@
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Territory Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.TerritoryCode, new { @class = "form-control from_bg" })
+                    @Html.ValidationMessageFor(model => model.TerritoryCode)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Territory Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.TerritoryName, new { @class = "form-control from_bg", onblur = "return CheckTerritoryValidation(this)" })
+                    @Html.ValidationMessageFor(model => model.TerritoryName)
+                </div>
+            </div>
+            <div class="row row_pt">
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Territory Desc:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.TerritoryDesc, new { @class = "form-control from_bg"})
+                    @Html.ValidationMessageFor(model => model.TerritoryDesc)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+
+            </div>
+            <div class="container-fluid">
+                <br />
+                <div class="row">
+                    <div class="dual-list list-left col-md-5">
+                        <div class="well well_bg">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="input-group">
+                                        <i class="fa fa-search" aria-hidden="true" style="padding: 10px; background: #ddd;">
+                                        </i>
+                                        <input type="text" name="SearchDualList" class="form-control" placeholder="search" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="btn-group list_bg">
+                                        <a class="btn btn-default selector" title="select all" style="border: 1px solid #ccc;
+                                            background: #fff; margin-left: -5px;">
+                                            <i class="fa fa-check-square-o" aria-hidden="true"
+                                               style="font-size: 13px;"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="list-group" id="momentlistLeft"></ul>
+                        </div>
+                    </div>
+                    <div class="list-arrows col-md-1 text-center">
+                        <button class="btn btn-default btn-sm move-left" type="button" style="background: #fff;
+                            border: 1px solid #ddd;">
+                            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-default btn-sm move-right" type="button" style="background: #fff;
+                            border: 1px solid #ddd;">
+                            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="dual-list list-right col-md-5">
+                        <div class="well">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="btn-group">
+                                        <a class="btn btn-default selector" title="select all">
+                                            <a class="btn btn-default selector"
+                                               title="select all" style="border: 1px solid #ccc; background: #fff; margin-left: -25px;">
+                                                <i class="fa fa-check-square-o" aria-hidden="true" style="font-size: 13px;"></i>
+                                            </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="input-group">
+                                        <i class="fa fa-search" aria-hidden="true" style="padding: 10px; background: #ddd;">
+                                        </i>
+                                        <input type="text" name="SearchDualList" class="form-control" placeholder="search">
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="list-group list_bg2" id="momentlistRight"></ul>
+                            @Html.ValidationMessageFor(m => m.territoryMasterList)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+
+
+            <div class="float-right">
+                <button class="btn btn-primary" type="submit" id="btnadd" name="btntype" value="Create" onclick="return CheckValidation();">Create</button>
+                <button class="btn btn-primary" type="submit" id="btnupdate" style="display:none" name="btntype" value="Update" onclick="return CheckValidation();">Update</button>
+                <button class="btn btn-primary" type="reset">Clear</button>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+}
+
+<script src="/Scripts/moment.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+
+
+    $(function () {
+
+        $('body').on('click', '.list-group .list-group-item', function () {
+            $(this).toggleClass('active');
+        });
+        $('.list-arrows button').click(function () {
+            var $button = $(this), actives = '';
+            if ($button.hasClass('move-left')) {
+                actives = $('.list-right ul li.active');
+                actives.clone().appendTo('.list-left ul');
+                actives.remove();
+            } else if ($button.hasClass('move-right')) {
+                actives = $('.list-left ul li.active');
+                actives.clone().appendTo('.list-right ul');
+                actives.remove();
+            }
+        });
+        $('.dual-list .selector').click(function () {
+            var $checkBox = $(this);
+            if (!$checkBox.hasClass('selected')) {
+                $checkBox.addClass('selected').closest('.well').find('ul li:not(.active)').addClass('active');
+                $checkBox.children('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+            } else {
+                $checkBox.removeClass('selected').closest('.well').find('ul li.active').removeClass('active');
+                $checkBox.children('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+            }
+        });
+        $('[name="SearchDualList"]').keyup(function (e) {
+            var code = e.keyCode || e.which;
+            if (code == '9') return;
+            if (code == '27') $(this).val(null);
+            var $rows = $(this).closest('.dual-list').find('.list-group li');
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+            $rows.show().filter(function () {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return ! ~text.indexOf(val);
+            }).hide();
+        });
+
+    });
+
+    function FillDistrictIds() {
+        debugger;
+        document.getElementById("selectedDistrictIds").value = "";
+        var arr = new Array();
+        var result = $('#momentlistRight').find("input");
+        var i = 0; var l = result.length;
+        for (i == 0; i < l; i++) {
+            var stateid = result[i].value;
+            arr.push(stateid);
+
+        }
+        document.getElementById("selectedDistrictIds").value = arr;
+        if (i > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function CheckValidation() {
+        debugger;
+        var valid = true;
+        var countryid = $('#SelectedCountryId').val();
+        var stateid = $('#SelectedStateId').val();
+        if (countryid == "" || countryid == null) {
+            $('#SelectedCountryId').trigger('chosen:activate');
+            alert("Please select country");
+            valid = false;
+        }
+        //else if (stateid == "" || stateid == null) {
+        //    $('#SelectedStateId').trigger('chosen:activate');
+        //    alert("Please select state");
+        //    valid = false;
+        //}
+        if (valid) {
+            valid = FillDistrictIds();
+            if (valid == false) {
+                alert("Please add atleast one district");
+            }
+        }
+
+        return valid;
+    }
+
+    function GetDistrictByCountryId(obj) {
+        debugger;
+        $('#momentlistRight').html('');
+        $('#TerritoryName').val('');
+        var CountryId = obj.value;
+        var checkUrl = '@Url.Action("GetDistrictByCountryIdNotInExistingTerritory", "ManageMaster")';
+        $.ajax({
+            url: checkUrl,
+            type: "GET",
+            dataType: "JSON",
+            data: { countryId: CountryId },
+            success: GetDistrictByCountryIdSuccess,
+            error: GetDistrictByCountryIdFail
+        });
+
+    }
+
+
+    function FillDistrictListIntoMomentLeft(DistrictList) {
+        var v = "";
+        $.each(DistrictList, function (i, district) {
+            v += "<li class=\"list-group-item\"><input type=\"hidden\" value=\"" + district.DISTRICT_ID + "\" name=\"menu_" + district.DISTRICT_ID + "\">" + district.DISTRICTNAME + "</li>"
+        });
+
+        $("#momentlistLeft").html(v);
+    }
+
+    function FillDistrictListIntoMomentRight(DistrictList) {
+        var v = "";
+        $.each(DistrictList, function (i, district) {
+            v += "<li class=\"list-group-item\"><input type=\"hidden\" value=\"" + district.DISTRICT_ID + "\" name=\"menu_" + district.DISTRICT_ID + "\">" + district.TerritoryDistrictName + "</li>"
+        });
+
+        $("#momentlistRight").html(v);
+    }
+
+
+
+
+    function GetDistrictByCountryIdSuccess(result) {
+        FillDistrictListIntoMomentLeft(result)
+    }
+
+
+    function GetDistrictByCountryIdFail() {
+
+    }
+
+    function CheckTerritoryValidation() {
+        debugger;
+        var checkUrl = '@Url.Action("CheckIsterritoryExist", "ManageMaster")';
+        var TerritoryId = $('#Territory_Id').val();
+        var territoryName = $('#TerritoryName').val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ territoryName: territoryName, territoryId: TerritoryId }),
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    alert("Territory Name already exists");
+                    $('#TerritoryName').val('');
+                    $('#TerritoryName').focus();
+                }
+            },
+            error: function (data) {
+
+            }
+        });
+
+    }
+
+    function EditTerritory(Tid) {
+        debugger;
+        var checkUrl = '@Url.Action("EditTerritory", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ territory_id: Tid }),
+            dataType: "json",
+            success: EditTerritorySucceeded,
+            error: EditTerritoryFailed
+        });
+
+
+    }
+
+    function EditTerritorySucceeded(result) {
+        debugger;
+        if (result != null && result.TMaster != null) {
+            //FillStateList(result.StateList);
+
+            $('#Territory_Id').val(result.TMaster.TERRITORY_ID);
+            $('#TerritoryName').val(result.TMaster.TERRITORYNAME);
+            $('#TerritoryCode').val(result.TMaster.TERRITORYCODE);
+            $('#TerritoryDesc').val(result.TMaster.TERRITORYDESC);
+            //$('#SelectedStateId').val(result.TMaster.State_Id != null ? result.TMaster.State_Id : " ").trigger("chosen:updated");
+            $('#SelectedCountryId').val(result.TMaster.COUNTRY_ID != null ? result.TMaster.COUNTRY_ID : " ").trigger("chosen:updated");
+
+            if (result.TMaster.ISACTIVE == "Y") {
+                $('#IsActive').prop('checked', true);
+            }
+            else {
+                $('#IsActive').prop('checked', false);
+            }
+
+            $('#btnupdate').show();
+            $('#updatepindiv').show();
+            $('#creatpindiv').hide();
+            $('#btnadd').hide();
+            $('#territoryformtitle').text("UPDATE TERRITORY");
+
+        }
+        FillDistrictListIntoMomentLeft(result.leftDistMasterList);
+        FillDistrictListIntoMomentRight(result.TMaster.TerritoryDistrictList);
+
+    }
+
+
+    function EditTerritoryFailed() {
+
+    }
+
+    function resetform() {
+        window.location.href = "/ManageMaster/TerritoryList";
+    }
+
+</script>

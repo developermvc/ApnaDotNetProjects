@@ -1,0 +1,98 @@
+2019-09-13 10:18:00,841 DEBUG DebugLogger - export enter
+2019-09-13 10:18:00,846 DEBUG DebugLogger - got file path
+2019-09-13 10:18:00,854 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 10:18:00,958 DEBUG DebugLogger - excel workbook created 
+2019-09-13 10:18:01,199 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\aa2fa194-b81e-4091-819a-24c81a78b5b4_ExportData.xls
+2019-09-13 10:18:01,309 DEBUG DebugLogger - file export complete
+2019-09-13 10:18:01,309 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 10:21:08,790 DEBUG DebugLogger - export enter
+2019-09-13 10:21:08,790 DEBUG DebugLogger - got file path
+2019-09-13 10:21:08,790 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 10:21:08,790 DEBUG DebugLogger - excel workbook created 
+2019-09-13 10:21:08,791 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\1d09318a-2db5-43aa-a8dd-b022f6088888_ExportData.xls
+2019-09-13 10:21:08,795 DEBUG DebugLogger - file export complete
+2019-09-13 10:21:08,795 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 10:37:50,400 DEBUG DebugLogger - export enter
+2019-09-13 10:37:50,405 DEBUG DebugLogger - got file path
+2019-09-13 10:37:50,410 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 10:37:50,441 DEBUG DebugLogger - excel workbook created 
+2019-09-13 10:37:50,572 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\f0d40d3b-6b09-4d18-8ab5-52dfa27f23e0_ExportData.xls
+2019-09-13 10:37:50,656 DEBUG DebugLogger - file export complete
+2019-09-13 10:37:50,656 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 10:46:06,589 DEBUG DebugLogger - export enter
+2019-09-13 10:46:06,589 DEBUG DebugLogger - got file path
+2019-09-13 10:46:06,589 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 10:46:06,589 DEBUG DebugLogger - excel workbook created 
+2019-09-13 10:46:06,591 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\a327290d-3d11-4e50-af0b-2a4b3b25458d_ExportData.xls
+2019-09-13 10:46:06,593 DEBUG DebugLogger - file export complete
+2019-09-13 10:46:06,593 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 10:49:06,648 DEBUG DebugLogger - export enter
+2019-09-13 10:49:06,648 DEBUG DebugLogger - got file path
+2019-09-13 10:49:06,648 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 10:49:06,648 DEBUG DebugLogger - excel workbook created 
+2019-09-13 10:49:06,748 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\b60b0bd2-ed4b-40cc-89f4-c45b3f32fff2_ExportData.xls
+2019-09-13 10:49:06,756 DEBUG DebugLogger - file export complete
+2019-09-13 10:49:06,756 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 10:52:41,985 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-09-13 10:52:42,024 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-09-13 10:52:46,183 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-09-13 10:52:46,231 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-09-13 10:52:50,017 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-09-13 10:52:50,055 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-09-13 10:52:54,401 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-09-13 10:52:54,439 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-09-13 14:19:34,619 DEBUG DebugLogger - Insert PO end for po number WOOR1909130001
+2019-09-13 14:19:38,584 DEBUG DebugLogger - Insert PO end for po number WOOR1909130001
+2019-09-13 14:19:52,577 DEBUG DebugLogger - Insert PO end for po number WOOR1909130001
+2019-09-13 14:24:50,044 DEBUG DebugLogger - Insert PO end for po number WOOR1909130002
+2019-09-13 14:25:06,087 DEBUG DebugLogger - Insert PO end for po number WOOR1909130002
+2019-09-13 14:25:26,080 DEBUG DebugLogger - Insert PO end for po number WOOR1909130002
+2019-09-13 14:26:10,095 DEBUG DebugLogger - Insert PO end for po number WOOR1909130002
+2019-09-13 14:28:42,394 DEBUG DebugLogger - Insert PO end for po number WOOR1909130002
+2019-09-13 14:32:38,902 DEBUG DebugLogger - Insert PO end for po number WOOR1909130003
+2019-09-13 14:32:48,601 DEBUG DebugLogger - Insert PO end for po number WOOR1909130003
+2019-09-13 14:33:00,385 DEBUG DebugLogger - Insert PO end for po number WOOR1909130003
+2019-09-13 15:09:24,963 DEBUG DebugLogger - export enter
+2019-09-13 15:09:24,968 DEBUG DebugLogger - got file path
+2019-09-13 15:09:24,973 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 15:09:25,024 DEBUG DebugLogger - excel workbook created 
+2019-09-13 15:09:25,208 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\c75e7f18-83d6-4469-89d8-c699fd3d3048_ExportData.xls
+2019-09-13 15:09:25,292 DEBUG DebugLogger - file export complete
+2019-09-13 15:09:25,293 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 15:12:57,341 DEBUG DebugLogger - export enter
+2019-09-13 15:12:57,341 DEBUG DebugLogger - got file path
+2019-09-13 15:12:57,341 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 15:12:57,341 DEBUG DebugLogger - excel workbook created 
+2019-09-13 15:12:57,342 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\23787316-0c64-4f91-9c8e-6097580d27d3_ExportData.xls
+2019-09-13 15:12:57,344 DEBUG DebugLogger - file export complete
+2019-09-13 15:12:57,344 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 15:49:41,901 DEBUG DebugLogger - export enter
+2019-09-13 15:49:41,906 DEBUG DebugLogger - got file path
+2019-09-13 15:49:41,913 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 15:49:41,948 DEBUG DebugLogger - excel workbook created 
+2019-09-13 15:49:42,077 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\4e69ba52-8438-425c-978c-449711a98ccd_ExportData.xls
+2019-09-13 15:49:42,167 DEBUG DebugLogger - file export complete
+2019-09-13 15:49:42,167 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 16:05:44,433 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-09-13 16:05:44,505 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-09-13 16:51:10,190 DEBUG DebugLogger - export enter
+2019-09-13 16:51:10,195 DEBUG DebugLogger - got file path
+2019-09-13 16:51:10,199 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 16:51:10,230 DEBUG DebugLogger - excel workbook created 
+2019-09-13 16:51:10,349 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\488e86fc-8087-4392-9ecf-b49b0d0f8f97_ExportData.xls
+2019-09-13 16:51:10,433 DEBUG DebugLogger - file export complete
+2019-09-13 16:51:10,433 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 17:36:25,654 DEBUG DebugLogger - export enter
+2019-09-13 17:36:25,654 DEBUG DebugLogger - got file path
+2019-09-13 17:36:25,654 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 17:36:25,654 DEBUG DebugLogger - excel workbook created 
+2019-09-13 17:36:25,662 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\391a7059-7ba5-4e54-b14c-dcf8230606dd_ExportData.xls
+2019-09-13 17:36:25,665 DEBUG DebugLogger - file export complete
+2019-09-13 17:36:25,665 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-13 17:36:58,348 DEBUG DebugLogger - export enter
+2019-09-13 17:36:58,348 DEBUG DebugLogger - got file path
+2019-09-13 17:36:58,348 DEBUG DebugLogger - strat excel workbook created 
+2019-09-13 17:36:58,348 DEBUG DebugLogger - excel workbook created 
+2019-09-13 17:36:58,357 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\9e614d3a-7c33-4c90-9448-b1481f0dbf05_ExportData.xls
+2019-09-13 17:36:58,360 DEBUG DebugLogger - file export complete
+2019-09-13 17:36:58,360 DEBUG DebugLogger - read file byte System.Byte[]

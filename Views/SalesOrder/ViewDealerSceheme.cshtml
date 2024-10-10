@@ -1,0 +1,104 @@
+﻿@model LumaxDMS.Models.SchemeApplicatorModel
+@using LumaxDMS.AppCode
+@using BusinessObject
+  
+@{
+    ViewBag.Title = "Scheme Details";
+    UserInfo currentuser = (UserInfo)Session[Constants.Session.USERINFO];
+}
+
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>Scheme List</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+
+                    <div class="col-sm-12 col-md-12">
+
+                        <table id="Usertbl" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        Scheme Ref No.
+                                    </th>
+                                    <th>
+                                        Scheme Name
+                                    </th>
+                                    <th>
+                                        Apply On
+                                    </th>
+                                    <th>
+                                        From Date
+                                    </th>
+                                    <th>
+                                        To Date
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.SechemeList.Count > 0)
+                                {
+                                    foreach (var item in Model.SechemeList.Where(m=>m.PLANTID==currentuser.PLANT_ID))
+                                    {
+                                    <tr>
+                                        <td>
+                                            @item.SCHEMECODE
+                                        </td>
+                                        <td>
+                                            @item.SCHEMENAME
+                                        </td>
+
+                                        <td>
+                                            @item.Apply_on_Name
+                                        </td>
+                                        <td>
+                                            @Html.DisplayDate(@item.FROM_DATE)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayDate(@item.TO_DATE)
+                                        </td>
+                                        <td>
+                                            @item.APPROVE_STATUS
+                                        </td>
+                                        <td>
+                                            @Html.HiddenFor(m => m.SchemeApplicatorList[0].SCHEME_ID, new { id = "hdnScheme_Id" })
+
+                                            <a href="/Scheme/CreateSchemeApplicator?Scheme_Id=@item.SCHEME_ID&ButtonActionName=View&@Constants.HASH_SCHEME" 
+                                              target="_blank" title="View Scheme Applicator">
+                                                <i class="icon-eye"></i>
+                                            </a>
+
+
+                                        </td>
+                                    </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#Usertbl').DataTable();
+        });
+
+    </script>
+}
+

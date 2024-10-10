@@ -1,0 +1,158 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+<style>
+    span {
+        display: inline;
+    }
+</style>
+@Html.DropDownList("HiddendtlcmpId", new SelectList(Model.OtherComponentList, "ACCOUNTID", "ACCOUNTNAME"), "--Select Account--", new { @class = "form-control", @Id = "HiddendtlcmpId", @Name = "HiddendtlcmpId", @Style = "display:none" })
+<table id="otherexp" class="table table-striped table-bordered" style="width: 100%">
+    <thead class="thead-lights">
+        <tr>
+            <th style="text-align: center">
+                S.No
+            </th>
+            <th style="text-align: center">
+                Date.
+            </th>
+            <th style="text-align: center">
+                Other expanse (component)
+            </th>
+            <th style="text-align: center">
+                Other Exp. Amount
+            </th>
+
+            <th style="text-align: center">
+                Remark
+            </th>
+            <th style="text-align: center">
+                Attachment
+            </th>
+            <th style="text-align: center">
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.travelOtherList.Count > 0)
+        {
+            int j = 1;
+            foreach (var othritem in Model.travelOtherList)
+            {
+
+
+                <tr id="otherrw_@j">
+                    <td align="center">
+                        @j
+                    </td>
+                    <td align="center">
+                        <input type="text" id="otherdate_@j" name="tiffindate_@j" data-amtid="otheramount_@j" class="form-control DatePicker" value="@othritem.DATE.Value.ToString("dd/MMM/yyyy")" autocomplete="off" onchange="OtherDateValidation(this)" readonly="readonly" />
+                    </td>
+                    <td align="center">
+                        @Html.DropDownList("othercomponent_" + @j, new SelectList(Model.OtherComponentList, "ACCOUNTID", "ACCOUNTNAME", othritem.ACCOUNTID), "--Select--", new { @class = "form-control othercomponent", @Id = "othercomponent_" + @j, @Name = "othercomponent_" + @j })
+                    </td>
+                    <td align="center">
+                        <span style="display:inline-block;"><input type="text" id="otheramount_@j" name="otheramount_@j" value="@othritem.OTHEREXP_AMOUNT" class="form-control decimalinput" style="text-align: right" autocomplete="off" /></span>
+                        @*@if (Model.ActionName != "display" && Model.travelExpHDRMaster.status<2)
+                            {
+                                <span style="display:inline;"><a href="#" data-date="otherdate_@j" data-id="otheramount_@j" data-dtl="othrdtl_@j" onclick="showdtl(this);">Add</a> <a href="#" id="othrdtl_@j" style="display:none;" data-id="otheramount_@j" data-toggle="modal" data-target="#myModal"></a></span>
+                            }*@
+
+                    </td>
+                    @*<td> <a href="#" data-toggle="modal" data-target="#myModal">Add</a></td>*@
+                    <td align="center">
+                        <input type="text" id="otherremark_@j" name="otherremark_@j" value="@othritem.REMARK" class="form-control" autocomplete="off" />
+                    </td>
+                    <td align="center">
+
+                        @if (Model.ActionName != "display" && (Model.travelExpHDRMaster.status < 2 || Model.travelExpHDRMaster.status == null))
+                        {
+                            <span>
+                                <input type="file" id="otherattachment_@j" name="otherattachment_@j" data-fileid="otherattachmentfile_@j" class="form-control" style="width:60%; float:left;" onchange="saveattachment(this)" />
+                            </span>
+                        }
+                        @if (!string.IsNullOrEmpty(othritem.ATTACHMENT))
+                        {
+                            <span>
+                                <a href="@Url.Action("DownloadAttachment", "Travel", new { fileName = othritem.ATTACHMENT })" class="btn btn-primary" id="otherattachmentdownload_@j" style="float:left;margin: 0 2px 0 2px;"><i class="fa fa-download" style="padding: 4px 1px;"></i></a>
+                            </span>
+                        }
+                        <input type="text" style="display:none;" id="otherattachmentfile_@j" name="otherattachmentfile_@j" value="@othritem.ATTACHMENT" class="form-control" />
+
+                    </td>
+                    <td align="center">
+                        @if (j > 1)
+                        {
+                            <a data-tbl="otherexp" data-name="otherrw_@j" class="btn btn-sm btn-secondary  pt-top " onclick="return deleteRow(this);"><i class="fa fa-trash bg_red"></i></a>
+                        }
+                    </td>
+                </tr>
+                j++;
+            }
+        }
+        else
+        {
+                <tr>
+                    <td align="center">
+                        1
+                    </td>
+                    <td align="center">
+                        <input type="text" id="otherdate_1" name="tiffindate_1" class="form-control DatePicker" autocomplete="off" onchange="OtherDateValidation(this)" readonly="readonly" />
+                    </td>
+                    <td align="center">
+                        @Html.DropDownList("othercomponent_1", new SelectList(Model.OtherComponentList, "ACCOUNTID", "ACCOUNTNAME"), "--Select--", new { @class = "form-control othercomponent", @Id = "othercomponent_1" , @Name = "othercomponent_1" })
+                    </td>
+                    <td align="center">
+                        <span style="display:inline-block;">
+                            <input type="text" id="otheramount_1" name="otheramount_1" class="form-control decimalinput" style="text-align: right" autocomplete="off" />
+                        </span>
+                        @*<span style="display:inline;"><a href="#" data-date="otherdate_1" data-id="otheramount_1" data-dtl="othrdtl_1" onclick="showdtl(this);">Add</a> <a href="#" id="othrdtl_1" style="display:none;" data-id="otheramount_1" data-toggle="modal" data-target="#myModal"></a></span>*@
+                    </td>
+                    <td align="center">
+                        <input type="text" id="otherremark_1" name="otherremark_1" class="form-control" autocomplete="off" />
+                    </td>
+                    <td align="center">
+                        <input type="file" id="otherattachment_1" name="otherattachment_1" data-fileid="otherattachmentfile_1" class="form-control" onchange="saveattachment(this)" />
+                        <input type="text" style="display:none;" id="otherattachmentfile_1" name="otherattachmentfile_1" class="form-control" />
+
+                    </td>
+                    <td align="center">
+                        @*<a class="btn btn-sm btn-secondary  pt-top ">
+                <i class="fa fa-trash bg_red"></i>
+            </a>*@
+                    </td>
+                </tr>
+        }
+
+
+
+    </tbody>
+</table>
+
+<div class="card-footer">
+    <div class="clearfix">
+        <div class="float-left">
+            @if (Model.ActionName != "display" && (Model.travelExpHDRMaster.status < 2 || Model.travelExpHDRMaster.status == null))
+            {
+                <a href="##" id="btnaddrow" value="AddMore" style="margin-right:40px" class="btn btn-primary" title="Add More Expense" onclick="return AddotherRow();">Add More</a>
+            }
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function showdtl(input) {
+
+        var dt = $(input).attr("data-date");
+        var code = $("#travelExpHDRMaster_UserCode").val();
+        if ($("#" + dt).val() != "") {
+            $("#mymodel_otherdlt").load('/Travel/_OtherDTL?date=' + $("#" + dt).val() + '&amtid=' + $(input).attr("data-id") + '&UserCode=' + code);
+            var dtl = $(input).attr('data-dtl');
+
+            $("#" + dtl).click();
+        }
+        else {
+            alert("please enter date")
+        }
+    }
+</script>

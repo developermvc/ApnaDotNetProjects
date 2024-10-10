@@ -1,0 +1,136 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+@Html.DropDownList("HiddentiffenCityId", new SelectList(Model.CityList, "CITY_ID", "CITYNAME"), "--Select City--", new { @class = "form-control", @Id = "HiddentiffenCityId", @Name = "HiddentiffenCityId", @Style = "display:none" })
+<table id="tiffinexp" class="table table-striped table-bordered" style="width: 100%">
+    <thead class="thead-lights">
+        <tr>
+            <th style="text-align: center">
+                S.No
+            </th>
+            <th style="text-align: center">
+                Date.
+            </th>
+            <th style="text-align: center">
+                City
+            </th>
+            <th style="text-align: center">
+                Tiffin Amount
+            </th>
+
+            <th style="text-align: center">
+                Remark
+            </th>
+            <th style="text-align: center">
+                Attachment
+            </th>
+            <th style="text-align: center">
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.travelTiffinList.Count > 0)
+        {
+            int i = 1;
+            foreach (var tfnitem in Model.travelTiffinList)
+            {
+
+
+                <tr id="tiffinrw_@i">
+                    <td align="center">
+                        @i
+                    </td>
+                    <td align="center">
+                        <input type="text" id="tiffindate_@i" name="tiffindate_@i" value="@tfnitem.DATE.Value.ToString("dd/MMM/yyyy")" class="form-control DatePicker" readonly="readonly" onchange="TiffinDateValidation(this)" />
+                    </td>
+                    <td align="center">
+                        @Html.DropDownList("tiffinCity_" + @i, new SelectList(Model.CityList, "CITY_ID", "CITYNAME", tfnitem.CITYID), "--Select City--", new { @class = "form-control tiffincity", @Id = "tiffinCity_" + i, @Name = "tiffinCity_" + i,@onchange="IstiffinAllowed(this)" })
+
+                    </td>
+
+                    <td align="center">
+                        <input type="text" id="tiffinamount_@i" name="tiffinamount_@i" value="@tfnitem.AMOUNT" class="form-control decimalinput" style="text-align: right" />
+                    </td>
+                    <td align="center">
+                        <input type="text" id="tiffinremark_@i" name="tiffinremark_@i" value="@tfnitem.REMARKS" class="form-control" />
+                    </td>
+                    <td align="center">
+                        @if (Model.ActionName != "display" && (Model.travelExpHDRMaster.status < 2 || Model.travelExpHDRMaster.status == null))
+                        {
+                            <span>
+                                <input type="file" id="tiffinattachment_@i" name="tiffinattachment_@i" data-fileid="tiffinattachmentfile_@i" style="width:70%; float:left;" class="form-control" onchange="saveattachment(this)" />
+                            </span>
+                        }
+                        @if (!string.IsNullOrEmpty(tfnitem.ATTACHMENT))
+                        {
+                            <span>
+                                <a href="@Url.Action("DownloadAttachment", "Travel", new { fileName = @tfnitem.ATTACHMENT })" class="btn btn-primary" id="tiffinattachmentdownload_@i" style="float:left;margin: 0 2px 0 2px;"><i class="fa fa-download"></i></a>
+                            </span>
+                        }
+
+                        <input type="text" style="display:none;" id="tiffinattachmentfile_@i" name="tiffinattachmentfile_@i" value="@tfnitem.ATTACHMENT" class="form-control" />
+                    </td>
+
+                    <td align="center">
+                        @if (i > 1)
+                        {
+                            <a data-tbl="tiffinexp" data-name="tiffinrw_@i" class="btn btn-sm btn-secondary  pt-top " onclick="return deleteRow(this);"><i class="fa fa-trash bg_red"></i></a>
+                        }
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+        else
+        {
+            <tr>
+                <td align="center">
+                    1
+                </td>
+                <td align="center">
+                    <input type="text" id="tiffindate_1" name="tiffindate_1" class="form-control DatePicker" readonly="readonly" onchange="TiffinDateValidation(this)" />
+                </td>
+                <td align="center">
+                    @Html.DropDownList("tiffinCity_1", new SelectList(Model.CityList, "CITY_ID", "CITYNAME"), "--Select City--", new { @class = "form-control tiffincity", @Id = "tiffinCity_1", @Name = "tiffinCity_1" ,@onchange = "IstiffinAllowed(this)" })
+
+                </td>
+                <td align="center">
+                    <input type="text" id="tiffinamount_1" name="tiffinamount_1" class="form-control decimalinput" style="text-align: right" />
+                </td>
+                <td align="center">
+                    <input type="text" id="tiffinremark_1" name="tiffinremark_1" class="form-control" />
+                </td>
+                <td align="center">
+                    <input type="file" id="tiffinattachment_1" name="tiffinattachment_1" data-fileid="tiffinattachmentfile_1" class="form-control" onchange="saveattachment(this)" />
+                    <input type="text" style="display:none;" id="tiffinattachmentfile_1" name="tiffinattachmentfile_1" class="form-control" />
+
+                </td>
+                <td align="center">
+                    @*
+
+                        </a>*@
+                </td>
+            </tr>
+        }
+
+
+
+    </tbody>
+</table>
+
+<div class="card-footer">
+    <div class="clearfix">
+        <div class="float-left">
+            @if (Model.ActionName != "display" && (Model.travelExpHDRMaster.status < 2 || Model.travelExpHDRMaster.status == null))
+            {
+                <a href="##" id="btnaddrow" value="AddMore" style="margin-right:40px" class="btn btn-primary" title="Add More Expense" onclick="return AddTiffinRow();">Add More</a>
+            }
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".tiffincity").chosen();
+    })
+</script>

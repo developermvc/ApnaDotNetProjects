@@ -1,0 +1,358 @@
+﻿@model LumaxDMS.Models.TravelApprovalDesignationMappingModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Travel Approval Designation Mapping";
+    var counter = 0;
+}
+
+@section CSS
+{
+    <link href="/Content/AutoCompleteCSS/chosen.css" rel="stylesheet" type="text/css" />
+    <style>
+        .chosen-single {
+            width: 100% !important;
+        }
+    </style>
+}
+
+@using (Html.BeginForm("TravelApprovalDesignationMapping", "Travel", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.TVLAPPROVALID)
+    @Html.HiddenFor(m => m.CREATED_DATE)
+    @Html.HiddenFor(m => m.CREATED_BY)
+
+    @Html.DropDownList("HiddenApprovalDesignationId", new SelectList(Model.ApprovaldesignationMasterList, "DESIGNATION_ID", "DESIGNATIONNAME"), "--Select--", new { @class = "form-control", @Id = "HiddenApprovalDesignationId", @Name = "HiddenApprovalDesignationId", @Style = "display:none" })
+    <div>
+        @Html.Partial("_WaitModal")
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName == Constants.BTN_CREATE)
+                    {
+                        <span>CREATE TRAVEL APPROVAL DESIGNATION MAPPING</span>
+                    }
+                    else
+                    {
+                        <span>UPDATE TRAVEL APPROVAL DESIGNATION MAPPING</span>
+                    }
+                </div>
+                <div class="card-body custom_responsive2">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd" class="redlabel">
+                                DESIGNATION :
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @Html.DropDownListFor(m => m.SelectedDesignationId, new SelectList(Model.designationMasterList, "DESIGNATION_ID", "DESIGNATIONNAME"), "--Select--", new { @class = "form-control select-chosen partychosen-select", @onchange = "return onChangeDesignation(this);" })
+                            @Html.ValidationMessageFor(m => m.SelectedDesignationId)
+                        </div>
+                        <div class="col-lg-1 col-xs-12">
+                            <label for="pwd" class="redlabel">
+                                IS ACTIVE :
+                            </label>
+                        </div>
+                        <div class="col-lg-1 col-xs-12">
+                            @Html.CheckBoxFor(m => m.ISACTIVE, new { @class = "form-control", @Style = "width: 19px;" })
+                            @Html.ValidationMessageFor(m => m.ISACTIVE)
+                        </div>
+                    </div>
+                    <br />
+
+                    <table id="Caserelationtbl" class="table">
+
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    <a href="#" onclick="return removeCheckedRelation();" title="Remove Checked Rows" class="pull-left"><i class="fa fa-trash bg_red"></i></a>
+                                    <input type="checkbox" class="tblCheckBox" onclick="return checkAllchekBoxsTravel(this)" style="width: 19px;" />
+                                </th>
+                                <th align="center">
+                                    Approval Designation
+                                </th>
+                                <th>
+                                    Approval Level
+                                </th>
+                            </tr>
+                        </thead>
+                        @if (Model.travelApprovalDtlMasterList != null)
+                        {
+                            <tbody>
+                                @Html.Hidden("CaseRelationCount", Model.travelApprovalDtlMasterList.Count, new { @Name = "CaseRelationCount" })
+                                @foreach (var item in Model.travelApprovalDtlMasterList)
+                                {
+                                    <tr>
+
+                                        <td width="20%">
+                                            @{counter = counter + 1;}
+                                            <input type="checkbox" class="tblCheckBox" />&nbsp;
+                                        </td>
+                                        <td width="40%">
+                                            @Html.DropDownListFor(m => item.selectedApprovalDesignationId, new SelectList(item.ApprovaldesignationMasterList, "DESIGNATION_ID", "DESIGNATIONNAME", item.APPROVAL_DESIGNATIONID), "--Select--", new { @id = "APPROVALDESIGNATIONNAME_" + counter, @Name = "APPROVALDESIGNATIONNAME_" + counter, @Class = "form-control select-chosen" })
+                                        </td>
+                                        <td width="50%">
+                                            @Html.TextBoxFor(m => item.APPROVALLEVEL, new { @id = "APPROVALLEVEL_" + counter, @Name = "APPROVALLEVEL_" + counter, @class = "form-control numberinput LevelInput", @onchange = "return Serializelevel(this);" })
+                                        </td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        }
+
+
+                    </table>
+                    <br />
+                    <div class="clearfix">
+                        <input type="button" name="btntype" value="Add Row" id="btnaddrow" class="btn btn-primary" />
+                    </div>
+
+
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+                            @if (Model.ActionName == Constants.BTN_CREATE)
+                            {
+                                <input type="submit" name="btntype" value="CREATE" id="btnadd" onclick="return CheckAggregate();" class="btn btn-primary" />
+                            }
+                            else
+                            {
+                                <input type="submit" name="btntype" value="UPDATE" id="btnadd" onclick="return CheckAggregate();" class="btn btn-primary" />
+                            }
+                            <input type="button" class="btn btn-primary" name="btntype" value="CLEAR" onclick="return ReloadPage();" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+{
+    <script src="~/Scripts/ProjectJS/Complaint.js"></script>
+ <script type="text/javascript">
+        var numrows = Number('@counter');
+        var serialnumber = 1;
+        var rowsarray = ["0", "0"];
+
+        $("#APPROVALDESIGNATIONNAME_1").chosen();
+
+
+
+
+    $(document).ready(function () {
+
+        HideWaitingSymbol();
+        debugger;
+        $('#SelectedDesignationId').chosen();
+        $(".select-chosen").chosen();
+
+        $('#Caserelationtbl tbody tr:first').find(':checkbox').remove();
+
+        $(".select-chosen").chosen();
+        debugger;
+        $("#APPROVALDESIGNATIONNAME_2").chosen();
+
+    });
+
+    function Serializelevel(obj) {
+        var level = $(obj).val();
+        $('#Caserelationtbl tbody tr').each(function (i, data) {
+            if ($(obj).attr('id') != $(this).find('#APPROVALLEVEL_' + (i + 1)).attr('id') && level == $(this).find('#APPROVALLEVEL_' + (i + 1)).val()) {
+                alert("PLEASE ENTER DIFFERENT APPROVAL LEVEL");
+                $(obj).val("");
+            }
+        });
+        if (level > $('#Caserelationtbl tbody tr').length) {
+            alert("PLEASE ENTER DISPLAY ORDER IN BETWEEN " + $('#Caserelationtbl tbody tr').length);
+            $(obj).val("");
+        }
+    }
+
+        function onChangeDesignation(obj) {
+            GetApprovalDesignations(obj);
+            IsMappingExist(obj);
+        }
+
+        function GetApprovalDesignations(obj) {
+            $('#HiddenApprovalDesignationId').empty();
+            $('#HiddenApprovalDesignationId').html($('#SelectedDesignationId').html());
+            $("#HiddenApprovalDesignationId option[value=" + obj.value + "]").remove();
+
+            $('#APPROVALDESIGNATIONNAME_1').empty();
+            $('#APPROVALDESIGNATIONNAME_1').html($('#HiddenApprovalDesignationId').html());
+            $('#APPROVALDESIGNATIONNAME_1').trigger("chosen:updated");
+        }
+     function IsMappingExist(obj) {
+         var id = obj.value
+         var url ='@Url.Action("IsMappingExist", "Travel")'
+         debugger;
+         $.ajax({
+             url: url,
+             type: 'GET',
+             dataType: 'JSON',
+             data: { id:id },
+             success: IsMappingExistSuccess,
+             error: function IsMappingExistError() { }
+         });
+     }
+     function IsMappingExistSuccess(result) {
+         if (result == true) {
+             $('#SelectedDesignationId').val('');
+             $('#SelectedDesignationId').trigger("chosen:updated");
+             alert("MAPPING FOR THIS DESIGNATION ALREADY EXIST");
+         }
+        
+     }
+
+     $('#btnaddrow').on('click', function () {
+         debugger;
+        var validate = CheckAggregate();
+        if (validate) {
+
+                numrows = numrows + 1;
+                serialnumber = serialnumber + 1;
+                rowsarray[numrows] = "0";
+                var table = document.getElementById("Caserelationtbl");
+                var rowCount = table.rows.length;
+                var row = table.insertRow(rowCount);
+                //row.id = "Complaint_" + numrows;
+
+                var cell1 = row.insertCell(0);
+                var element0 = document.createElement("input");
+                element0.type = "checkbox";
+                //var element1 = document.createElement("input");
+                //element1.type = "hidden";
+            element0.className = "tblCheckBox";
+                //element1.name = "CaseType_Id_" + numrows;
+                //element1.id = "CaseType_Id_" + numrows;
+                cell1.appendChild(element0);
+                //$(element0).append(element1);
+            cell1.align = "center";
+            debugger;
+            var ddl = $('#HiddenApprovalDesignationId').clone(true);
+
+                var celldv = row.insertCell(1);
+            ddl[0].id = "APPROVALDESIGNATIONNAME_" + numrows;
+            ddl[0].name = "APPROVALDESIGNATIONNAME_" + numrows;
+                ddl[0].value = "";
+            ddl[0].className = "form-control";
+                //ddl[0].setAttribute("onchange", "return GetEmployeeDetail(this)");
+            celldv.append(ddl[0]);
+            $("#APPROVALDESIGNATIONNAME_" + numrows).chosen();
+            //$("#APPROVALDESIGNATIONNAME_" + numrows).trigger("chosen:updated");
+
+            var cell2 = row.insertCell(2);
+
+
+            var element2 = document.createElement("input");
+            element2.type = "text";
+            element2.className = "form-control numberinput LevelInput";
+            element2.name = "APPROVALLEVEL_" + numrows;
+            element2.id = "APPROVALLEVEL_" + numrows;
+            element2.value = "";
+            element2.setAttribute("onchange", "return Serializelevel(this)");
+            cell2.append(element2);
+
+                $(".partchosen-select").chosen();
+                //$('#SelectedPart_Id_' + numrows + '_chosen').attr("style", "width: 230px !important");
+
+                document.getElementById("CaseRelationCount").value = numrows;
+        }
+    });
+
+        function CheckAggregate() {
+            debugger;
+            valid = true;
+
+            var designation = document.getElementById("SelectedDesignationId");
+            var mrowCount = document.getElementById("CaseRelationCount").value;
+
+            if (designation.value == "" || $(approvelDesignation).find("option:selected").text() == "--Select--") {
+                alert('PLEASE SELECT DESIGNATION');
+                valid = false;
+                return valid;
+            }
+
+            for (var i = 1; i <= mrowCount; i++) {
+                var approvelDesignation = document.getElementById("APPROVALDESIGNATIONNAME_" + i);
+                var level = document.getElementById("APPROVALLEVEL_" + i);
+
+                if (approvelDesignation != undefined) {
+                    debugger;
+                    if (approvelDesignation.value == "" || $(approvelDesignation).find("option:selected").text() == "--Select--") {
+                        if (i >= 1) {
+                            alert('PLEASE SELECT APPROVEL DESIGNATION');
+                            $('#APPROVALDESIGNATIONNAME_' + i).focus();
+                            valid = false;
+                            return valid;
+                        }
+                    }
+                }
+                if (level != undefined && level.value == "") {
+                    if (i >= 1) {
+                        alert('PLEASE ENTER APPROVEL LEVEL');
+                        $('#APPROVALLEVEL_' + i).focus();
+                        valid = false;
+                        return valid;
+                    }
+                }
+            }
+            return valid;
+        }
+
+        function removeCheckedRelation() {
+            if ($('#Caserelationtbl tbody tr').length > 1) {
+                $('#Caserelationtbl tbody').find('tr').each(function () {
+                    if ($(this).find('td:first').find('input[type="checkbox"]').is(':checked')) {
+                        $(this).remove();
+                        clearLevel();
+                    }
+                });
+                //$('#CaseRelationCount').prop('value', $('#Caserelationtbl tbody tr').length);
+                //counter = $('#Caserelationtbl tbody tr').length;
+            }
+            else {
+                alert("Atleast one row is required");
+            }
+        }
+
+        function OnInitializePage() {
+            if ('@Model.ActionName' == 'Edit') {
+
+                $('#CASETYPEID').attr("disabled", true).trigger("chosen:updated");
+                $('#CASETYPEID a').addClass("disablecolor");
+
+                $('#CTYPEID').attr("disabled", true);
+
+            }
+        }
+        function ReloadPage() {
+            window.location.reload();
+        }
+        function checkAllchekBoxsTravel(obj) {
+            debugger;
+            if (obj.checked == false) {
+                $('.tblCheckBox').each(function () {
+                    this.checked = false;
+                });
+            }
+            else {
+                $('.tblCheckBox').each(function () {
+                    this.checked = true;
+                });
+            }
+
+     }
+
+     function clearLevel() {
+         $('.LevelInput').each(function () {
+             var id = this.id;
+             $('#' + id).val('');
+         })
+     }
+    </script>
+}
+

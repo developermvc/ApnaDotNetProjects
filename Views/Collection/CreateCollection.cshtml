@@ -1,0 +1,771 @@
+﻿@model LumaxDMS.Models.CollectionModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "Enter Collection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@section CSS
+{
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+
+}
+
+@{Html.RenderPartial("_WaitModal");}
+
+@Html.DropDownList("HiddenInvoiceId", new SelectList(Model.invoiceMasterList, "INVOICE_ID", "INVOICENUMBER"), "--SELECT INVOICE NUMBER--", new { @class = "form-control", @Id = "HiddenInvoiceId", @Name = "HiddenInvoiceId", @Style = "display:none" })
+
+@using (Html.BeginForm("CreateCollection", "Collection", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken();
+    @Html.HiddenFor(m => m.COLLECTIONID);
+    @Html.HiddenFor(m => m.IsDealerLogin);
+    <div class="card card-default">
+        <div class="card-header card_bg">
+
+            <div class="card-title card_tittle2" id="pagetitle">COLLECTION DETAILS</div>
+        </div>
+        <input type="hidden" value="@Model.collectionDtlMasterList.Count" id="loopcount" name="loopcount" />
+        <div class="custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="createpanel">
+                        <div class="createonlydv">
+                            <div class="row  row_pt">
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        CHANNEL PARTNER :
+                                    </label>
+                                </div>
+                                <div class="col-lg-4 col-xs-12  poHdr forRetailer forDealer">
+                                    @Html.DropDownListFor(model => model.SelectedDEALERID, new SelectList(Model.dealerMasterList, "DEALER_ID", "DEALERFULLNAME"), "--SELECT CHANNEL PARTNER--", new { @class = "form-control select-chosen", @title = "SELECT CHANNEL PARTNER", @onchange = "return onChangeDealer( );" })
+                                    @Html.ValidationMessageFor(model => model.SelectedDEALERID)
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        SELECT EMPLOYEE :
+                                    </label>
+                                </div>
+                                <div class="col-lg-4 col-xs-12  poHdr forRetailer forDealer">
+                                    @Html.DropDownListFor(model => model.SelectedEMPID, new SelectList(Model.employeeMasterList, "EMP_ID", "DISPLAYEMPNAME"), "--SELECT EMPLOYEE--", new { @class = "form-control select-chosen", @title = "SELECT EMPLOYEE", @onchange = "return onChangeEmployee();" })
+                                    @Html.ValidationMessageFor(model => model.SelectedEMPID)
+                                </div>
+
+
+                            </div>
+                            <div class="row row_pt">
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        SELECT PAYMENT MODE :
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12  poHdr forRetailer forDealer">
+                                    @Html.DropDownListFor(model => model.SelectedPAYMENTMODEID, new SelectList(Model.paymentModeMasterList, "PAYMENTMODEID", "PAYMENTMODENAME"), "--SELECT PAYMENT MODE--", new { @class = "form-control select-chosen", @title = "SELECT PAYMENT MODE", @onchange = "" })
+                                    @Html.ValidationMessageFor(model => model.SelectedPAYMENTMODEID)
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        REF DOC NUMBER
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    @Html.TextBoxFor(m => m.C_REFDOCNO, new { @class = "form-control", @autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.C_REFDOCNO)
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        REF DOC DATE
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12" style="z-index:99999 !important;">
+                                    <div class="input-group date fromdatepicker">
+                                        @Html.TextBoxFor(m => m.C_REFDOCDATE, new { @class = "form-control datepicker",  @readonly = "readonly" })
+                                        <span class="input-group-append input-group-addon">
+                                            <i class="input-group-text2 fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.C_REFDOCDATE)
+                                </div>
+
+
+
+                            </div>
+                            <div class="row row_pt">
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        COLLECTION AMOUNT
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    @Html.TextBoxFor(m => m.COLLECTIONAMOUNT, new { @class = "form-control", @autocomplete = "off",@onblur= "return openBalanceCalculater()" })
+                                    @Html.ValidationMessageFor(model => model.COLLECTIONAMOUNT)
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        SELECT DEPOSIT TYPE :
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12  poHdr forRetailer forDealer">
+                                    @Html.DropDownListFor(model => model.SelectedDEPOSITTYPEID, new SelectList(Model.depositTypeMasterList, "DEPOSITTYPEID", "DEPOSITTYPENAME"), "--SELECT DEPOSIT TYPE--", new { @class = "form-control select-chosen", @title = "SELECT DEPOSIT TYPE", @onchange = "" })
+                                    @Html.ValidationMessageFor(model => model.SelectedDEPOSITTYPEID)
+                                </div>
+
+
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        BANK NAME :
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    @Html.TextBoxFor(m => m.BANKNAME, new { @class = "form-control", @autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.BANKNAME)
+                                </div>
+
+
+                            </div>
+                            <div class="row row_pt">
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="">
+                                        SLIP NUMBER :
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    @Html.TextBoxFor(m => m.SLIPNO, new { @class = "form-control", @title = "SLIP NUMBER", @autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.SLIPNO)
+                                </div>
+
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="">
+                                        SLIP DATE :
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    <div class="input-group date fromdatepicker">
+                                        @Html.TextBoxFor(m => m.SLIPDATE, new Dictionary<string, object> { { "data-val", false }, { "class", "form-control datepicker" },{ "title", "SLIP DATE" },{"readonly","readonly" } })
+                                        <span class="input-group-append input-group-addon">
+                                            <i class="input-group-text2 fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.SLIPDATE)
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="">
+                                        BALANCE AMOUNT :
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    @Html.TextBoxFor(m => m.BALANCEAMOUNT, new { @class = "form-control",@readonly="readonly", @title = "Balance (Open) Amount", @autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.BALANCEAMOUNT)
+                                </div>
+                            </div>
+                            <div class="row row_pt">
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        UPLOAD FILE:
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    @Html.TextBoxFor(m => m.ATTACHEDDOCUMENT, new { type = "file", @id = "collectionDoc", @Name = "collectionDoc" ,@class="btn btn-primary", @style= "width: 154px;"})
+                                    @Html.ValidationMessageFor(model => model.ATTACHEDDOCUMENT)
+                                    @if (!string.IsNullOrEmpty(Model.DOCFILEPATH))
+                                    {
+                                        <a href="##" onClick="return DownloadFile('@Model.DOCFILEPATH','@Model.DOCFILENAME');" title="@Model.DOCFILENAME">Download</a>
+                                        <i class="fa fa-download"></i>
+                                    }
+                                </div>
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        REMARKS :
+                                    </label>
+                                </div>
+                                <div class="col-lg-6 col-xs-12">
+                                    @Html.TextBoxFor(m => m.REMARKS, new { @class = "form-control", @title = "REMARKS", @autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.REMARKS)
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="apponlydv">
+                            <div class="row row_pt">
+                                <div class="col-lg-2 col-xs-12">
+                                    <label for="pwd" class="redlabel">
+                                        APPROVAL REMARKS :
+                                    </label>
+                                </div>
+                                <div class="col-lg-6 col-xs-12">
+                                    @Html.TextBoxFor(m => m.APPROVALREMARK, new { @class = "form-control", @autocomplete = "off" })
+                                    @Html.ValidationMessageFor(model => model.APPROVALREMARK)
+                                </div>
+
+                            </div>
+                        </div>*@
+                    </div>
+                    @if (Model.collectionDtlMasterList != null && Model.collectionDtlMasterList.Count > 0)
+                                    {
+                                        { Html.RenderPartial("_CollectionDetails"); }
+                                    }
+                    else
+                    {
+                        @*<br />*@
+                    }
+                    <div id="CollectionDetailsdiv">
+                    </div>
+                    @*<div class="card-footer createonly">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <a href="##" value="AddMore" style="margin-right:160px" class="btn btn-primary" title="Add More Item" onclick="return AddDynamicRow();">Add More Item</a>
+
+                                </div>
+
+                            </div>
+                        </div>*@
+
+                    <div>
+
+                        <div class="card-footer">
+                            <div class="clearfix">
+                                <div class="float-right">
+
+                                    <button name="btnTyp" value="Save" class="btn btn-primary createonly" type="submit" onclick="return CheckValidation();"> Save </button>
+                                    <button name="btnTyp" value="Submit" class="btn btn-primary createonly" type="submit" onclick="return CheckValidation();"> Submit </button>
+                                    @*<button name="btnTyp" value="Approve" class="btn btn-primary apponly" type="submit" onclick="return CheckApproveValidation('APPROVE');"> Approve </button>
+                                    <button name="btnTyp" value="Reject" class="btn btn-primary apponly" type="submit" onclick="return CheckApproveValidation('REJECT');"> Reject </button>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section JS {
+    <script src="~/Scripts/ProjectJS/ManageMaster_Common.js"></script>
+
+
+    <script type="text/javascript">
+        var firstime = true;
+        $(document).ready(function () {
+            
+            $(".select-chosen").chosen();
+              $('.fromdatepicker').datepicker({
+                format: 'dd/M/yyyy'
+            });
+            //ShowHideControls();
+            HideWaitingSymbol();
+
+            InializeComponent();
+            showTotals();
+        });
+
+        $(document).on('keydown', '.numberdecimalinput', function (e) {
+            if (event.shiftKey == true) {
+                event.preventDefault();
+            }
+            if ((event.keyCode >= 48 && event.keyCode <= 57)
+                || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8
+                || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39
+                || event.keyCode == 46 || event.keyCode == 190) {
+
+            } else {
+                event.preventDefault();
+            }
+
+            if ($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+                event.preventDefault();
+
+        });
+
+        function onChangeDealer() {
+            //FillPartData();
+            checkDealerAlreadySavedCollection();
+            FillInvoiceData();
+            //$("#SelectedPart_Id_1").chosen();
+        }
+        function checkDealerAlreadySavedCollection() {
+            var dealerid = $("#SelectedDEALERID").val();
+            var url = '@Url.Action("IsCollectionEixst", "Collection")';
+            debugger;
+            $.ajax({
+                type: "POST",
+                data: { dealerId: dealerid },
+                dataType:"JSON",
+                url: url,
+                success: successCollectionExist,
+                error: function errorCollectionExist() { }
+            })
+        }
+        function successCollectionExist(result) {
+            if (result.isExist) {
+                alert("Saved Collection already Exist. Please Submit or save collection");
+                window.location.href = "CreateCollection?ActionName=Edit&Id=" + result.collectionId;
+            }
+            debugger;
+        }
+        function CheckValidation() {
+            debugger;
+            var validagg = true;
+            var dealerID = $("#SelectedDEALERID").val();
+            var employeeID = $("#SelectedEMPID").val();
+            var SelectedPAYMENTMODEID = $('#SelectedPAYMENTMODEID').val();
+            var REFDOCNU = $('#C_REFDOCNO').val();
+            var REFDOCDATE = $('#C_REFDOCDATE').val();
+            var Remark = $('#REMARKS').val(); 
+            var documentAtt = $('#collectionDoc').val(); 
+            var collectionamount = $('#COLLECTIONAMOUNT').val();
+
+            if (dealerID == '' || dealerID == undefined) {
+                validagg = false;
+                $('#SelectedDEALERID').trigger('chosen:activate');
+                alert("PLEASE SELECT CHANNEL PARTNER");
+            }
+            else if (employeeID == '' || employeeID == undefined) {
+                validagg = false;
+                $('#SelectedEMPID').trigger('chosen:activate');
+                alert("PLEASE SELECT EMPLOYEE");
+            }
+            else if (SelectedPAYMENTMODEID == '' || SelectedPAYMENTMODEID == undefined) {
+                validagg = false;
+                $('#SelectedPAYMENTMODEID').trigger('chosen:activate');
+                alert("PLEASE SELECT PAYMENTMODE");
+            }
+            else if (REFDOCNU == '' || REFDOCNU == undefined) {
+                validagg = false;
+                $('#C_REFDOCNO').focus();
+                alert("PLEASE ENTER REF DOC NUMBER");
+            }
+            else if (REFDOCDATE == '' || REFDOCDATE == undefined) {
+                validagg = false;
+                $('#C_REFDOCDATE').focus();
+                alert("PLEASE SELECT REF DOC DATE");
+            }
+            else if (Remark == '' || Remark == undefined) {
+                validagg = false;
+                $('#REMARKS').focus();
+                alert("PLEASE ENTER REMARK");
+            }
+            else if (documentAtt == '' || documentAtt == undefined) {
+                validagg = false;
+                $('#collectionDoc').focus();
+                alert("PLEASE SELECT FILE");
+            }
+            else if (SelectedDEPOSITTYPEID == '' || SelectedDEPOSITTYPEID == undefined) {
+                validagg = false;
+                $('#SelectedDEPOSITTYPEID').trigger('chosen:activate');
+                alert("PLEASE SELECT DEPOSIT TYPE");
+            }
+            else if (collectionamount == '' || collectionamount == undefined || collectionamount <= 0) {
+                validagg = false;
+                alert("Please enter collection amount");
+                $('#COLLECTIONAMOUNT').focus();
+            }
+
+            else {
+                var table = document.getElementById("ctblbody");
+                if (table != null) {
+                    var numrows = table.rows.length;
+                    $('#loopcount').val(numrows);
+                    var checkedcount = 0;
+                    for (var i = 1; i <= numrows; i++) {
+
+                        var ischecked = $('#IsChecked_' + i).is(":checked");
+                        if (ischecked) {
+                            checkedcount++;
+                            var ddlInvoice = $('#SelectedINVOICEID_' + i).val();
+                            var txtRecivedAmount = $('#txtRECIVEDAMOUNT_' + i).val();
+                            if (ddlInvoice == "") {
+                                $("#SelectedINVOICEID_" + i).focus();
+                                validagg = false;
+                                alert("PLEASE SELECT INVOICE NUMBER");
+                            }
+                            else if (txtRecivedAmount == "" || txtRecivedAmount < 1) {
+                                $("#txtRECIVEDAMOUNT_" + i).focus();
+                                validagg = false;
+                                alert("PLEASE ENTER RECEIVED AMOUNT");
+                            }
+                        }
+                    }
+                    if (checkedcount == 0) {
+                        alert("Please select atleast one invoice.");
+                        validagg = false;
+                    }
+                } else {
+                    alert("NO PENDING INVOICE FOUND.");
+                    validagg = false;
+                }
+            }
+            if (validagg) {
+                validagg = checkRCVAmount(true);
+            }
+            if (validagg) {
+                validagg = ValidateFileSize();
+            }
+            if (validagg == true) {
+                validagg = confirm("Yor are about to save this data \n Do you want to continue?");
+            }
+            return validagg;
+        }
+
+        function showTotals() {
+            debugger;
+            //checkRCVAmount();
+            var totalAmount=0;
+            var txtAmount = 0;
+            if (document.getElementById("ctblbody") != null) {
+
+                var table = document.getElementById("ctblbody");
+                var numrows = table.rows.length;
+
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtINVOICEAMOUNT_' + i).val() != "" ? $('#txtINVOICEAMOUNT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalINVOICEAMOUNT').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtBALANCEAMOUNT_' + i).val() != "" ? $('#txtBALANCEAMOUNT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalBALANCEAMOUNT').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtCASHDISCOUNT_' + i).val() != "" ? $('#txtCASHDISCOUNT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalCASHDISCOUNT').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtNETAMOUNT_' + i).val() != "" ? $('#txtNETAMOUNT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalNETAMOUNT').text(totalAmount.toFixed(2));
+
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtRECIVEDAMOUNT_' + i).val() != "" ? $('#txtRECIVEDAMOUNT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalRECIVEDAMOUNT').text(totalAmount.toFixed(2));
+
+            }
+            openBalanceCalculater();
+        }
+
+
+        function getInvoiceByInvoiceId(rownumber, SelectedINVOICEID) {
+            debugger;
+            var checkUrl = '@Url.Action("GetLineItemCollectionInfoInvoiceId", "Collection")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { InvoiceId: SelectedINVOICEID},
+                success: function getInvoiceByInvoiceIdSuccess(result) {
+                    if (result.Data != null) {
+                        $("#txtINVOICEDATE_" + rownumber).val(formateJsonDate(result.Data.INVOICEDATE))
+                        $("#txtINVOICEAMOUNT_" + rownumber).val(result.Data.INVOICEAMOUNT)
+                        $("#txtBALANCEAMOUNT_" + rownumber).val(result.Data.BALANCEAMOUNT)
+                        $("#txtCASHDISCOUNT_" + rownumber).val(result.Data.CASHDISCOUNT)
+                        $("#txtNETAMOUNT_" + rownumber).val(result.Data.NETAMOUNT)
+                    } else {
+                        alert("selected invoice is not valid");
+                        $("#SelectedINVOICEID_" + rownumber).val("");
+                        $("#SelectedINVOICEID_" + rownumber).trigger("chosen:updated");
+                    }
+
+                },
+                error: function getInvoiceByInvoiceIdFail(){ }
+            });
+        }
+
+        function FillInvoiceData() {
+            debugger;
+            var DealerId = $('#SelectedDEALERID').val();
+            var checkUrl = '@Url.Action("GetCollectionDtlByDealerId", "Collection")';
+            if (DealerId != "" && DealerId != null) {
+
+                $.ajax({
+                    url: checkUrl,
+                    type: "GET",
+                    dataType: "JSON",
+                    data: { DealerId: DealerId },//, str: str
+                    success: function FillInvoiceDataSuccess(result) {
+                        debugger;
+                        //$('#SelectedINVOICEID_1').empty();
+                        //$('#SelectedINVOICEID_1').append('<option value="">--SELECT INVOICE NUMBER--</option>');
+                        //if (result.Data != null && result.Data != undefined) {
+                        //    for (var i = 0; i < result.Data.length; i++) {
+                        //        $('#SelectedINVOICEID_1').append('<option value="' + result.Data[i].INVOICE_ID + '">' + result.Data[i].INVOICENUMBER + '</option>');
+                        //        $('#HiddenInvoiceId').append('<option value="' + result.Data[i].INVOICE_ID + '">' + result.Data[i].INVOICENUMBER + '</option>');
+                        //    }
+                        //    $('#SelectedINVOICEID_1').trigger("chosen:updated");
+                        //}
+                    },
+                    error: function FillInvoiceDataFail(result) {
+                        $("#CollectionDetailsdiv").html(result.responseText);
+                    }
+                });
+            }
+            else {
+                alert("Please select a dealer");
+            }
+        }
+
+        function InializeComponent() {
+            debugger;
+            $("#SelectedINVOICEID_1 option[text='']").remove();
+            $('#SLIPDATE').val(formatDate($('#SLIPDATE').val()));
+            $('#C_REFDOCDATE').val(formatDate($('#C_REFDOCDATE').val()));
+
+            if ('@Model.IsAdmin' != 'True') {
+                if ('@Model.IsDealerLogin' == 'True') {
+                    $('#SelectedDEALERID').attr("disabled", true).trigger("chosen:updated");
+                    $('#SelectedDEALERID_chosen a').addClass("disablecolor");
+                } else {
+                    $('#SelectedEMPID').attr("disabled", true).trigger("chosen:updated");
+                    $('#SelectedEMPID_chosen a').addClass("disablecolor");
+                }
+            }
+
+
+            if ('@Model.ACTIONNAME' == 'approve') {
+                $('#pagetitle').text('Approve Collection');
+                $('.createonly').hide();
+                $('.createonlydv input,select').attr("disabled", true);
+
+
+                $('#SelectedPAYMENTMODEID').attr("disabled", true).trigger("chosen:updated");
+                $('#SelectedDEALERID').attr("disabled", true).trigger("chosen:updated");
+                $('#SelectedDEPOSITTYPEID').attr("disabled", true).trigger("chosen:updated"); 
+                $('#SelectedEMPID').attr("disabled", true).trigger("chosen:updated");  
+
+                $('#SelectedPAYMENTMODEID_chosen a').addClass("disablecolor");
+                $('#SelectedDEALERID_chosen a').addClass("disablecolor");
+                $('#SelectedDEPOSITTYPEID_chosen a').addClass("disablecolor");
+                $('#SelectedEMPID_chosen a').addClass("disablecolor");
+
+
+            } else if ('@Model.ACTIONNAME' == 'view') {
+                $('#pagetitle').text('Collection Details');
+                $('.createonly').hide();
+                $('.apponly').hide();
+                $('.createonlydv input,select').attr("disabled", true);
+                $('.apponlydv input,select').attr("disabled", true);
+
+                $('#SelectedPAYMENTMODEID').attr("disabled", true).trigger("chosen:updated");
+                $('#SelectedDEALERID').attr("disabled", true).trigger("chosen:updated");
+                $('#SelectedDEPOSITTYPEID').attr("disabled", true).trigger("chosen:updated");
+
+                $('#SelectedEMPID').attr("disabled", true).trigger("chosen:updated");
+                $('#SelectedEMPID_chosen a').addClass("disablecolor");
+
+                $('#SelectedDEALERID').attr("disabled", true).trigger("chosen:updated");
+                $('#SelectedDEALERID_chosen a').addClass("disablecolor");
+
+                $('#SelectedPAYMENTMODEID_chosen a').addClass("disablecolor");
+                $('#SelectedDEALERID_chosen a').addClass("disablecolor");
+                $('#SelectedDEPOSITTYPEID_chosen a').addClass("disablecolor");
+
+
+
+            } else {
+                $('.apponly').hide();
+                $('.apponlydv').hide();
+                if ('@Model.IsDealerLogin' == 'True') {
+                    onChangeDealer();
+                }
+            }
+            formatlineitem();
+        }
+
+        function formatlineitem() {
+            debugger;
+            var table = document.getElementById("ctblbody");
+            if (table != null) {
+                var numrows = table.rows.length;
+                for (var i = 1; i <= numrows; i++) {
+                    var date = $('#txtINVOICEDATE_' + i).val();
+                    if (date != undefined && date != "") {
+                        $('#IsChecked_' + i).attr('checked', true);
+                        var invdate = $('#txtINVOICEDATE_' + i).val();
+                        $('#txtINVOICEDATE_' + i).val(formatDate(invdate));
+                    }
+                }
+            }
+
+        }
+        function openBalanceCalculater() {
+            var totalNetAmount = parseFloat($("#lblLineItemTotalRECIVEDAMOUNT").text());
+            var collectionAmount = parseFloat($("#COLLECTIONAMOUNT").val());
+            var balanceamount = totalNetAmount - collectionAmount;
+            $("#BALANCEAMOUNT").val(balanceamount);
+        }
+
+        function EnabledisableRow() {
+            debugger;
+            var table = document.getElementById("ctblbody");
+            if (table != null) {
+                var numrows = table.rows.length;
+                for (var i = 1; i <= numrows; i++) {
+                    var ischecked = $('#IsChecked_' + i).is(":checked");
+                    var amount = $("#txtNETAMOUNT_" + i).val();
+                    if (ischecked && amount >= 0) {
+                            $('#colnDtlRow_' + i + ' input').attr('disabled', false);
+                            $('#txtRECIVEDAMOUNT_' + i).val(amount);
+                    } else {
+                        $('#colnDtlRow_' + i + ' input').attr('disabled', true);
+                        if (amount >= 0) {
+                            $('#txtRECIVEDAMOUNT_' + i).val('');
+                        }
+                    }
+                    if (amount >= 0) {
+                        $('#IsChecked_' + i).attr('disabled', false);
+                    }
+                    $('#COLLECTIONDTLID_' + i).attr('disabled', false);
+                }
+            }
+            showTotals();
+        }
+
+
+        function CheckApproveValidation(action) {
+            var valid = true;
+            var appremarks = $("APPROVALREMARK").val();
+            if (appremarks == "") {
+                valid = false;
+                alert("Please enter remarks");
+                $("APPROVALREMARK").focus();
+            }
+            if (valid) {
+                valid = confirm("YOU ARE ABOUT TO " + action + " A COLLECTION \n DO YOU WANT TO CONTINUE??");
+            }
+            return valid;
+        }
+
+        function checkRCVAmount(issubmit) {
+            debugger;
+            var validrcv = true;
+            if (!firstime) {
+                var collectionamount = $('#COLLECTIONAMOUNT').val();
+                var totalinvamount = 0;
+                if (collectionamount > 0) {
+                    var table = document.getElementById("ctblbody");
+                    if (table != null) {
+                        var numrows = table.rows.length;
+                        var numberOfChecked = $('#ctblbody input:checkbox:checked').length;
+                        var checkconsume = 0;
+                        for (var i = 1; i <= numrows; i++) {
+
+
+                            var ischecked = $('#IsChecked_' + i).is(":checked");
+                            if (ischecked) {
+                                checkconsume = parseFloat(checkconsume) + 1;
+
+                                var balinvoice = $('#txtNETAMOUNT_' + i).val();
+                                var rcvamount = $('#txtRECIVEDAMOUNT_' + i).val();
+                                //if (rcvamount != "") {
+
+                                //    if (balinvoice != null && balinvoice != undefined) {
+
+                                //        if (parseFloat(balinvoice) < parseFloat(rcvamount)) {
+                                //            alert("Balance should be greater than or equal to Recive amount");
+                                //             $('#txtRECIVEDAMOUNT_' + i).val('');
+                                //             $('#txtRECIVEDAMOUNT_' + i).focus();
+                                //            validrcv = false;
+                                //            break;
+                                //        }
+                                //        else if (checkconsume != numberOfChecked && (parseFloat(balinvoice) != parseFloat(rcvamount)) && parseFloat(rcvamount) != 0) {
+                                //            alert("Only last invoice can be partial");
+
+                                //              $('#txtRECIVEDAMOUNT_' + i).val('');
+                                //             $('#txtRECIVEDAMOUNT_' + i).focus();
+                                //            validrcv = false;
+                                //            break;
+                                //        }
+                                //        else {
+                                //            totalinvamount = parseFloat(totalinvamount) + parseFloat(rcvamount);
+                                //        }
+                                //    }
+                                //}
+                            }
+                        }
+                    }
+                }
+                else {
+                    alert("Please enter collection amount");
+                    $('#COLLECTIONAMOUNT').focus();
+                    validrcv = false;
+
+                }
+                //if (parseFloat(totalinvamount) != parseFloat(collectionamount)) {
+                //    if (issubmit) {
+                //        //alert("Collection amount should be greater than or equal to total Receive amount");
+                //        alert("Collection amount should be  equal to total Receive amount");
+                //        $('#COLLECTIONAMOUNT').focus();
+                //        validrcv = false;
+                //    }
+                //}
+            }
+            firstime = false;
+            return validrcv;
+        }
+
+        function ValidateFileSize(obj) {
+            var valid = true;
+            var file = $('#collectionDoc').val();
+            if (file != '') {
+                var fileSize = 0;
+                fileSize = GetFileSize('collectionDoc');
+                if (fileSize > 5.0) {
+                    alert("Please select file upto 5 mb only");
+                    file.val('');
+                    valid = false;
+
+                }
+            }
+            return valid;
+        }
+
+        function GetFileSize(fileField) {
+
+            try {
+                var fileSize = 0;
+                //for IE
+                if (navigator.userAgent.match(/msie/i)) {
+
+                    fileSize = fileSize;
+                }
+                //for FF, Safari, Opeara and Others
+                else {
+                    fileSize = $("#" + fileField)[0].files[0].size //size in kb
+                    fileSize = fileSize / 5242880; //size in mb
+                }
+                return fileSize;
+            }
+            catch (e) {
+                alert("Error is :" + e);
+            }
+        }
+
+        function DownloadFile(filepath, filename) {
+            window.location.href = "/Collection/DownloadFile?relativepath=" + filepath + "&fileName=" + filename+ "@Constants.HASH_COLLECTION";
+        }
+    </script>
+}

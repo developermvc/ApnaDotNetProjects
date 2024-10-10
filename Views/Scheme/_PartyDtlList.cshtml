@@ -1,0 +1,137 @@
+﻿@model LumaxDMS.Models.PartyGroupModel
+@using LumaxDMS.AppCode
+@{
+    int i = 1;
+    int j = 1;
+}
+<link rel="stylesheet" type="text/css" href="/Content/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" type="text/css" href="/Content/css/responsive.bootstrap4.min.css" />
+<style type="text/css">
+    .dataTables_wrapper {
+        margin: 20px 10px !important;
+        clear: both;
+    }
+</style>
+<table id="HiddenUserAreatbl" style="display:none">
+    @if (Model.partyGroupDtlMasterList.Count() != 0)
+    {
+        <thead class="thead-lights">
+            <tr><th>hiddenid</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.partyGroupDtlMasterList)
+            {
+                <tr id="HiddenPartyRow_@j">
+                    <td>
+                        @Html.HiddenFor(m => item.DEALER_ID, new { @Id = "DEALER_ID_" + j, @Name = "DEALER_ID_" + j })
+                    </td>
+                </tr>
+                { j = j + 1; }
+
+            }
+        </tbody>
+    }
+</table>
+<table id="dealerTbl" class="table table-striped table-bordered dt-responsive nowrap"
+       style="width: 100%">
+    <thead class="thead-lights">
+        <tr>
+            <th>
+                <input type='checkbox' id="chkSelectAllParty" />
+                <span style="padding: 25px; position: relative; top: -3px;">
+                    <a href="#" id="removecheckedParty" title="Remove Checked Rows"><i class="fa fa-trash bg_red"></i></a>
+                </span>
+            </th>
+            <th>
+                CHANNEL PARTNER CODE
+            </th>
+            <th>
+                CHANNEL PARTNER NAME
+            </th>
+            <th>
+                Party City
+            </th>
+            <th>
+                State
+            </th>
+            <th>
+                Zone
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.partyGroupDtlMasterList.Count() != 0)
+        {
+            foreach (var item in Model.partyGroupDtlMasterList)
+            {
+
+                <tr id="PartyRow_@i">
+
+
+                    <td>
+                        <input type='checkbox' id="Partycb_@i" />
+                        @{i = i + 1;}
+                    </td>
+                    <td>
+                        @item.DEALERCODE
+                    </td>
+                    <td>
+                        @item.DEALERNAME
+                    </td>
+                    <td>
+                        @item.CITYNAME
+                    </td>
+                    <td>
+                        @item.STATENAME
+                    </td>
+                    <td>
+                        @item.ZONENAME
+                    </td>
+                </tr>
+            }
+        }
+        else { }
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#dealerTbl').DataTable();
+            $('#partyloopcount').val('@i');
+
+    });
+
+    
+
+    $('#removecheckedParty').click(function () {
+        debugger;
+        var table = $('#dealerTbl').DataTable();
+        $('#dealerTbl tbody').find('tr').each(function () {
+            try {
+                var firstcb = this.cells[0].id;
+                var number = this.id.split('_')[1];
+                if ($("#Partycb_" + number).is(":checked")) {
+                    debugger;
+                    table.row('#PartyRow_' + number).remove().draw(false);
+                    $('#HiddenPartyRow_' + number).remove();
+                }
+
+            } catch (e) {
+
+            }
+
+
+        });
+    });
+
+
+    $('#chkSelectAllParty').click(function () {
+        var checkedStatus = this.checked;
+        $('#dealerTbl tbody tr').find('td:first :checkbox').each(function () {
+            $(this).prop('checked', checkedStatus);
+        });
+    });
+</script>

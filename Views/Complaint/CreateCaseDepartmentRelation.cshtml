@@ -1,0 +1,638 @@
+﻿@model LumaxDMS.Models.CaseDepartmentRelationModel 
+@using LumaxDMS.AppCode
+@using BusinessObject;
+@using BusinessManager.Entities
+@{
+    ViewBag.Title = "CreateCaseDepartmentRelataion";
+    var counter = 0;
+    UserMaster currentUser = (UserMaster)Session[Constants.Session.USER];
+    EmployeeManager objEmployeeManager = new EmployeeManager();
+}
+
+@section CSS
+{
+
+
+
+
+
+    <link href="/Content/AutoCompleteCSS/chosen.css" rel="stylesheet" type="text/css" />
+    <style>
+        #CTYPEID_chosen {
+            width: 100% !important;
+        }
+
+        #ZONE_ID_chosen {
+            width: 100% !important;
+        }
+
+        #CASETYPEID_chosen {
+            width: 100% !important;
+        }
+
+        /*.pendingQtyExist {
+            background-color: burlywood !important;
+            cursor: pointer;
+        }
+
+        .schemeExistOnItem {
+            background-color: bisque !important;
+            cursor: pointer;
+        }*/
+    </style>
+}
+
+@using (Html.BeginForm("CreateCaseDepartmentRelation", "Complaint", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.HCTYPEID)
+    @Html.HiddenFor(m => m.HCASETYPEID)
+    @Html.HiddenFor(m => m.Revision)
+    @*@Html.HiddenFor(m=>m.CASETYPEID)*@
+
+    @Html.DropDownList("HiddenDepartmentId", new SelectList(Model.DepartmentList, "DEPARTMENT_ID", "DEPARTMENTNAME"), "--Select--", new { @class = "form-control", @Id = "HiddenDepartmentId", @Name = "HiddenDepartmentId", @Style = "display:none" })
+    @Html.DropDownList("HiddenEmpId", new SelectList(Model.EmployeeList, "EMP_ID", "FullName"), "--Select--", new { @class = "form-control", @Id = "HiddenEmpId", @Name = "HiddenEmpId", @Style = "display:none" })
+    @Html.DropDownList("HiddenFollowUP", new SelectList(Model.FollowUpList, "EMP_ID", "DISPLAYEMPNAME"), "--Select--", new { @class = "form-control", @Id = "HiddenFollowUpId", @Name = "HiddenFollowUpId", @Style = "display:none" })
+    <div>
+        @Html.Partial("_WaitModal")
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName == Constants.BTN_CREATE)
+                    {
+                        <span>CREATE CASE DEPARTMENT RELATION</span>
+                    }
+                    else
+                    {
+                        <span>UPDATE CASE DEPARTMENT RELATION</span>
+                    }
+                </div>
+                <div class="card-body custom_responsive2">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd" class="redlabel">
+                                Complaint Type:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @*@Html.DropDownListFor(m => item.PART_ID, new SelectList(Model.partMasterList, "PART_ID", "PARTFULLNAME", item.PART_ID), "--Select Part--", new { @class = "form-control select-chosen", @onchange = "return CheckDuplicatePartIDSelection(" + i + ");", @Id = "SelectedPart_Id_" + i, @Name = "SelectedPart_Id_" + i })*@
+
+                            @Html.DropDownListFor(m => m.CTYPEID, new SelectList(Model.ComplaintTypeList, "CTYPEID", "CTYPENAME"), "--Select--", new { @class = "form-control select-chosen", @onchange = "return GetCaseTypeByComplaintTypeId(this);" })
+                            @Html.ValidationMessageFor(m => m.CTYPEID)
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd" class="redlabel">
+                                Case Type:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @Html.DropDownListFor(m => m.CASETYPEID, new SelectList(Model.CaseTypeList, "CASETYPEID", "CaseTypeWithApprovalDays", Model.CASETYPEID), "--Select--", new { @Class = "partychosen-select", @onchange = "return GetApprovalDay(this);" })
+                            @Html.ValidationMessageFor(m => m.CASETYPEID)
+                            @Html.HiddenFor(m => m.ApprovalDays, new { @id = "hdnApprovalDay" })
+                        </div>
+
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd" class="redlabel">
+                                Zone:
+                            </label>
+                        </div>
+                        <div class="col-lg-10 col-xs-12">
+                            <div class="dvparty_choosen">
+                                @Html.ListBoxFor(m => m.ZONE_ID, new SelectList(Model.ZoneList, "AREAID", "AREANAME"), new { @Class = "partychosen-select", @onchange = "return ValidateZoneExist();" })
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+                    <table id="Caserelationtbl" class="table border fixed_header custom_responsive ">
+
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" onclick="return checkAllchekBoxs(this)" class="pull-left" />
+                                        <a href="#" onclick="return removeCheckedRelation();" title="Remove Checked Rows"><i class="fa fa-trash bg_red" style="font-size: x-large !important;"></i></a>
+                                    </div>
+                                </th>
+                                <th class="redlabel">
+                                    Department
+                                </th>
+                                <th class="redlabel">
+                                    Employee
+                                </th>
+                                <th class="redlabel">
+                                    Working Days
+                                </th>
+                                <th>
+                                    Employee Phone No
+                                </th>
+                                <th>
+                                    Follow Up Person
+                                </th>
+                                <th>
+                                    FollowUp Ph.No
+                                </th>
+                                <th class="redlabel">
+                                    Display Order
+                                </th>
+                                @*<th>
+                                        Appeoval Required
+                                    </th>*@
+                            </tr>
+                        </thead>
+                        @if (Model.CaseTypeEmpMasterList != null)
+                        {
+                            <tbody>
+                                @Html.Hidden("CaseRelationCount", Model.CaseTypeEmpMasterList.Count, new { @Name = "CaseRelationCount" })
+                                @foreach (var item in Model.CaseTypeEmpMasterList)
+                                {
+                                    if (Model.CASETYPEID >0)
+                                    {
+                                        Model.EmployeeList = objEmployeeManager.GetAllEmployeeOfDealerArea(currentUser.USER_ID, "DEPARMENT", item.DEPARTMENTID).ToList();
+                                    }
+                                    <tr>
+
+                                        <td>
+                                            @{counter = counter + 1;}
+                                            <input type="checkbox" />&nbsp;
+                                        </td>
+                                        <td>
+                                            @Html.DropDownListFor(m => item.DEPARTMENTID, new SelectList(Model.DepartmentList, "DEPARTMENT_ID", "DEPARTMENTNAME", item.DEPARTMENTID), "--Select--", new { @id = "DepartmentId_" + counter, @Name = "DepartmentId_" + counter, @Class = "partychosen-select", @onchange = "return GetEmployeeDetail(this);" })
+                                        </td>
+                                        <td>
+                                            @Html.DropDownListFor(m => item.EMPID, new SelectList(Model.EmployeeList, "EMP_ID", "DISPLAYEMPNAME", item.EMPID), "--Select--", new { @id = "EmpId_" + counter, @Name = "EmpId_" + counter, @Class = "partychosen-select", @onchange = "return GetFollowUpPersonwithEmpDetail(this);" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => item.WORKINGDAYS, new { @id = "WorkingDays_" + counter, @Name = "WorkingDays_" + counter, @class = "form-control numberinput", @onchange = "return ValidateWorkingDays(this);" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => item.EmpPhoneNumber, new { @id = "EmployeePhone_" + counter, @Name = "EmployeePhone_" + counter, @class = "form-control numberinput", disabled = "disabled" })
+                                        </td>
+                                        <td>
+                                            @Html.DropDownListFor(m => item.FOLLOWUPID, new SelectList(Model.FollowUpList, "EMP_ID", "DISPLAYEMPNAME", item.FOLLOWUPID), "--Select--", new { @id = "FollowUpName_" + counter, @Name = "FollowUpName_" + counter, @Class = "partychosen-select", @onchange = "return GetFollowUpPersonwithEmpDetail(this);" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => item.FollowUpPhoneNumber, new { @id = "FollowUpPhone_" + counter, @Name = "FollowUpPhone_" + counter, @class = "form-control numberinput", disabled = "disabled" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => item.DISPLAYORDER, new { @id = "DisplayOrder_" + counter, @Name = "DisplayOrder_" + counter, @class = "form-control numberinput", @onchange = "return SerializeDisplayOrder(this);" })
+                                        </td>
+                                        @*<td>
+                                                @Html.TextBoxFor(m => item.APPROVAL_REQUIRED, new { @id = "ApprovalReq_" + counter, @Name = "ApprovalReq_" + counter, @class = "form-control" })
+                                            </td>*@
+                                    </tr>
+
+                                }
+                            </tbody>
+                        }
+
+
+                    </table>
+                    <br />
+                    <div class="clearfix">
+                        <input type="button" name="btntype" value="Add Row" id="btnaddrow" class="btn btn-primary" />
+                    </div>
+
+
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+                            @if (Model.ActionName == Constants.BTN_CREATE)
+                            {
+                                <input type="submit" name="btntype" value="Create" id="btnadd" onclick="return CheckCaseTypeValidation();" class="btn btn-primary" />
+                            }
+                            else
+                            {
+                                <input type="submit" name="btntype" value="Update" id="btnadd" onclick="return CheckCaseTypeValidation();" class="btn btn-primary" />
+                            }
+                            <input type="button" class="btn btn-primary" name="btntype" value="Clear" onclick="return ReloadPage();" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+{
+    <script src="~/Scripts/ProjectJS/Complaint.js"></script>
+    <script type="text/javascript">
+        var numrows = Number('@counter');
+        var serialnumber = 1;
+        var rowsarray = ["0", "0"];
+
+    var config = {
+        '.partychosen-select': { data_placeholder: 'ALL' },
+        '.partychosen-select-deselect': { allow_single_deselect: true },
+        '.partychosen-select-no-single': { disable_search_threshold: 10 },
+        '.partychosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+        '.partychosen-select-width': { width: "100%" }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+        }
+
+
+
+    $(document).ready(function () {
+
+        HideWaitingSymbol();
+        $('#Caserelationtbl tbody tr:first').find(':checkbox').remove();
+        var casetype = $('#CASETYPEID').find('option:selected').text();
+        var approvalday = casetype.split(':')[1];
+        $('#hdnApprovalDay').val(approvalday.trim());
+        OnInitializePage();
+    });
+
+    function GetEmployeeDetail(obj) {
+        debugger;
+        var DeptId = $(obj).val();
+        var id = $(obj).attr('id').split('_');
+        var checkUrl = '@Url.Action("GetAllEmpDetailByDeptId", "Complaint")';
+        FillEmployeeDetail(DeptId, checkUrl, id)
+    }
+
+    function GetFollowUpPersonwithEmpDetail(obj) {
+        debugger;
+        //var empid = $(obj).val();
+        var checkUrl = '@Url.Action("GetFollowUpwithEmpDetail", "Complaint")';
+        var id = $(obj).attr('id').split('_');
+        var empid = $('#EmpId_' + id[1]).val();
+        var followupid = $('#FollowUpName_' + id[1]).val();
+        if (empid != followupid) {
+           // GetFollowUpWithWEmpDetail(empid, followupid, checkUrl, id)
+        }
+        else {
+            alert("Employee can not be same as follow up person");
+            $(obj).val("").trigger("chosen:updated");
+            //$('#EmpId_' + id[1]).val("").trigger("chosen:updated");
+            //$('#FollowUpName_' + id[1]).val("").trigger("chosen:updated");
+        }
+    }
+
+    function SerializeDisplayOrder(obj) {
+        var displayorder = $(obj).val();
+        //if ($('#Caserelationtbl tbody tr td input[type="text"]:contains(' + Number(displayorder) + ')').length >= 1) {
+        //    alert("Please enter different display order");
+        //}
+        $('#Caserelationtbl tbody tr').each(function (i, data) {
+            if ($(obj).attr('id') != $(this).find('#DisplayOrder_' + (i + 1)).attr('id') && displayorder == $(this).find('#DisplayOrder_' + (i + 1)).val()) {
+                alert("Please enter different display order");
+                $(obj).val("");
+            }
+        });
+        if (displayorder > $('#Caserelationtbl tbody tr').length) {
+            alert("Please enter display order in between " + $('#Caserelationtbl tbody tr').length);
+        }
+    }
+
+    function GetCaseTypeByComplaintTypeId(obj) {
+        var ComplaintTypeId = $(obj).val();
+        var checkUrl = '@Url.Action("GetCaseTypeByComplaintTypeId", "Complaint")';
+        FillComplaintReason(ComplaintTypeId, checkUrl);
+        }
+
+        function GetApprovalDay(obj) {
+            var casetype = $(obj).find('option:selected').text();
+            var approvalday = casetype.split(':')[1];
+            $('#hdnApprovalDay').val(approvalday.trim());
+            if (casetype != "" && $('#ZONE_ID').val() != "") {
+                ValidateZoneExist();
+            }
+        }
+
+        function ValidateWorkingDays(obj) {
+            debugger;
+            var workingdays = $(obj).val();
+            var TotalWorkingDays = 0;
+            if ($('#hdnApprovalDay').val() != "0") {
+                $('#Caserelationtbl tbody tr').each(function (i, data) {
+                    TotalWorkingDays += Number($(this).find('#WorkingDays_' + (i + 1)).val());
+                });
+                if (TotalWorkingDays > Number($('#hdnApprovalDay').val())) {
+                    alert("Working days should not be greater then approval days");
+                    $(obj).val(0);
+                    $(obj).focus();
+                }
+            }
+            else {
+                alert("Please select case type");
+                $('#CASETYPEID').focus();
+            }
+        }
+
+        function ValidateZoneExist() {
+            debugger;
+            var valid = true;
+           // if ($(obj)[0].selectedIndex < 1) {
+                if ($('#CASETYPEID').val() != "" ){
+                    var zoneidarr = $('#ZONE_ID').val();
+                    var caseTypeId = $('#CASETYPEID').val();
+                    var checkUrl = '@Url.Action("CheckZoneExistByCaseTypeId", "Complaint")';
+                    var zoneIds = "";
+                    for (var i = 0; i < zoneidarr.length; i++) {
+                        zoneIds = zoneIds == "" ? zoneidarr[i] : zoneIds + "," + zoneidarr[i];
+                    }
+                    var revision = $('#Revision').val();
+                    $.ajax({
+                        url: checkUrl,
+                        type: "GET",
+                        dataType: "JSON",
+                        data: { CaseTypeId: caseTypeId, ZoneIds: zoneIds, Revision: revision },
+                        async: false,
+                        success: function (result) {
+                            debugger;
+                            if (result.IsLessReturn == true) {
+                                alert("Zone already mapped with case type");
+                            }
+                            $("#ZONE_ID").val('');
+                            $.each(result.Zoneids.split(","), function (i, zoneid) {
+                                $("#ZONE_ID option[value='" + zoneid + "']").prop("selected", true);
+                            });
+                            if (result.Zoneids == "") {
+                                valid = false;
+                            }
+
+                            $('#ZONE_ID').trigger('chosen:updated');
+                        },
+                        error: function (result) {
+                            console.log(result);
+                        }
+                    });
+                }
+            //}
+        }
+
+    $('#btnaddrow').on('click', function () {
+        var validate = CheckAggregate();
+        if (validate) {
+
+                numrows = $('#Caserelationtbl tbody tr').length + 1;
+                serialnumber = serialnumber + 1;
+                rowsarray[numrows] = "0";
+                var table = document.getElementById("Caserelationtbl");
+                var rowCount = table.rows.length;
+                var row = table.insertRow(rowCount);
+                //row.id = "Complaint_" + numrows;
+
+                var cell1 = row.insertCell(0);
+                var element0 = document.createElement("input");
+                element0.type = "checkbox";
+                //var element1 = document.createElement("input");
+                //element1.type = "hidden";
+                //element2.className = "form-control numberinput";
+                //element1.name = "CaseType_Id_" + numrows;
+                //element1.id = "CaseType_Id_" + numrows;
+                cell1.appendChild(element0);
+                //$(element0).append(element1);
+                cell1.align = "center";
+
+                var ddl = $('#HiddenDepartmentId').clone(true);
+
+                var celldv = row.insertCell(1);
+                ddl[0].id = "DepartmentId_" + numrows;
+                ddl[0].name = "DepartmentId_" + numrows;
+                ddl[0].value = "";
+                ddl[0].className = "form-control partchosen-select";
+                ddl[0].setAttribute("onchange", "return GetEmployeeDetail(this)");
+                celldv.append(ddl[0]);
+            $("#DepartmentId_" + numrows).trigger("chosen:updated")
+
+            var ddlemp = $('#HiddenEmpId').clone(true);
+
+            var celldv = row.insertCell(2);
+            ddlemp[0].id = "EmpId_" + numrows;
+            ddlemp[0].name = "EmpId_" + numrows;
+            ddlemp[0].value = "";
+            ddlemp[0].className = "form-control partchosen-select";
+            ddlemp[0].setAttribute("onchange", "return GetFollowUpPersonwithEmpDetail(this)");
+            celldv.append(ddlemp[0]);
+            $("#EmpId_" + numrows).trigger("chosen:updated")
+
+                var cell2 = row.insertCell(3);
+
+
+                var element2 = document.createElement("input");
+                element2.type = "text";
+                element2.className = "form-control numberinput";
+                element2.name = "WorkingDays_" + numrows;
+                element2.id = "WorkingDays_" + numrows;
+                element2.value = "";
+                element2.setAttribute("onchange", "return ValidateWorkingDays(this)");
+                cell2.append(element2);
+                //cell2.className = "tdgridnew1";
+
+            var cell3 = row.insertCell(4);
+
+
+            var element3 = document.createElement("input");
+            element3.type = "text";
+            element3.className = "form-control numberinput";
+            element3.name = "EmployeePhone_" + numrows;
+            element3.id = "EmployeePhone_" + numrows;
+            element3.value = "";
+            element3.disabled = true;
+            cell3.append(element3);
+
+            var ddlfollowup = $('#HiddenFollowUpId').clone(true);
+
+            var celldv = row.insertCell(5);
+            ddlfollowup[0].id = "FollowUpName_" + numrows;
+            ddlfollowup[0].name = "FollowUpName_" + numrows;
+            ddlfollowup[0].value = "";
+            ddlfollowup[0].className = "form-control partchosen-select";
+            ddlfollowup[0].setAttribute("onchange", "return GetFollowUpPersonwithEmpDetail(this)");
+            celldv.append(ddlfollowup[0]);
+            $("#FollowUpName_" + numrows).trigger("chosen:updated")
+
+            //var cell4 = row.insertCell(5);
+
+
+            //var element4 = document.createElement("input");
+            //element4.type = "text";
+            //element4.className = "form-control";
+            //element4.name = "FollowUpName_" + numrows;
+            //element4.id = "FollowUpName_" + numrows;
+            //element4.value = "";
+            //element4.disabled = true;
+            //cell4.append(element4);
+
+            var cell5 = row.insertCell(6);
+
+
+            var element5 = document.createElement("input");
+            element5.type = "text";
+            element5.className = "form-control";
+            element5.name = "FollowUpPhone_" + numrows;
+            element5.id = "FollowUpPhone_" + numrows;
+            element5.value = "";
+            element5.disabled = true;
+            cell5.append(element5);
+
+            var cell6 = row.insertCell(7);
+
+
+            var element6 = document.createElement("input");
+            element6.type = "text";
+            element6.className = "form-control numberinput";
+            element6.name = "DisplayOrder_" + numrows;
+            element6.id = "DisplayOrder_" + numrows;
+            element6.value = "";
+            element6.setAttribute("onchange", "return SerializeDisplayOrder(this)");
+            cell6.append(element6);
+
+                $(".partchosen-select").chosen();
+                //$('#SelectedPart_Id_' + numrows + '_chosen').attr("style", "width: 230px !important");
+
+
+                document.getElementById("CaseRelationCount").value = numrows;
+
+
+            }
+
+    });
+
+    function CheckAggregate() {
+        debugger;
+        valid = true;
+
+        var mtable = document.getElementById("Caserelationtbl");
+        var mrowCount = document.getElementById("CaseRelationCount").value;
+        var currentpartvalue = "";
+
+        for (var i = 1; i <= mrowCount; i++) {
+            var ddltd = document.getElementById("DepartmentId_" + i);
+            var ddlemp = document.getElementById("EmpId_" + i);
+            var followup = document.getElementById("FollowUpName_" + i);
+            var workingdays = document.getElementById("WorkingDays_" + i);
+            var DisplayOrder = document.getElementById("DisplayOrder_" + i);
+
+            if (ddltd != undefined) {
+
+                if (ddltd.value == "") {
+                    if (i >= 1) {
+                        alert('Please select department');
+                        $('#DepartmentId_' + i).focus();
+                        valid = false;
+                    }
+
+
+                }
+            }
+
+            if (ddlemp != undefined) {
+                debugger;
+                if (ddlemp.value == "" || $(ddlemp).find('option:selected').text() == "--Select--") {
+                    if (i >= 1) {
+                        alert('Please select employee');
+                        $('#EmpId_' + i).focus();
+                        valid = false;
+                    }
+
+
+                }
+            }
+            if (followup != undefined) {
+                debugger;
+                if (followup.value == "" || $(followup).find("option:selected").text() == "--Select--") {
+                    if (i >= 1) {
+                        alert('Please select follow up person');
+                        $('#FollowUpName_' + i).focus();
+                        valid = false;
+                    }
+
+
+                }
+            }
+
+            if (workingdays != undefined && (workingdays.value == "" || parseInt(workingdays.value) == 0)) {
+                if (i >= 1) {
+                    alert('Please enter Working Days');
+                    $('#WorkingDays_' + i).focus();
+                    valid = false;
+                }
+
+            }
+            if (DisplayOrder != undefined && DisplayOrder.value == "") {
+                if (i >= 1) {
+                    alert('Please enter display order');
+                    $('#DisplayOrder_' + i).focus();
+                    valid = false;
+                }
+
+            }
+
+        }
+
+        return valid;
+
+        }
+
+        function removeCheckedRelation() {
+            if ($('#Caserelationtbl tbody tr').length > 1) {
+                $('#Caserelationtbl tbody').find('tr').each(function () {
+                    if ($(this).find('td:first').find('input[type="checkbox"]').is(':checked')) {
+                        $(this).remove();
+                    }
+                });
+                $('#CaseRelationCount').prop('value', $('#Caserelationtbl tbody tr').length);
+                counter = $('#Caserelationtbl tbody tr').length;
+            }
+            else {
+                alert("Atleast one row is required");
+            }
+        }
+
+        function CheckCaseTypeValidation() {
+            var valid = true;
+            valid = ValidateZoneExist();
+
+            debugger;
+            var ComplaintTypeId = $('#CTYPEID').val();
+            var CaseTypeId = $('#CASETYPEID').val();
+            var ZoneId = $('#ZONE_ID').val();
+            if (ComplaintTypeId == "" || ComplaintTypeId == null) {
+                $('#CTYPEID').trigger('chosen:activate');
+                alert("Please select complaint type");
+                valid = false;
+            }
+            else if (CaseTypeId == "" || CaseTypeId == null) {
+                $('#CASETYPEID').trigger('chosen:activate');
+                alert("Please select case type");
+                valid = false;
+            }
+            else if (ZoneId == "" || ZoneId == null) {
+                $('#ZONE_ID').trigger('chosen:activate');
+                alert("Please select zone");
+                valid = false;
+            }
+            else {
+                valid = CheckAggregate();
+            }
+            if (valid) {
+                valid = confirm("You are about to submit \n Do you want to continue?");
+            }
+            return valid;
+        }
+
+        function OnInitializePage() {
+            if ('@Model.ActionName' == 'Edit') {
+
+                $('#CASETYPEID').attr("disabled", true).trigger("chosen:updated");
+                $('#CASETYPEID a').addClass("disablecolor");
+
+                $('#CTYPEID').attr("disabled", true);
+
+            }
+        }
+
+        function ReloadPage() {
+            window.location.reload();
+        }
+    </script>
+}
+

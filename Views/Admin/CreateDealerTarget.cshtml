@@ -1,0 +1,246 @@
+﻿@model LumaxDMS.Models.DealerTargetModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "CreateDealerTarget";
+    var counter = 1;
+}
+
+@using (Html.BeginForm("CreateDealerTarget", "Admin", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Dealer_Id)
+
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName == Constants.BTN_CREATE)
+                    {
+                        <span>CREATE DEALER TARGET</span>
+                    }
+                    else if (Model.ActionName == Constants.BTN_EDIT)
+                    {
+                        <span>UPDATE DEALER TARGET </span>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Chennel Partner Code:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+
+                            @Html.TextBoxFor(model => model.DealerCode, new { @class = "form-control", @disabled = "disabled" })
+                            @Html.ValidationMessageFor(model => model.DealerCode)
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Channel Partner Name:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+
+                            @Html.TextBoxFor(model => model.DealerName, new { @class = "form-control", @disabled = "disabled" })
+                            @Html.ValidationMessageFor(model => model.DealerName)
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Year:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="input-group date" id="fromdatepicker">
+                                @Html.TextBoxFor(@model => model.Year, new { @class = "form-control datepicker", @onchange="return ValidateYear(this);" })
+                                <span class="input-group-append input-group-addon">
+                                    <i class="input-group-text2 fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Total Target:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+
+                            @Html.TextBoxFor(model => model.TotalTarget, new { @class = "form-control", @disabled = "disabled" })
+                            @Html.ValidationMessageFor(model => model.TotalTarget)
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="clearfix">
+                                <input type="button" name="btntype" value="Search" id="btnsearch" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <br />
+                    @{Html.RenderPartial("DealerTargetDetail", Model);}
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+                            @if (Model.ActionName == Constants.BTN_CREATE)
+                            {
+                                <input type="submit" name="btntype" value="Submit" onclick="return CheckValidation();" id="btnadd" class="btn btn-primary" />
+                            }
+                            else
+                            {
+                                <input type="submit" name="btntype" value="Update" onclick="return CheckValidation();" id="btnadd" class="btn btn-primary" />
+                            }
+                            <input type="reset" class="btn btn-primary" name="btntype" value="Clear" onclick="return Clear()" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+    {
+
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+        var valid = true;
+        $('#fromdatepicker').datepicker({
+            minViewMode: 2,
+            format: 'yyyy'
+
+
+        });
+
+        $('#btnsearch').on('click', function () {
+            debugger;
+            var checkUrl = '@Url.Action("GetDealetTargetDetailByYear", "Admin")';
+            $.ajax({
+                type: "POST",
+                url: checkUrl,
+                data: { DealerId: Number($('#Dealer_Id').val()), Year: Number($('#Year').val()) },
+                dataType: "JSON",
+                success: function (result) {
+                    $('#DealerTargettbl tbody tr').each(function (i, data) {
+                        var hdn = $('#hdn').attr('href');
+                        var href = hdn.split('=');
+                        //var newurl = hdn.replace(hdn, href[0] + '=' + result[i].DEALERTARTGETID);
+                        //$(this).find('td').eq(3).find('a').attr('href', newurl);
+                        $(this).find('td').eq(3).find('a').prop('href', href[0] + '=' + result[i].DEALERTARTGETID);
+                        $(this).find('#DealerTargetId_' + (i + 1)).val(result[i].DEALERTARTGETID);
+                        $(this).find('#Month_' + (i + 1)).val(result[i].MONTH);
+                        $(this).find('#InitialTarget_' + (i + 1)).val(result[i].INITIALTARGET);
+                        $(this).find('#MonthlyTarget_' + (i + 1)).val(result[i].MONTHLYTARGET);
+                        if ((i + 1) <= (new Date()).getMonth() && (new Date()).getUTCFullYear() == Number($('#Year').val())) {
+                            $(this).find('#MonthlyTarget_' + (i + 1)).attr('readonly', 'readonly');
+                            $(this).find('td').eq(3).find('a').hide();
+                        }
+                        else {
+                            $(this).find('#MonthlyTarget_' + (i + 1)).removeAttr('readonly');
+                            $(this).find('td').eq(3).find('a').show();
+                        }
+
+                    });
+                },
+                error: function (result) {
+
+                }
+            });
+        });
+
+        $('#DealerTargettbl tbody tr').each(function (i, data) {
+            if ($(this).find('#MonthlyTarget_' + (i + 1)).val() != "" && (i + 1) <= (new Date()).getMonth() && (new Date()).getUTCFullYear() == Number($('#Year').val())) {
+                $(this).find('#MonthlyTarget_' + (i + 1)).attr('readonly', 'readonly');
+                $(this).find('td').eq(3).find('a').hide();
+            }
+        });
+
+        $('#DealerTargettbl tbody tr :input[type="text"]').on('keyup paste', function () {
+            this.value = this.value.replace(/[^0-9\.]/g, '');
+        });
+
+        function ValidateYear(obj) {
+            var val = $(obj).val();
+            if (Number(val) < (new Date()).getUTCFullYear()) {
+                alert("Can not set target of previous year");
+                $('#fromdatepicker').datepicker('hide');
+                $(obj).val((new Date()).getUTCFullYear());
+            }
+        }
+
+        function EditCategoryTarget(i) {
+            valid = true;
+            var validate = "";
+            if ($('#MonthlyTarget_' + i).val() == 0 || $('#MonthlyTarget_' + i).val() == 0.00) {
+                alert("Please set monthly target first of this month");
+                valid = false;
+            }
+            
+            return valid;
+        }
+
+        function ValidateMonthlyTarget(obj) {
+            var validate = "";
+            var id = $(obj).attr('id').split('_');
+            if ($('#hdnMonthlyTarget_' + id[1]).val() != $(obj).val() && $('#hdnMonthlyTarget_' + id[1]).val() != "0.00") {
+                validate = confirm("If you change monthly target then category wise target will delete \n Do you want to continue?");
+                if (validate == true) {
+                    var DealerTargetId = $('#DealerTargetId_' + id[1]).val();
+                    var checkUrl = '@Url.Action("DeleteCategoryTarget", "Admin")';
+                    $.ajax({
+                        type: "POST",
+                        url: checkUrl,
+                        data: { DealerTargetId: DealerTargetId },
+                        dataType: "JSON",
+                        success: function (result) {
+                            valid = result;
+                            $('#DealerTargetId_' + id[1]).nextAll('td').eq(3).find('a').hide();
+                        },
+                        error: function (result) {
+
+                        }
+                    });
+                }
+                else {
+                    $(obj).val($('#hdnMonthlyTarget_' + id[1]).val());
+                }
+            }
+            return valid;
+        }
+
+        function Clear() {
+            $('#DealerTargettbl tbody tr :input[type="text"]').attr('value', '0.00');
+        }
+
+        function CheckValidation() {
+            valid = true;
+            var Target = $('#TotalTarget').val();
+            var TotalTarget = 0;
+            var distributetarget = 0;
+            $('#DealerTargettbl tbody tr').each(function (i, data) {
+                //if ($(this).find('#MonthlyTarget_' + (i + 1)).val() == "" || $(this).find('#MonthlyTarget_' + (i + 1)).val() == 0) {
+                //    distributetarget = 1;
+                //}
+                //else {
+                    TotalTarget += Number($(this).find('#MonthlyTarget_' + (i + 1)).val());
+                //}
+            });
+            //if (distributetarget == 1) {
+            //    alert("Please distribute targets to all months");
+            //    valid = false;
+            //}
+            if (valid == true && TotalTarget != Target) {
+                alert("Your total monthly target is not equal to total target");
+                valid = false;
+            }
+            return valid;
+        }
+
+    </script>
+
+}
+

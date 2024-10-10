@@ -1,0 +1,58 @@
+2019-05-06 10:58:00,748 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:58:00,760 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 10:58:04,127 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:58:04,158 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 10:58:11,493 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:58:11,502 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 10:58:16,301 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:58:16,310 DEBUG DebugLogger - export enter
+2019-05-06 10:58:16,311 DEBUG DebugLogger - got file path
+2019-05-06 10:58:16,402 DEBUG DebugLogger - strat excel workbook created 
+2019-05-06 10:58:16,484 DEBUG DebugLogger - excel workbook created 
+2019-05-06 10:58:16,630 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\1acc7475-2cf4-49ca-9654-d6feacab456f_SchemeReport.xls
+2019-05-06 10:58:16,748 DEBUG DebugLogger - file export complete
+2019-05-06 10:58:16,748 DEBUG DebugLogger - read file byte System.Byte[]
+2019-05-06 10:58:50,100 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:58:50,108 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 10:59:16,665 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:59:16,674 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 10:59:24,672 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:59:24,733 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 10:59:31,907 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:59:31,970 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 10:59:54,217 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 10:59:54,279 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:00:02,437 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:00:02,500 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:00:08,176 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:00:08,237 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:00:27,279 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:00:27,294 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:03:54,204 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:03:54,220 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:04:19,652 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:04:19,694 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:04:39,749 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:04:39,793 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:04:44,224 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:04:44,269 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:04:47,698 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:04:47,743 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:04:52,479 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:04:52,486 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:04:55,745 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:04:55,759 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:05:02,704 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:05:02,713 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:05:09,007 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:05:09,052 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:05:38,310 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:05:38,356 DEBUG DebugLogger - IRController.cs search ir post method end
+2019-05-06 11:06:09,812 DEBUG DebugLogger - IRController.cs search ir post method started
+2019-05-06 11:06:09,856 DEBUG DebugLogger - export enter
+2019-05-06 11:06:09,856 DEBUG DebugLogger - got file path
+2019-05-06 11:06:09,856 DEBUG DebugLogger - strat excel workbook created 
+2019-05-06 11:06:09,856 DEBUG DebugLogger - excel workbook created 
+2019-05-06 11:06:09,871 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\55d0e34f-1511-46f7-b237-d5d55e3e9537_SchemeReport.xls
+2019-05-06 11:06:09,874 DEBUG DebugLogger - file export complete
+2019-05-06 11:06:09,874 DEBUG DebugLogger - read file byte System.Byte[]

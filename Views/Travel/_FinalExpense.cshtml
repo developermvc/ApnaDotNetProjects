@@ -1,0 +1,230 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+<table id="finalexp" class="table table-striped table-bordered" style="width: 100%">
+    <thead class="thead-lights">
+        <tr>
+            <th style="text-align: center">
+                S.No
+            </th>
+            <th style="text-align: center">
+                Date
+            </th>
+            <th>Fare</th>
+            <th style="text-align: center">
+                Conveyance
+            </th>
+
+            <th style="text-align: center">
+                Lodging
+            </th>
+            <th style="text-align: center">
+                FDA
+            </th>
+            <th style="text-align: center">
+                Other Expanse
+            </th>
+            <th style="text-align: center">
+                Total Amount
+            </th>
+
+        </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+        <tr>
+            <td style="text-align: right" colspan="2"><b>Total</b></td>
+            <td style="text-align: right">
+                <label style="font-weight:bold" id="total_fareexp"></label>
+            </td>
+            <td style="text-align: right">
+                <label style="font-weight:bold" id="total_travelexp"></label>
+            </td>
+
+            <td style="text-align: right">
+                <label style="font-weight:bold" id="total_lodgingexp"></label>
+            </td>
+            <td style="text-align: right">
+                <label style="font-weight:bold" id="total_tiffenxp"></label>
+            </td>
+            <td style="text-align: right">
+                <label style="font-weight:bold" id="total_otherexp"></label>
+            </td>
+            <td style="text-align: right">
+                <label style="font-weight:bold" id="total_totalexp"></label>
+            </td>
+
+        </tr>
+    </tfoot>
+</table>
+
+
+@if (Model.travelExpHDRMaster.status > 1 && Model.ActionName != "display")
+{
+
+    if (Model.travelExpHDRMaster.ISFINALAPPROVAL == "Y")
+    {
+        <div class="content clearfix">
+            <br />
+            <input type="button" name="btntype" value="Norms Apply" id="normsApply" onclick="applynorms(@Model.travelExpHDRMaster.trvlExpId)" class="btn btn-primary" disabled="false" />
+            @*@Html.HiddenFor(m => m.NormModel.FareVal)
+                @Html.HiddenFor(m => m.NormModel.Lodging)
+                @Html.HiddenFor(m => m.NormModel.Convence)
+                @Html.HiddenFor(m => m.NormModel.Tiffin)
+                @Html.HiddenFor(m => m.NormModel.Other)*@
+            <div id="normsvalue">
+
+            </div>
+        </div>
+    }
+
+    <div class="content clearfix">
+        @{ Html.RenderPartial("_Approve1Expense", Model);}
+    </div>
+
+}
+else
+{
+    if (Model.TravelExpNormedValModel != null && Model.ActionName == "display")
+    {
+        if (Model.TravelExpNormedValModel.AllowtravelExpNormedVal != null)
+        {
+            if (Model.travelExpHDRMaster.TravelStatus == "APPROVED")
+            {
+
+
+                <div class="content clearfix">
+                    <br />
+                    @{ Html.RenderPartial("_ApplyNorms", Model.TravelExpNormedValModel); }
+                </div>
+                if (Model.AttechmentList.Count > 0)
+                {
+             <span style="float:left;">
+               Download: 
+            </span>
+                <span>
+                    <a href="@Url.Action("DownloadNormFiles", "Travel", new { trvelid = Model.travelExpHDRMaster.trvlExpId })" class="btn btn-primary" id="attachmentdownload" style="float:left;margin: 0 2px 0 2px;"><i class="fa fa-download"></i></a> 
+                </span>
+                }
+            }
+
+        }
+    }
+}
+<div class="card-footer" style="padding:0px!important; border-top:none!important">
+    <br />
+    <div class="clearfix">
+        <div class="float-right">
+            @if (Model.ActionName != "display")
+            {
+                if (Model.travelExpHDRMaster.trvlExpId > 0)
+                {
+                    if (Model.travelExpHDRMaster.status > 1)
+                    {
+
+                        <a href="##" id="btnsave" data-val="1" data-mode="APPROVED" style="margin-right:5px" class="btn btn-primary" onclick="savetraveldetails(this);" title="Approve Expenses">Approve</a>
+                        if (Model.travelExpHDRMaster.APPROVALLEVEL == 0)
+                        {
+                            <a href="##" id="btnsubmit" data-val="2" data-mode="REJECT" style="margin-right:40px" class="btn btn-primary" onclick="savetraveldetails(this);" title="Reject Expenses">Reject</a>
+                        }
+
+
+                    }
+                    else
+                    {
+                        <a href="##" id="btnsave" data-val="1" data-mode="UPDATE" style="margin-right:5px" class="btn btn-primary" onclick="savetraveldetails(this);" title="Update Expenses">Save</a>
+                        <a href="##" id="btnsubmit" data-val="2" data-mode="UPDATE" style="margin-right:40px" class="btn btn-primary" onclick="savetraveldetails(this);" title="Update Expenses">Submit</a>
+
+                    }
+
+                }
+                else
+                {
+                    <a href="##" id="btnsave" data-val="1" data-mode="INSERT" style="margin-right:5px" class="btn btn-primary" onclick="savetraveldetails(this);" title="Save Expenses">Save</a>
+                    <a href="##" id="btnsubmit" data-val="2" data-mode="INSERT" style="margin-right:40px" class="btn btn-primary" onclick="savetraveldetails(this);" title="Save Expenses">Submit</a>
+                }
+
+
+
+            }
+        </div>
+
+        <div class="float-right">
+
+            <a href="##" id="btndsr" style="margin-right:5px" class="btn btn-primary" onclick="checkDSR(@Model.travelExpHDRMaster.trvlExpId)" title="Check DSR">DSR</a>
+
+        </div>
+
+    </div>
+    <br />
+
+    @if (Model.travelExpHDRMaster.status > 1)
+    {
+
+        if (Model.ApproveList.Count > 0)
+        {
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2">Travel Expenses Approval</div>
+            </div>
+            <div class="content clearfix">
+                <table class="table table-striped table-bordered" style="width: 100%">
+                    <thead class="thead-lights">
+                        <tr>
+                            <th style="text-align: center">APPROVEDBY</th>
+                            <th style="text-align: center">STATUS</th>
+                            <th style="text-align: center">REMARKS</th>
+                            <th style="text-align: center">APPROVAL DATE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ApproveList)
+                        {
+
+
+                            <tr>
+                                <td>@item.APPROVEDBY</td>
+                                <td>@item.APPSTATUS</td>
+                                <td>@item.REMARKS</td>
+                                <td>@item.CREATEDDATE</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    }
+</div>
+
+<script>
+    //Apply NOrms
+    $(document).ready(function () {
+        $("#normsApply").prop("disabled", false);
+    })
+
+    function applynorms(input) {
+        ShowWaitingSymbol();
+        $("#normsvalue").load('/Travel/_ApplyNorms?trvlExpId=' + input, function (responseTxt, statusTxt, jqXHR) {
+            if (statusTxt == "success") {
+                $("#AllowtravelExpNormedVal_FareVal").val($("#total_fareexp").text());
+                $("#AllowtravelExpNormedVal_Convence").val($("#total_travelexp").text());
+                $("#AllowtravelExpNormedVal_Tiffin").val($("#total_tiffenxp").text());
+                $("#AllowtravelExpNormedVal_Lodging").val($("#total_lodgingexp").text());
+                $("#AllowtravelExpNormedVal_Other").val($("#total_otherexp").text());
+                HideWaitingSymbol();
+            }
+            if (statusTxt == "error") {
+                alert("Error: " + jqXHR.status + " " + jqXHR.statusText);
+                HideWaitingSymbol();
+            }
+        });
+
+    }
+    //END
+
+    function checkDSR(input) {
+
+        var url = "/Travel/CheckDSR?usercode=" + $("#travelExpHDRMaster_UserCode").val() + "&FromDate=" + formatDate($("#travelExpHDRMaster_fromDate").val()) + "&ToDate=" + formatDate($("#travelExpHDRMaster_toDate").val());
+        window.open(url, '_blank');
+
+    }
+</script>
+

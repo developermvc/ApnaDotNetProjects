@@ -1,0 +1,407 @@
+﻿@model LumaxDMS.Models.DsrhdrdtlModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "DSR Itemwise Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+
+
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">DSR ITEM DETAILS</div>
+    </div>
+
+    @using (@Html.BeginForm("DSRApprovalDetail", "DSR", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+    {
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-1">
+                    <label for="pwd">PLAN  DATE :</label>
+                </div>
+                <div class="col-lg-3">
+                    @Html.TextBoxFor(m => m.plandate, new { @class = "form-control from_bg from_bg2 datepicker", @placeholder = "Plan Date", @readonly = "true" })
+
+                </div>
+                <div class="col-lg-1">
+                    <label for="pwd">
+                        Day type :
+                    </label>
+                </div>
+                <div class="col-lg-3">
+                    @Html.DropDownListFor(m => m.SelectedDaytype_id, new SelectList(Model.daytypeMasterList, "DAYTYPE_ID", "DAYTYPENAME"), "--Select Day type--", new { @class = "form-control", @readonly = "true" })
+
+                </div>
+                <div class="col-lg-1">
+                    <label for="pwd">
+                        PLANCODE :
+                    </label>
+                </div>
+                <div class="col-lg-3">
+                    @Html.TextBoxFor(m => m.Plancode, new { @class = "form-control from_bg from_bg2", @placeholder = "Plan No", @readonly = "true" })
+
+                </div>
+            </div>
+            <br />
+            @if (Model.dsrdetailMasterList != null)
+            {
+                foreach (var item in Model.dsrdetailMasterList)
+                {
+                    i = i + 1;
+                    <input type="hidden" id="planmid" name="planmid" value="@item.PLANID" />
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <label for="pwd">City :</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.DropDownListFor(m => item.CITYID, new SelectList(Model.cityMasterList, "CITY_ID", "CITYNAME", item.CITYID), "--Select City--", new { @class = "form-control select-chosen", @Id = "Selectedcity_id_" + i, @Name = "Selectedcity_id_" + i, @readonly = "true" })
+
+                        </div>
+                        <div class="col-lg-1">
+                            <label for="pwd">
+                                Customer Type :
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.DropDownListFor(m => item.PROSPECTTYPEID, new SelectList(Model.prospectTypeMasterList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME", item.PROSPECTTYPEID), "--Select Customer Type--", new { @class = "form-control select-chosen", @Id = "Selectedcustomer_id_" + i, @Name = "Selectedcustomer_id_" + i, @readonly = "true" })
+                        </div>
+                        <div class="col-lg-1">
+                            <label for="pwd">
+                                CONTACT PERSON :
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => item.CONTACTPERSON, new { @class = "form-control from_bg", title = "Enter Contact Person", @Id = "contperson_" + i, @Name = "contperson_" + i, @readonly = "true" })
+
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <label for="pwd">CONTACT NUMBER :</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => item.CONTACTNUMBER, new { @class = "form-control from_bg", title = "Enter Contact Number", @onkeypress = "return isNumber(event);", @maxLength = "10", @Id = "contactno_" + i, @Name = "contactno_" + i, @readonly = "true" })
+
+                        </div>
+                        <div class="col-lg-1">
+                            <label for="pwd">
+                                PURPOSE :
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => item.PURPOSE, new { @class = "form-control from_bg", title = "Enter PURPOSE", @Id = "visitpurpose_" + i, @Name = "visitpurpose_" + i, @readonly = "true" })
+                        </div>
+
+                        <div class="col-lg-1">
+                            <label for="pwd">
+                                REMARKS :
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => item.REMARKS, new { @class = "form-control from_bg", title = "Enter Remarks", @Id = "remarks_" + i, @Name = "remarks_" + i, @readonly = "true" })
+                        </div>
+                    
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <label for="pwd">
+                                PLAN INTIME :
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => item._PLANINTIME, new { @class = "form-control from_bg meetingtime ", title = "Enter Intime", @Id = "ptimein_" + i, @Name = "ptimein_" + i, @readonly = "true" })
+
+                        </div>
+                        <div class="col-lg-1">
+                            <label for="pwd"> PLAN OUTTIME :</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => item._PLANTOUTTIME, new { @class = "form-control from_bg  meetingtime", title = "Enter Outtime", @Id = "ptimeout_" + i, @Name = "ptimeout_" + i, @readonly = "true" })
+
+                        </div>
+
+                        <div class="col-lg-1">
+                            <label for="pwd">
+
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <label for="pwd"> ACTUAL TIME IN:</label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => item._CHECKINTIME, new { @class = "form-control from_bg  meetingtime", title = "Enter Actual Time In", @Id = "atimein_" + i, @Name = "atimein_" + i, @onkeypress = "return timevalidate(event);", @maxlength = "5" })
+
+                        </div>
+                        <div class="col-lg-1">
+                            <label for="pwd">
+                                ACTUAL TIME OUT :
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+                            @Html.TextBoxFor(m => item._CHECKOUTTIME, new { @class = "form-control from_bg", title = "Enter Actual Time Out", @Id = "atimeout_" + i, @Name = "atimeout_" + i,@onkeypress = "return timevalidate(event);", @maxlength = "5" })
+                        </div>
+                        <div class="col-lg-1">
+                            <label for="pwd">
+
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <button onclick="return fillactual()" class="btn btn-primary" type="button">Submit</button>
+                                <button class="btn btn-info btn-lg" onclick="return reschededata('@item.PLANID')" type="button">Reschedule</button>
+
+                                <button class="btn btn-info btn-lg" onclick="return paymentcollection('@item.PLANID')" type="button">Payment Collection</button>
+                                <button class="btn btn-info btn-lg" onclick="return compalintregister('@item.PLANID')" type="button">Complain Register</button>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+
+
+
+
+
+
+
+        </div>
+
+
+
+    }
+
+</div>
+
+
+
+
+
+<div id="rescheduleinfodv">
+    <form id="rescheduledata" name="rescheduledata">
+        <div id="reschedulebody">
+            <div class="row">
+                <div class="col-lg-3">
+                    <label for="pwd">DATE :</label>
+                </div>
+                <div class="col-lg-3">
+                    <input type="text" id="rescheduledate" name="rescheduledate" class="form-control from_bg from_bg2 datepicker" readonly value="" />
+                    @Html.HiddenFor(m => m.Planid)
+
+                </div>
+            </div>
+
+            <br />
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <label for="pwd">Day Type :</label>
+                </div>
+                <div class="col-lg-3">
+
+                    @Html.DropDownListFor(m => m.SelectedDaytype_id, new SelectList(Model.daytypeMasterList, "DAYTYPE_ID", "DAYTYPENAME"), "--Select Day type--", new { @class = "form-control", @onchange = "return dsrblockinfo(this.value);" })
+                    @Html.ValidationMessageFor(model => model.SelectedDaytype_id)
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <label for="pwd">
+                        TIME IN  :
+                    </label>
+                </div>
+                <div class="col-lg-3">
+                    <input type="text" id="restimein" onkeypress="return timevalidate(event);" maxlength="5" name="restimein" class="form-control from_bg from_bg2" />
+                </div>
+                <div class="col-lg-3">
+                    <label for="pwd">
+                        TIME OUT  :
+                    </label>
+                </div>
+                <div class="col-lg-3">
+                    <input type="text" id="restimeout" onkeypress="return timevalidate(event);" maxlength="5" name="restimeout" class="form-control from_bg from_bg2" />
+                </div>
+            </div>
+        </div>
+
+        <div id="reschedulefooter">
+            <button type="button" class="btn btn-info btn-lg" onclick="reschedueplan();" value="button">Submit</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+<script src="/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="~/Scripts/ProjectJS/ManageMaster_Common.js"></script>
+<script src="~/Scripts/ProjectJS/Common.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".datepicker").datepicker({ format: 'dd/M/yyyy', orientation: "bottom auto", autoclose: true, });
+
+        // $(".select-chosen").chosen();
+
+        $('#rescheduleinfodv').hide();
+        $("#ptimein_1").val(gettimefromdate($("#ptimein_1").val()));
+        $("#ptimeout_1").val(gettimefromdate($("#ptimeout_1").val()));
+        $("#atimein_1").val(gettimefromdate($("#atimein_1").val()));
+        $("#atimeout_1").val(gettimefromdate($("#atimeout_1").val()));
+        $('#SelectedDaytype_id').prop('disabled', true);
+        $('#Selectedcustomer_id_1').prop('disabled', true);
+        $('#Selectedcity_id_1').prop('disabled', true);
+        $('#plandate').prop('disabled', true);
+        $('#plandate').val(formatDate(new Date($('#plandate').val().split(' ')[0].split("-").reverse().join("-"))));
+       
+
+    });
+
+
+    function reschededata(planid) {
+        $('.modal-title').html("RESCHEDULE PLAN");
+        $('.modal-body').html($("#reschedulebody").html());
+        $('.modal-footer').html($("#reschedulefooter").html());
+        $('#myModal').modal('show');
+        $(".datepicker").datepicker({ format: 'dd/M/yyyy', orientation: "bottom auto", autoclose: true, startDate: new Date(), endDate: '+7d' }).on('changeDate', function (e) {
+            Checkdsrexist($('#rescheduledate').val());
+        });;
+
+    }
+
+    function paymentcollection(planid) {
+       
+       window.location.href = "/Collection/CollectionEntry/" + planid;
+     
+    }
+    function compalintregister(planid) {
+       
+       window.location.href = "/Claim/CreateClaimReason?ActionName=create&id=" + planid;
+    
+    }
+    function gettimefromdate(getdate) {
+        var getres = getdate.split(" ");
+        var fintime = getres = getres[1].split(":");
+        var resulttime = fintime[0] + ":" + fintime[1];
+        return resulttime;
+    }
+    function fillactual() {
+       
+        if ($("#atimein_1").val().length == 0 || $("#atimeout_1").val().length == 0) {
+            alert("Please Enter Valid Time i.e HH:MM");
+            return false;
+        }
+        if (!validateHhMm($("#atimein_1").val()) || !validateHhMm($("#atimeout_1").val())) {
+            alert("Please Enter Valid Time  i.e HH:MM");
+            return false;
+        }
+        var checkUrl = '/dsr/fillactualtiminout';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ atimein_1: $("#atimein_1").val(), atimeout_1: $("#atimeout_1").val(), planmid: $("#planmid").val(), plandate: $("#plandate").val() }),
+            dataType: "json",
+            success: function (returndata) {
+                if (returndata.PLANID > 0) {
+
+                    alert("Updated Successfully Actual Time");
+                }
+
+            },
+
+        });
+    }
+
+    function reschedueplan() {
+        if ($("#restimein").val().length == 0 || $("#restimeout").val().length == 0 || $("#rescheduledate").val().length == 0) {
+            alert("Please Enter Valid Time HH:MM and Choose Reschedule Date");
+            $('#myModal').modal('show');
+            return false;
+        }
+        if (!validateHhMm($("#restimein").val()) && !validateHhMm($("#restimeout").val())) {
+            alert("Please Enter Valid Time");
+            $('#myModal').modal('show');
+            return false;
+        }
+
+        var checkUrl = '/dsr/reschedueplan';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ Planid: $("#Planid").val(), rescheduledate: $("#rescheduledate").val(), SelectedDaytype_id: $("#SelectedDaytype_id").val(), restimein: $("#restimein").val(), restimeout: $("#restimeout").val() }),
+            dataType: "json",
+            success: function (returndata) {
+                if (returndata.status > 0) {
+                    alert("Reschedule Plan Successfully !");
+                    $('#myModal').modal('hide');
+                }
+
+            },
+
+        });
+    }
+    function validateHhMm(inputField) {
+       
+        var isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField);
+
+        if (isValid) {
+      
+            return true;
+        } else {
+          
+            return false;
+        }
+
+        return isValid;
+    }
+
+
+    function timevalidate(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode > 43 && charCode > 45 && charCode != 58) {
+            return false;
+        }
+        return true;
+    }
+    function Checkdsrexist(plandate) {
+        if (plandate.length==0) {
+            alert("Choose Plan Date!"); return false;
+        }
+        var checkUrl = '/dsr/checkdsrexist';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ plandate: plandate }),
+            dataType: "json",
+            success: function (returndata) {
+                if (returndata.PLANID > 0) {
+                    alert("This Date is Already Planed with Plancode " + returndata.PLANCODE);
+                    return false;
+                }
+
+            },
+
+        });
+    }
+
+</script>
+

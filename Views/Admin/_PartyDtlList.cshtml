@@ -1,0 +1,153 @@
+﻿@model LumaxDMS.Models.UserAreaModel
+@using LumaxDMS.AppCode
+@{
+    int i = 1;
+    int j = 1;
+}
+<link rel="stylesheet" type="text/css" href="/Content/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" type="text/css" href="/Content/css/responsive.bootstrap4.min.css" />
+
+@Html.HiddenFor(m => m.User_Id, new { @Id = "selectedUserId" })
+<table id="HiddenUserAreatbl" style="display:none">
+    @if (Model.UserAreaList.Count() != 0)
+    {
+        <thead class="thead-lights">
+            <tr><th>hiddenid</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.UserAreaList)
+            {
+                <tr id="HiddenRow_@j">
+                    <td>
+                        @Html.HiddenFor(m => item.CITY_ID, new { @Id = "CityId_" + j, @Name = "CityId_" + j })
+                    </td>
+                </tr>
+                { j = j + 1; }
+
+            }
+        </tbody>
+    }
+</table>
+<table id="UserAreatbl" class="table table-striped table-bordered dt-responsive nowrap"
+       style="width: 100%">
+    <thead class="thead-lights">
+        <tr>
+            <th>
+                <input type='checkbox' id="chkSelectAll" />
+                <a href="##" id="removecheckedrows" title="Remove Checked Rows"><i class="fa fa-trash"></i></a>
+            </th>
+            <th>
+                City
+            </th>
+            <th>
+                State
+            </th>
+            <th>
+                District
+            </th>
+
+            <th>
+                Country
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.UserAreaList.Count() != 0)
+        {
+            foreach (var item in Model.UserAreaList)
+            {
+
+                <tr id="Row_@i">
+
+
+                    <td>
+                        <input type='checkbox' id="cb_@i" />
+                        @{i = i + 1;}
+                    </td>
+                    <td>
+                        @item.CityName
+                    </td>
+                    <td>
+                        @item.StateName
+                    </td>
+                    <td>
+                        @item.DistrictName
+                    </td>
+
+                    <td>
+                        @item.CountryName
+                    </td>
+                </tr>
+            }
+        }
+        else { }
+    </tbody>
+</table>
+
+
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#UserAreatbl').DataTable();
+            $('#loopcount').val('@i');
+
+    });
+
+     var len = 0;
+        function AddParty() {
+            if (len == 0) {
+                len = parseInt('@i');
+            }
+            var selectedareaid = $('#C_SelectedAreaType').val();
+            var tbody = $('#UserAreatbl tbody');
+            var selectedUserId = $('#selectedUserId').val();
+            $.ajax({
+                url: '@Url.Action("GetAllUserAreaByFilterId", "Admin")',
+                type: "GET",
+                dataType: "JSON",
+                data: { UserAreaTypeId: selectedareaid, DataFor: "USER_AREA", AreaId: $('#hdnSelectedUserArea').val(), UserId: selectedUserId },
+                async: false,
+                success: AddRowSucceeded,
+                error: AddRowFailed
+            });
+        }
+
+        function AddRowSucceeded() {
+
+        }
+
+    function AddRowFailed(result) {
+        $("#areadetaildiv").html(result.responseText);
+    }
+
+
+    $('#removecheckedrows').click(function () {
+        debugger;
+        var table = $('#UserAreatbl').DataTable();
+        $('#UserAreatbl tbody').find('tr').each(function () {
+            try {
+                var firstcb = this.cells[0].id;
+                var number = this.id.split('_')[1];
+                if ($("#cb_" + number).is(":checked")) {
+                    debugger;
+                    table.row('#Row_' + number).remove().draw(false);
+                    $('#HiddenRow_' + number).remove();
+                }
+
+            } catch (e) {
+
+            }
+
+
+        });
+    });
+
+
+    $('#chkSelectAll').click(function () {
+        var checkedStatus = this.checked;
+        $('#UserAreatbl tbody tr').find('td:first :checkbox').each(function () {
+            $(this).prop('checked', checkedStatus);
+        });
+    });
+</script>

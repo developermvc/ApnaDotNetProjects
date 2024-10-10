@@ -1,0 +1,180 @@
+﻿@model LumaxDMS.Models.SaleOrderReportModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Sale Order Report";
+
+}
+@{Html.RenderPartial("_WaitModal");}
+
+<link href="~/Scripts/Choosen/Choosen.css" rel="stylesheet" />
+<link href="~/Content/css/DateRange/daterangepicker.css" rel="stylesheet" />
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">SALE ORDER REPORT</div>
+    </div>
+    @using (Html.BeginForm("SalesReport", "Report", FormMethod.Post, new { @Id = "POFormId" }))
+    {
+        @Html.HiddenFor(m=>m.hdnSelectedUserArea)
+        @Html.HiddenFor(m => m.FROMDATE)
+        @Html.HiddenFor(m => m.TODATE)
+        <div class="card-body">
+            <div class="row">
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        Date:
+                    </label>
+                </div>
+                <div class='col-lg-6'>
+                    <div class="">
+                        <div id="reportrange" class="form-control" style="clear: both">
+                            <i class="fa fa-calendar" style="float: left"></i>&nbsp;
+                            <span style="font-size:11px;"></span><b class="caret"></b>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    By Area
+                </div>
+                <div class='col-lg-10'>
+                    @{Html.RenderPartial("AddPartyFilter", Model);}
+                </div>
+            </div>
+             <br/>
+                <div class="row">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            PO No :
+                        </label>
+                    </div>
+                    <div class="col-lg-4 col-xs-12">
+                        @if (Model.poList != null)
+                        {
+                            @Html.DropDownListFor(m => m.PO_No, new SelectList(Model.poList, "PO_NO", "BASE_PO_NO", Model.PO_No), "--Select Po--", new { @class = "form-control rptPO" })
+                        }
+                        else
+                        {
+                            @Html.DropDownListFor(m => m.PO_No, Enumerable.Empty<SelectListItem>(), "--Select Po--", new { @class = "form-control rptPO" })
+                        }
+
+
+                    </div>
+                </div>
+            
+
+            <br />
+            <div class="card-footer">
+                <div class="clearfix">
+                    <div class="float-right">
+                        <input type="Submit" name="input" value="Search" class="btn btn-primary" />
+                        <input type="Submit" formtarget="_blank" name="input" value="Print (PDF)" class="btn btn-primary" />
+                        <input type="Submit" formtarget="_blank" name="input" value="Export (EXCEL)" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                @{ Html.RenderPartial("_ReportData", @Model); }
+            </div>
+        </div>
+    </div>
+</div>
+@section JS {
+    <script src="~/Scripts/DateRange/moment.min.js"></script>
+    <script src="~/Scripts/DateRange/daterangepicker.js"></script>
+    <script src="~/Scripts/DateRange/DateTimeFormat.js"></script>
+    <script src="~/Scripts/ProjectJS/C_AreaJS.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".rptPO").chosen();
+        })
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var checkUrl = '@Url.Action("getAllArea", "Admin")';
+
+            GetAllAreaById(checkUrl, 1);
+
+            GetAllAreaById(checkUrl, 2);
+
+            GetAllAreaById(checkUrl, 3);
+
+            GetAllAreaById(checkUrl, 4);
+
+            GetAllAreaById(checkUrl, 5);
+
+            GetAllAreaById(checkUrl, 6);
+
+            //GetAllAreaById(checkUrl, 7);
+
+            //GetAllAreaById(checkUrl, 8);
+            $('#btnadd').hide();
+
+               FormatDateRange(formatDate('@Model.FROMDATE'), formatDate('@Model.TODATE'), 'reportrange');
+
+            HideWaitingSymbol();
+        });
+
+        $('.btn-primary').click(function () {
+            debugger;
+            var daterange = $('#reportrange')[0].innerText;
+            var dt1 = $.trim(daterange.split('-')[0]);
+            var dt2 = $.trim(daterange.split('-')[1]);
+            document.getElementById("FROMDATE").value = dt1;
+            document.getElementById("TODATE").value = dt2;
+        });
+
+
+                $("#lbArea_7").change(function () {
+           
+            var DEALERIDs = "";
+            DEALERIDs = $("#lbArea_7").val();
+             
+                    if (DEALERIDs != "") {
+                        var checkUrl = '@Url.Action("GetPOByDealerId", "SalesOrder")';
+                        ShowWaitingSymbol();
+                        $.ajax({
+                            url: checkUrl,
+                            type: "POST",
+                            dataType: "JSON",
+                            data: { DLRId: $("#lbArea_7").val().toString() },
+                            success: function FillPOSuccess(List) {
+                                debugger;
+                                HideWaitingSymbol();
+                                $("#PO_No").empty();
+                                var v = "<option value=''>--SELECT PO--</option>";
+                                $.each(List.Data, function (i, item) {
+
+                                    v += "<option value=" + item.PO_NO + ">" + item.BASE_PO_NO + "</option>";
+
+                                });
+
+
+                                $("#PO_No").html(v);
+                                $("#PO_No").val('').trigger("chosen:updated");
+
+
+                            },
+                            error: function FillPOFail() { //debugger;
+                                HideWaitingSymbol();
+                            }
+                        });
+                    }
+        });
+
+        $("#C_SelectedAreaType").change(function () {
+            
+            $("#PO_No").empty();
+            $("#PO_No").val('').trigger("chosen:updated");
+        });
+
+    </script>
+}

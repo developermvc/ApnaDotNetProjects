@@ -1,0 +1,20 @@
+2019-09-23 11:11:56,386 DEBUG DebugLogger - export enter
+2019-09-23 11:11:56,391 DEBUG DebugLogger - got file path
+2019-09-23 11:11:56,399 DEBUG DebugLogger - strat excel workbook created 
+2019-09-23 11:11:56,545 DEBUG DebugLogger - excel workbook created 
+2019-09-23 11:11:56,744 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\df99d409-f262-428a-b4bd-34950c26afca_ExportData.xls
+2019-09-23 11:11:56,834 DEBUG DebugLogger - file export complete
+2019-09-23 11:11:56,835 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-23 14:18:53,672 DEBUG DebugLogger - export enter
+2019-09-23 14:18:53,677 DEBUG DebugLogger - got file path
+2019-09-23 14:18:53,684 DEBUG DebugLogger - strat excel workbook created 
+2019-09-23 14:18:53,719 DEBUG DebugLogger - excel workbook created 
+2019-09-23 14:18:53,858 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\73eb90a1-e0d1-41e5-8c49-30b455b5fb70_ExportData.xls
+2019-09-23 14:18:53,947 DEBUG DebugLogger - file export complete
+2019-09-23 14:18:53,947 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-23 16:18:02,490 DEBUG DebugLogger - export enter
+2019-09-23 16:18:02,495 DEBUG DebugLogger - got file path
+2019-09-23 16:18:02,504 DEBUG DebugLogger - strat excel workbook created 
+2019-09-23 16:18:02,538 DEBUG DebugLogger - excel workbook created 
+2019-09-23 16:18:02,668 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. O2:R2
+2019-09-23 16:18:02,668 DEBUG DebugLogger - file export complete

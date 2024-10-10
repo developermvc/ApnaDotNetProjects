@@ -1,0 +1,147 @@
+﻿@model LumaxDMS.Models.DsrhdrdtlModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "DSRPLANList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">PLANNED DAILY SALES REPORTS</div>
+    </div>
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12 right_bottom">
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                    {
+                        <input name="input" type="button" class="mb-1 btn btn-success pull-right" value="CREATE PLAN" onclick="return CreateNew();" />
+                    }
+
+                    <table id="Usertbl" class="table table-striped table-bordered dt-responsive nowrap"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    PLAN REF NO
+
+                                </th>
+
+                                <th>
+                                    VISIT Date
+                                </th>
+                                <th>VISIT PLACE</th>
+                                <th>
+                                    VISIT Type
+                                </th>
+                                <th>REMARK</th>
+                                <th>STATUS</th>
+                                <th>
+                                    ACTION
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.dsrhdrMasterList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.PLANCODE
+                                    </td>
+
+                                    <td>
+                                        @Html.DisplayDatePart(item.PLANDATE)
+                                    </td>
+                                    <td>
+                                        @item.VISITEDPLACE
+                                    </td>
+                                    <td>
+                                        @item.DAYTYPENAME
+                                    </td>
+                                    <td>@item.REMARKS</td>
+                                    <td>@item.DSRSTATUS</td>
+                                    <td>
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                        {
+
+
+                                            if (item.PLANDATE > DateTime.Today.Date)
+                                            {
+                                                <a href="/DSR/PlanDSR?Id=@item.PLANID&ActionName=edit&@Constants.HASH_DSR" title="Fill Plan DSR"><i class="fa fa-pencil"></i> </a>
+                                            }
+                                        }
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.VIEW))
+                                        {
+                                            <a href="/DSR/PlanDSR?Id=@item.PLANID&ActionName=view&@Constants.HASH_DSR" title="ViewPlan DSR">
+                                                <i class=" icon-eye"></i>
+                                            </a>
+                                        }
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                        {
+                                            if (item.PLANDATE > DateTime.Today.Date)
+                                            {
+                                                @*<a href="#" title="Delete DSR" onclick="return DeleteDSR('@item.PLANID')">
+                                        <i class="fa fa-trash bg_red"></i>
+                                    </a>*@
+                                            }
+                                        }
+
+
+
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("DeleteDsr", "DSR", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.Planid, new { @Id = "Del_PlanId" });
+}
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#Usertbl').DataTable({
+                "aoColumns": [
+                    null,
+                    { "sType": "date" },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                "order": [[1, "desc"]]
+            });
+        });
+
+        function CreateNew() {
+            var myUrl = '@Url.Action("PlanDSR", "DSR")';
+			window.location.href = myUrl + "?ActionName=" + 'Create'+ "@Constants.HASH_DSR";
+        }
+
+
+        function DeleteDSR(id) {
+            $('.modal-title').html("DELETE DSR");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_PlanId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+    </script>
+}

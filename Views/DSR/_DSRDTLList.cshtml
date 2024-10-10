@@ -1,0 +1,224 @@
+﻿@model LumaxDMS.Models.DSRHDRModel
+@using LumaxDMS.AppCode
+@{
+    int i = 0;
+}
+
+@using (@Html.BeginForm("DSRApproval", "DSR", FormMethod.Post, new { enctype = "multipart/form-data", @id = "frmcdsrapprove", @name = "frmcdsrapprove" }))
+{
+    @Html.AntiForgeryToken();
+    if (Model.dSR_DTLMasterList != null)
+    {
+        <input type="hidden" value="@Model.dSR_DTLMasterList.Count" id="loopcount" name="loopcount" />
+    }
+
+        <div class="card card_ps">
+            <div class="panel panel-default panel_pt">
+                <div class="header_ps">
+                    <span>DSR APPROVAL DETAILS</span>
+                </div>
+                <div class="container custom-datable">
+                    <div class="card-body">
+                        <div class="panel panel-default">
+
+                            <div class="col-sm-12 col-md-12">
+
+                                <table id="dsrdtltbl" class="table table-striped table-bordered dt-responsive nowrap" style="width: 100%">
+                                    <thead class="thead-lights">
+                                        <tr>
+                                            <th>
+                                                @*<label>    <input type="checkbox" id="chkSelectAllDTL" class="pull-left" /></label>*@
+                                            </th>
+                                            <th style="text-align: center">S.No</th>
+                                            <th style="text-align: center">CITY NAME</th>
+                                            <th style="text-align: center">CUST TYPE</th>
+                                            <th style="text-align: center">CONTACT PERSON</th>
+                                            @*<th style="text-align: center">SHOP NO</th>*@
+                                            @*<th style="text-align: center">CONTACT NUMBER</th>*@
+                                            @*<th style="text-align: center">PURPOSE</th>*@
+                                            <th style="text-align: center">CHECKINTIME</th>
+                                            <th style="text-align: center">CHECKOUTTIME</th>
+                                            <th style="text-align: center">APP REMARKS</th>
+                                            <th style="text-align: center">STAUS</th>
+                                            <th style="text-align: center">ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.dSR_DTLMasterList != null)
+                                        {
+
+                                            foreach (var item in Model.dSR_DTLMasterList)
+                                            {
+                                                i = i + 1;
+                                        <tr id="colnDtlRow_@i">
+                                            <td>
+                                                @Html.CheckBoxFor(m => item.IsChecked.Value, new { @Id = "IsChecked_" + i, @Name = "IsChecked_" + i, @onclick = "return onCBCheck("+@i+")" })
+                                            </td>
+                                            <td>
+                                                @i
+                                                @Html.HiddenFor(m=>m.PlanId, new { @Id = "planid_" + i, @Name = "planid_" + i })
+                                                @Html.HiddenFor(m => item.DTLPLAN_ID, new { @Id = "plandtlid_" + i, @Name = "plandtlid_" + i })
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(m => item.cityName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(m => item.prospectTypeName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(m => item.CONTACTPERSON)
+                                            </td>
+                                            @*<td>
+                                                @Html.DisplayFor(m => item.SHOPNO)
+                                            </td>*@
+                                            @*<td>
+                                                @Html.DisplayFor(m => item.CONTACTNUMBER)
+                                            </td>*@
+                                            @*<td>
+                                                @Html.DisplayFor(m => item.PURPOSE)
+                                            </td>*@
+                                            <td>
+                                                <label id="lblchkin_@i">@Html.DisplayFor(m => item.CHECKINTIME)</label>
+                                            </td>
+                                            <td>
+                                                <label id="lblchkout_@i">@Html.DisplayFor(m => item.CHECKOUTTIME)</label>
+                                            </td>
+                                            <td>@Html.TextBoxFor(m=> item.APPROVALREMARKS,new { @class= "form-control",@Id = "appremarks_" + i, @Name = "appremarks_" + i })</td>
+
+                                            <td>
+                                                @if (item.IS_APPROVE == "N")
+                                                {
+                                                    <span>Pending</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Approved</span>
+                                                }
+                                                                                    </td>
+                                            <td>
+                                                @if (@item.IsChecked.Value == true)
+                                                {
+                                                    <a class="btn btn-sm btn-secondary  pt-top" title="detail" href="/DSR/FillActualDSR?Id=@item.DTLPLAN_ID&ActionName=display&@Constants.HASH_DSR">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="btn btn-sm btn-secondary  pt-top" title="edit DSR Detail" href="/DSR/FillActualDSR?Id=@item.DTLPLAN_ID&ActionName=edit&from=Approval&@Constants.HASH_DSR">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+                                                }
+
+                                            </td>
+
+
+                                        </tr>
+                                            }
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="clearfix">
+                    <div class="float-right">
+
+
+                        @*<button name="btnTyp" value="Approved" class="btn btn-primary apponly" type="submit" onclick="return CheckApproveValidation('APPROVE');"> Approve </button>
+        <button name="btnTyp" value="Rejected" class="btn btn-primary apponly" type="submit" onclick="return CheckApproveValidation('REJECTED');"> Reject </button>*@
+                        @if (Model.Flag == 1)
+                        {
+                            <button name="btnTyp" value="Approved" class="btn btn-primary apponly" type="submit" onclick="return CheckApproveValidation('APPROVE');"> Approve </button>
+                            <button name="btnTyp" value="Rejected" class="btn btn-primary apponly" type="submit" onclick="return CheckApproveValidation('REJECTED');"> Reject </button>
+
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+}
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        formatlineitem();
+    });
+
+    $('#chkSelectAllDTL').click(function () {
+        var checkedStatus = this.checked;
+        $('#dsrdtltbl tbody tr').find('td:first :checkbox').each(function () {
+            $(this).prop('checked', checkedStatus);
+        });
+        EnabledisableRow();
+    });
+    function onCBCheck(input) {
+        
+        if ($("#lblchkin_" + input).text() == "" && $("#lblchkout_" + input).text()=="") {
+            alert('Please enter checkin checkout time');
+            $("#IsChecked_" + input).prop('checked', false);
+
+        }
+        //var cnt = 0;
+        //$('#dsrdtltbl tbody tr').each(function (i, tr) {
+        //    alert($(tr).find("td:nth-child(9) label").val());
+        //    if ($(tr).find("td:nth-child(9) label").val() != '') {
+        //        cnt = cnt+1;
+        //    }
+             
+        //});
+        EnabledisableRow();
+    }
+    function CheckApproveValidation() {
+        var checkedstatus = 0;
+        var cnt = 0;
+        
+        $('#dsrdtltbl tbody tr').each(function (i, tr) {
+
+            if ($(tr).find("td:nth-child(1) :checkbox").is(":checked") == true) {
+
+                cnt = cnt+1;
+               
+            }
+
+             
+            if ($(tr).find("td:nth-child(1) :checkbox").is(":checked") == true && $(tr).find("td:nth-child(11) input[type=text]").val() != "") {
+
+                checkedstatus = checkedstatus+ 1;
+
+                 
+            }
+            
+
+        });
+         
+
+        if (cnt > 0) {
+
+            if (checkedstatus != cnt) {
+
+                alert("Please Enter approval remarks for selected");
+                return false;
+            }
+            else {
+
+                return true;
+            }
+
+        }
+        else {
+            alert("Please select any one");
+            return false;
+        }
+
+    
+    }
+</script>

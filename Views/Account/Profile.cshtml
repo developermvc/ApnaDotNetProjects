@@ -1,0 +1,118 @@
+﻿@model LumaxDMS.Models.ProfileModel
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h4 class="modal-title">User Profile</h4>
+            <button type="button" class="close" data-dismiss="modal" style="position: relative; top: -10px; color: #fff;">&times;</button>
+        </div>
+        <!-- Modal body -->
+        @using (Html.BeginForm("Profile", "Account", FormMethod.Post, new { }))
+        {
+
+            <div class="modal-body">
+                @Html.AntiForgeryToken()
+                @{Html.RenderPartial("_Message", Model);}
+                <div class="card-body">
+                    <div class="row row_pt">
+                        <img src="@Model.BaseUserInfo.EMPIMGPATH" alt="@Model.BaseUserInfo.USERNAME" style="height: 50px; align-content : center">
+                        @Html.TextBoxFor(model => model.BaseUserInfo.EMPIMGPATH, new { type = "file", @id = "panfile", @Name = "panfile", @Style="display:none" })
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-xs-12">
+                            <label for="pwd">
+                                User Name:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @Html.TextBoxFor(model => model.userName, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            <label for="pwd">
+                                User Code:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @Html.TextBoxFor(model => model.userCode, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                        
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-3 col-xs-12">
+                            <label for="pwd">
+                                Email:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @Html.TextBoxFor(@model => model.emailId, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            <label for="pwd">
+                                DOB:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @Html.TextBoxFor(model => model.dob, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                        
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-3 col-xs-12">
+                            <label for="pwd">
+                                Mobile No.:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @Html.TextBoxFor(model => model.mobileNo, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            <label for="pwd">
+                                Area of Working:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            @Html.TextBoxFor(model => model.hqName, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="card-body">
+                            <table id="UserDetailtbl" class="table table-striped table-bordered dt-responsive nowrap"
+                                   style="width: 100%">
+                                <thead class="thead-lights">
+                                    <tr>
+                                        <th>
+                                            State
+                                        </th>
+                                        <th>
+                                            City
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.UserOfficialInfo != null)
+                                {
+                                    <tbody>
+                                        @foreach (var item in Model.UserOfficialInfo)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.stateName
+                                                </td>
+                                                <td>
+                                                    @item.cityName
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                }
+
+                            </table>
+                            <br />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

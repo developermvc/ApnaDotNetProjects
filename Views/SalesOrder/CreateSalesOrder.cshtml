@@ -1,0 +1,2697 @@
+﻿@model LumaxDMS.Models.SalesOrderModel
+@using LumaxDMS.AppCode
+@{
+    /**/
+
+    ViewBag.Title = "CREATE SALES ORDER";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    var counter = 1;
+}
+
+@section CSS
+{
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <style>
+        #SelectedPart_Id_1_chosen {
+            width: 230px !important;
+        }
+
+        .pendingQtyExist {
+            background-color: burlywood !important;
+            cursor: pointer;
+        }
+
+        .schemeExistOnItem {
+            background-color: bisque !important;
+            cursor: pointer;
+        }
+
+        .priceSupportOnItem {
+            background-color: skyblue !important;
+            /*cursor: pointer;*/
+        }
+    </style>
+}
+
+<div class="alert alert-success alert-dismissible" id="success_msgajax" style="margin-bottom: 1.25% !important;margin-top: -1.4% !important; display:none">
+    <button type="button" class="close" data-dismiss="alert">
+        &times;
+    </button>
+    <strong id="success_msgajax_data"></strong>
+</div>
+
+@{Html.RenderPartial("_WaitModal");}
+
+@Html.DropDownList("HiddenPartId", new SelectList(Model.partMasterList, "PART_ID", "PARTFULLNAME"), "--Select Part--", new { @class = "form-control", @Id = "HiddenPartId", @Name = "HiddenPartId", @Style = "display:none" })
+
+
+@using (@Html.BeginForm("CreateSalesOrder", "SalesOrder", FormMethod.Post, new { enctype = "multipart/form-data", @Id = "poformid" }))
+{
+    @*@Html.AntiForgeryToken();*@
+    @Html.HiddenFor(m => m.PO_HDR_ID)
+    @Html.HiddenFor(m => m.SelectedOrderType_ID)
+    @Html.HiddenFor(m => m.PO_STATUS);
+
+    <input type="hidden" name="SchemeClicked" value="" id="SchemeClicked" />
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            @if (Model.PO_HDR_ID > 0)
+            {
+                if (Model.ActionName.ToUpper() == "EDIT")
+                {
+                    <div class="card-title card_tittle2">EDIT SALES ORDER : @Model.PO_NO</div>
+                }
+                else if (Model.ActionName.ToUpper() == "VIEW")
+                {
+                    <div class="card-title card_tittle2">VIEW SALES ORDER : @Model.PO_NO</div>
+                }
+            }
+            else
+            {
+                <div class="card-title card_tittle2">CREATE SALES ORDER</div>
+            }
+        </div>
+        <input type="hidden" value="@Model.SalesOrderDetailMasterList.Count" id="loopcount" name="loopcount" />
+        @*<input type="hidden" value="@Model.poItemsAndQtyString" id="poItemsAndQtyString" name="poItemsAndQtyString" />*@
+        <div class="custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="row  row_pt">
+                        @Html.Hidden("updateqty")
+                        @Html.Hidden("updatepartid")
+                        @if (Model.PO_HDR_ID > 0)
+                        {
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.HiddenFor(m => m.SelectedProspectType_Id)
+                                @Html.DropDownList("SelectedProspectTypeId", new SelectList(Model.ProspectTypeList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME", Model.SelectedProspectType_Id), "--Select Customer--", new { @class = "form-control po_hdr", @onchange = "return onChangeProspectType(this);" })
+                                @Html.ValidationMessageFor(model => model.SelectedProspectType_Id)
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.DropDownListFor(m => m.SelectedProspectType_Id, new SelectList(Model.ProspectTypeList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME"), "--Select Customer--", new { @class = "form-control po_hdr", @onchange = "return onChangeProspectType(this);" })
+                                @Html.ValidationMessageFor(model => model.SelectedProspectType_Id)
+                            </div>
+                        }
+
+                        <div class="col-lg-5 col-xs-12 poHdr forMechanic">
+                            @Html.DropDownListFor(m => m.SelectedMECHANICId, new SelectList(Model.MechanicList, "PROSPECT_ID", "PROSPECTFULLNAME"), "--SELECT MECHANIC--", new { @class = "form-control po_hdr", @onchange = "return onCustomerSelect();" })
+                        </div>
+                        <div class="col-lg-5 col-xs-12 poHdr forRetailer forMechanic">
+                            @Html.DropDownListFor(m => m.SelectedRETAILERId, new SelectList(Model.RetailerList, "PROSPECT_ID", "PROSPECTFULLNAME"), "--SELECT RETAILER--", new { @class = "form-control po_hdr", @onchange = "return onCustomerSelect();" })
+                        </div>
+                        <div class="col-lg-5 col-xs-12  poHdr forRetailer forDealer">
+
+                            @if (Model.PO_HDR_ID > 0)
+                            {
+                                @Html.DropDownListFor(m => m.SelectedDealer_ID, new SelectList(Model.DealerList, "DEALER_ID", "DEALERFULLNAME", Model.SelectedDealer_ID), "--SELECT CHANNEL PARTNER--", new { @class = "form-control po_hdr", @onchange = "return onCustomerSelect( );" })
+
+                                @Html.Hidden("SelectedDealerID", Model.SelectedDealer_ID);
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(m => m.SelectedDealer_ID, new SelectList(Model.DealerList, "DEALER_ID", "DEALERFULLNAME"), "--SELECT CHANNEL PARTNER--", new { @class = "form-control po_hdr", @onchange = "return onCustomerSelect( );" })
+                            }
+
+
+                        </div>
+                        <div class="col-lg-5 col-xs-12 poHdr forDealer">
+
+                            @Html.DropDownListFor(m => m.SelecteDealerAddress_Id, new SelectList(Model.dealerAddressMasterList, "DEALER_ADDRESS_ID", "DEALERADDRESS"), "--SELECT CHANNEL PARTNER SHIPPING ADDRESS--", new { @class = "form-control", @onchange = "return refreshPriceList()" })
+                            @Html.ValidationMessageFor(model => model.SelecteDealerAddress_Id)
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="row  row_pt hideonview">
+                        <div class="col-lg-7 col-xs-12">
+                            @Html.Hidden("SelectedRowNum", new { @Id = "SelectedRowNum" })
+                            @Html.DropDownListFor(m => m.SelectedPartId, new SelectList(Model.partMasterList, "PART_ID", "PARTFULLNAME"), "--Select Part--", new { @class = "form-control select-chosen", @onchange = "return CheckDuplicatePartIDSelection()" })
+                        </div>
+                        <div class="col-lg-1">
+                            <label>ORDER QTY</label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(m => m.SelectedPartQty, new { @class = "form-control numberinput disableForSubmit enterkey", title = "Enter Qty", @autocomplete = "off" })  @*onblur = "return getItemLineDiscount(" + i + ")"*@
+                        </div>
+
+                        <div class="col-lg-offset1 col-lg-2 col-xs-12">
+                            <div>
+
+                                <a href="##" id="btnaddrow" value="AddMore" class="btn btn-primary" title="Add More Item"
+                                   onclick="return AddDynamicRow();">Add Item</a>
+                                <a href="#" id="btndeleteall" class="btn btn-primary" onclick="return deleteAllDTLByPoid(@Model.PO_HDR_ID);">Delete All</a>
+                            </div>
+
+
+                            <div id="dvupdate" style="display:none">
+                                <a href="##" id="btnupdaterow" value="UpdateRow" class="btn btn-primary"
+                                   title="update" onclick="return UpdateRecord();">Update</a>
+
+                                <a href="##" id="btnupdaterow" value="CancelRow" class="btn btn-primary"
+                                   title="Add More Item" onclick="return CancelRecord();">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                    <style>
+                        .table-fixed thead {
+                            width: 100%;
+                        }
+
+                        .table-fixed tbody {
+                            height: 230px;
+                            overflow-y: auto;
+                            width: 100%;
+                        }
+
+                        .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+                            display: block;
+                        }
+
+                            .table-fixed tbody td, .table-fixed thead > tr > th {
+                                float: left;
+                                border-bottom-width: 0;
+                            }
+                        .table-fixed tfoot {
+                            width: 100%;
+                        }
+
+
+
+                        .table-fixed tfoot, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
+                            display: block;
+                        }
+
+                            .table-fixed tbody td, .table-fixed tfoot > tr > th {
+                                float: left;
+                                border-bottom-width: 0;
+                            }
+                    </style>
+                    <hr />
+                    <div >
+                        <table class=" table-fixed table border " id="dynamictbl">
+                            <thead>
+                                <tr style="display:block; ">
+
+                                    <th width="3%" height="54">
+                                        SL
+                                    </th>
+                                    <th width="15%" height="54">
+                                        ITEM CODE
+                                    </th>
+                                    <th width="7%" height="54">
+                                        ORD QTY
+                                    </th>
+
+
+                                    <th id="stck_th" class="hiddenstck" width="7%" height="54">
+                                        STOCK
+                                    </th>
+
+
+                                    <th width="7%" height="54">
+                                        PEND. QTY
+                                    </th>
+                                    <th width="7%" height="54">
+                                        MRP
+                                    </th>
+                                    <th width="7%" height="54">
+                                        RATE
+                                    </th>
+                                    <th width="7%" height="54">
+                                        PRICE SUP
+                                    </th>
+                                    <th width="7%" height="54">
+                                        NET RATE
+                                    </th>
+                                    <th width="7%" height="54">
+                                        NET VALUE
+                                    </th>
+                                    <th width="7%" height="54">
+                                        SCHEME DISCOUNT
+                                    </th>
+                                    <th width="10%" height="54">
+                                        TOTAL AMOUNT
+                                    </th>
+
+                                    <th width="3%" height="54">
+                                       
+                                    </th>
+
+                                    <th width="3%" height="54">
+                                      
+                                    </th>
+                                    <th width="3%" height="54">
+                                        
+                                    </th>
+
+                                    
+                                </tr>
+                            </thead>
+                            <tbody style="text-align: left; ">
+                                @if (Model.SalesOrderDetailMasterList != null)
+                                {
+                                    foreach (var item in Model.SalesOrderDetailMasterList)
+                                    {
+                                        i = i + 1;
+                                        <tr id="partDtlRow_@i" style="display:inline-block">
+                                            <td width="3%">
+                                                @i
+                                            </td>
+                                            <td width="15%">
+                                                @Html.HiddenFor(m => item.PO_DTL_ID, new { @Id = "PODTLID_" + i, @class = "form-control", @Name = "PODTLID_" + i })
+                                                @Html.HiddenFor(m => item.ISPCKINGALLOW, new { @Id = "IsPckingAllow_" + i, @class = "form-control", @Name = "IsPckingAllow_" + i })
+                                                @Html.HiddenFor(m => item.PART_ID, new { @Id = "SelectedPart_Id_" + i, @class = "form-control", @Name = "SelectedPart_Id_" + i })
+                                                @Html.TextBoxFor(M => item.PARTFULLNAME, new { @class = "form-control", @Name = "SelectedPart_Name_" + i, @readonly = "readonly", @Id = "SelectedPart_Name_" + i })
+                                                @*@Html.DropDownListFor(m => item.PART_ID, new SelectList(Model.partMasterList, "PART_ID", "PARTFULLNAME", item.PART_ID), "--Select Part--", new { @class = "form-control select-chosen", @onchange = "return CheckDuplicatePartIDSelection(" + i + ");", @Id = "SelectedPart_Id_" + i, @Name = "SelectedPart_Id_" + i })*@
+
+                                            </td>
+                                            <td width="7%">
+                                                @Html.TextBoxFor(M => item.PART_QTY, new { @class = "form-control numberinput disableForSubmit enterkey", @readonly = "readonly", @Name = "txtQty_" + i, @autocomplete = "off", @Id = "txtQty_" + i, onblur = "return getItemLineDiscount(" + i + ")" })
+                                                @Html.HiddenFor(M => item.STDPACK, new { @class = "form-control", @Name = "STDPACK_" + i, @Id = "STDPACK_" + i })
+                                                @*@Html.HiddenFor(M => item.BOXPACK, new { @class = "form-control", @Name = "BOXPACK_" + i, @Id = "BOXPACK_" + i })*@
+                                                @Html.HiddenFor(M => item.MOQ, new { @class = "form-control", @Name = "MOQ_" + i, @Id = "MOQ_" + i })
+                                            </td>
+                                            @*<td>
+                                                    @Html.TextBoxFor(M => item.STD_PACK, new { @class = "form-control", @Name = "txtStandardPacking_" + i, @readonly = "readonly", title = "Standard Packin Qty", @Id = "txtStandardPacking_" + i })
+                                                </td>*@
+
+                                            <td class="hiddenstck" id="stck_td_@i" width="7%">
+                                                @Html.TextBoxFor(M => item.CurrentStock, new { @class = "form-control", @Name = "txtCurrentStock_" + i, @readonly = "readonly", title = "Current Stock of item", @Id = "txtCurrentStock_" + i })
+                                            </td>
+
+
+                                            <td width="7%">
+                                                @if (item.PendingQty == 0 || item.PendingQty == null)
+                                                {
+                                                    @Html.TextBoxFor(M => item.PendingQty, new { @class = "form-control", @Name = "txtPendingQty_" + i, @readonly = "readonly", title = "Pending Quantity", @Id = "txtPendingQty_" + i })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(M => item.PendingQty, new { @class = "form-control pendingQtyExist", @Name = "txtPendingQty_" + i, @readonly = "readonly", title = "Pending Quantity", @Id = "txtPendingQty_" + i, @onclick = "return showOrdersOfPendingQty(this);" })
+                                                }
+                                            </td>
+                                            <td width="7%">
+                                                @Html.TextBoxFor(M => item.MRP, new { @class = "form-control", @Name = "txtMrp_" + i, @readonly = "readonly", title = "MRP", @Id = "txtMrp_" + i })
+                                            </td>
+                                            <td width="7%">
+                                                @Html.TextBoxFor(M => item.RATE, new { @class = "form-control", @Name = "txtRate_" + i, @readonly = "readonly", title = "Rate", @Id = "txtRate_" + i })
+                                            </td>
+                                            <td width="7%">
+                                                @if (item.PRICESUPPORT == 0 || item.PRICESUPPORT == null)
+                                                {
+                                                    @Html.TextBoxFor(M => item.PRICESUPPORT, new { @class = "form-control", @Name = "txtPRICESUPPORT_" + i, @readonly = "readonly", title = "PRICESUPPORT", @Id = "txtPRICESUPPORT_" + i })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(M => item.PRICESUPPORT, new { @class = "form-control priceSupportOnItem", @Name = "txtPRICESUPPORT_" + i, @readonly = "readonly", title = "PRICESUPPORT", @Id = "txtPRICESUPPORT_" + i })
+                                                }
+                                            </td>
+                                            <td width="7%">
+                                                @Html.TextBoxFor(M => item.NETITEMVALUE, new { @class = "form-control", @Name = "txtNETITEMVALUE_" + i, @readonly = "readonly", title = "NET ITEM VALUE", @Id = "txtNETITEMVALUE_" + i })
+                                            </td>
+                                            <td width="7%">
+                                                @Html.TextBoxFor(M => item.NETORDERVALUE, new { @class = "form-control", @Name = "txtNETORDERVALUE_" + i, @readonly = "readonly", title = "NET ORDER VALUE", @Id = "txtNETORDERVALUE_" + i })
+                                            </td>
+                                            <td width="7%">
+                                                @if (item.SCHEMEDISCOUNT == 0 || item.SCHEMEDISCOUNT == null)
+                                                {
+                                                    @Html.TextBoxFor(M => item.SCHEMEDISCOUNT, new { @class = "form-control", @Name = "txtSCHEMEITEMDISCOUNT_" + i, @readonly = "readonly", title = "SCHEME ITEM DISCOUNT", @Id = "txtSCHEMEITEMDISCOUNT_" + i })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(M => item.SCHEMEDISCOUNT, new { @class = "form-control schemeExistOnItem", @Name = "txtSCHEMEITEMDISCOUNT_" + i, @readonly = "readonly", title = "SCHEME ITEM DISCOUNT", @Id = "txtSCHEMEITEMDISCOUNT_" + i, @onclick = "return showItemSchemes(this);" })
+                                                }
+                                            </td>
+                                            <td width="10%">
+                                                @Html.TextBoxFor(M => item.TOTALAMOUNT, new { @class = "form-control", @Name = "txtFINALITEMAMOUNT_" + i, @readonly = "readonly", title = "Total Amount", @Id = "txtFINALITEMAMOUNT_" + i })
+                                            </td>
+                                            <td width="3%">
+                                                @if (Model.ActionName.ToUpper() != "VIEW")
+                                                {
+                                                    <a href="##" id="schduleItem_@i" name="schduleItem_@i" onclick="schduelItem(@i)" class="btnSchduelItem"><i class="fa fa-calendar" title="Schedule Order"></i></a>
+                                                }
+                                            </td>
+                                            <td width="3%">
+
+                                                <a href="##" id="deleteRow_@i" name="deleteRow_@i" onclick="deletePart(@i)" class="btndeleteRow"><i class="fa fa-trash bg_red" title="Remove Item"></i></a>
+
+                                            </td>
+                                            <td width="3%">
+                                                @if (Model.ActionName.ToUpper() != "VIEW")
+                                                {
+                                                    <a href="##" id="editRow_@i" name="editRow_@i" onclick="editPart(@i)" class="btnediteRow">  <i class="fa fa-pencil" title="Edit Item"></i></a>
+                                                }
+                                                </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                            <tfoot style="background-color:#dee2e6;">
+                                <tr >
+                                    <th width="3%"></th>
+                                    <th width="15%">Item Line Totals: </th>
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalQty"><b></b></label>
+                                    </th>
+
+                                    <th id="stck_ft" class="hiddenstck" width="7%">
+                                        <label id="lblLineItemTotalStock"><b></b></label>
+                                    </th>
+
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalPendingQty"><b></b></label>
+                                    </th>
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalMrp"><b></b></label>
+                                    </th>
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalRate"><b></b></label>
+                                    </th>
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalPriceSupport"><b></b></label>
+                                    </th>
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalNetItemValue"><b></b></label>
+                                    </th>
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalOrdreValue"><b></b></label>
+                                    </th>
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalSchemeItemDiscount"><b></b></label>
+                                    </th>
+                                    <th width="7%">
+                                        <label id="lblLineItemTotalFinalAmount"><b></b></label>
+                                    </th>
+                                    <th width="7%"></th>
+                                    <th width="3%"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <br />
+                    <div class="row">
+
+                        <div class="col-lg-2 col-xs-12">
+                            Remarks
+                        </div>
+                        <div class="col-lg-10 col-xs-12">
+                            @Html.TextAreaFor(m => m.REMARKS, new { @class = "form-control" })
+                        </div>
+
+                    </div>
+                    <br />
+                    <div class="card-footer">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                @* <a href="##" id="btnaddrow" value="AddMore" style="margin-right:40px" class="btn btn-primary" title="Add More Item" onclick="return AddDynamicRow();">Add More Item</a>*@
+                                @if (Model.PO_HDR_ID == 0)
+                                {
+                                    <span class="uploadexceldv">
+                                        <input type="file" name="fileField" id="fileField" class="btn btn-primary" style="padding: 0.200rem 0.80rem;" />
+                                        <button name="btnTyp" value="UploadExcel" title="Upload Excel" class="btn btn-primary" onclick="return checkFileValidation('fileField');">
+                                            Upload Excel &nbsp; <i class="fa fa-upload"></i>
+                                        </button>
+                                        <a href="##" value="DownloadSampleExcel" class="btn btn-primary"
+                                           title="Download Sample Excel"
+                                           onClick="window.location.href='/Content/LumaxData/SampleFiles/SamplePO.xlsx'">
+                                            Download Sample Excel &nbsp; <i class="fa fa-download"></i>
+                                        </a>
+                                    </span>
+                                }
+                                else
+                                {
+                                    if (Model.SalesOrderDetailMasterList.Count == 0)
+                                    {
+                                        <span class="uploadexceldv">
+                                            <input type="file" name="fileField" id="fileField" class="btn btn-primary" style="padding: 0.200rem 0.80rem;" />
+                                            <button name="btnTyp" value="UploadExcel" title="Upload Excel" class="btn btn-primary" onclick="return checkFileValidation('fileField');">
+                                                Upload Excel &nbsp; <i class="fa fa-upload"></i>
+                                            </button>
+                                            <a href="##" value="DownloadSampleExcel" class="btn btn-primary"
+                                               title="Download Sample Excel"
+                                               onClick="window.location.href='/Content/LumaxData/SampleFiles/SamplePO.xlsx'">
+                                                Download Sample Excel &nbsp; <i class="fa fa-download"></i>
+                                            </a>
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="uploadexceldv" style="display:none;">
+                                            <input type="file" name="fileField" id="fileField" class="btn btn-primary" style="padding: 0.200rem 0.80rem;" />
+                                            <button name="btnTyp" value="UploadExcel" title="Upload Excel" class="btn btn-primary" onclick="return checkFileValidation('fileField');">
+                                                Upload Excel &nbsp; <i class="fa fa-upload"></i>
+                                            </button>
+                                            <a href="##" value="DownloadSampleExcel" class="btn btn-primary"
+                                               title="Download Sample Excel"
+                                               onClick="window.location.href='/Content/LumaxData/SampleFiles/SamplePO.xlsx'">
+                                                Download Sample Excel &nbsp; <i class="fa fa-download"></i>
+                                            </a>
+                                        </span>
+
+                                    }
+
+                                }
+
+                                <a href="#" style="margin-left:40px" class="btn btn-primary" onclick="return ViewAvailableScheme();">Available Scheme</a>
+                                @*<a href="#" style="margin-left:40px" class="btn btn-primary" onclick="return refreshPriceList();">Refresh</a>*@
+
+                            </div>
+                            <div class="float-right">
+                                <a href="##" id="btnscheme" class="btn btn-primary" title="Apply Scheme" onclick="return ApplySchemeOnPO();">Apply Scheme</a>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="forDealer poHdr">
+                                <table id="tblCreditInfo" class="table border">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2">
+                                                CREDIT INFO
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                LIMIT
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(m => m.TOTALCREDITLIMIT, new { @class = "form-control", disabled = "disabled", @Id = "txtTOTALCREDITLIMIT" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                USED
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(m => m.UTILIZECREDITLIMIT, new { @class = "form-control", disabled = "disabled", @Id = "txtUTILIZECREDITLIMIT" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                BALANCE
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(m => m.BALANCECREDITLIMIT, new { @class = "form-control", disabled = "disabled", @Id = "txtBALANCECREDITLIMIT" })
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="forDealer poHdr">
+                                <table id="tblCreditInfo" class="table border">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2">
+                                                TARGET INFO
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                TARGET
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(m => m.TOTALTARGET, new { @class = "form-control", disabled = "disabled", @Id = "txtTOTALTARGET" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                ACHIEVEMENT
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(m => m.UTILIZETARGET, new { @class = "form-control", disabled = "disabled", @Id = "txtUTILIZETARGET" })
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                SHORTFALL
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(m => m.BALANCETARGET, new { @class = "form-control", disabled = "disabled", @Id = "txtBALANCETARGET" })
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-4 flot-right">
+                            <table id="tblPoTotal" class="table border">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">TOTAL</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            PO VALUE :
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m=>m.PO_VALUE , new { @Id = "txtTOTALPOVALUE",@Class="form-control", @disabled= "disabled"
+                                       })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            GROUP ITEM SCHEME DISCOUNT :
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => m.GSCHEME_DISCOUNT, new { @Id = "txtSCHEMEDISCOUNT", @Class = "form-control", @disabled = "disabled" })
+
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            FINAL PO AMOUNT :
+                                        </td>
+                                        <td>
+
+                                            @Html.TextBoxFor(m => m.FINAL_AMOUNT, new { @Id = "txtFINALAMOUNT", @Class = "form-control", @disabled = "disabled" })
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <br />
+                    <div class="card-footer">
+                        <div class="clearfix">
+                            <div class="float-right">
+                                @*<button name="btnTyp" value="Save" class="btn btn-primary" type="submit" onclick="return CheckValidation('Save');"> Save </button>*@
+                                <button name="btnTyp" id="btnsubmit" value="Submit" class="btn btn-primary" type="submit" onclick="return CheckValidation('Submit');"> Submit </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@using (Html.BeginForm("SaveSchduleDetail", "SalesOrder", FormMethod.Post, new { @Id = "ScheduleForm" }))
+{
+    <div class="modal" id="SchduleDetailModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="ShowInfo-modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal" style="position: relative; top: -10px; color: #fff;">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body" id="ShowInfo-modal-body">Modal body.</div>
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("DeletePODTL", "SalesOrder", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.PO_HDR_ID, new { @Id = "Del_POHDRID" });
+    @Html.HiddenFor(m => m.SelectedPartId, new { @Id = "Del_PARTID" });
+    @Html.HiddenFor(m => m.rowNumber, new { @Id = "Del_RN" });
+}
+
+@section JS {
+    <script src="~/Scripts/ProjectJS/ManageMaster_Common.js"></script>
+    <script src="~/Scripts/ProjectJS/UploadFile.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.enterkey').keypress(function (event) {
+                if (event.keyCode === 10 || event.keyCode === 13) {
+                    event.preventDefault();
+                }
+            });
+
+
+
+
+           $("input:text").focus(function () { $(this).select(); });
+            $('#Usertbl').DataTable();
+            if ($('#SelectedProspectType_Id').val() == 1 ) {
+                $('.forSecondary').hide();
+            }
+            else {
+                $('.forprimary').hide();
+            }
+
+            if ($('#PO_HDR_ID').val() != 0) {
+                debugger;
+                $('.po_hdr').attr("disabled", true);
+                $("#SelectedDealer_ID").chosen();
+                $("#SelectedRETAILERId").chosen();
+                $("#SelectedMECHANICId").chosen();
+
+            }
+            else {
+                if ($('@Model.CallDealerReady' == 'True')) {
+                    debugger;
+                        FillProspectData('@Constants.PROSPECT_TYPE_DEALER');
+                        FillProspectData('@Constants.PROSPECT_TYPE_RETAILER');
+                        FillProspectData('@Constants.PROSPECT_TYPE_MECHANIC');
+                        FillPartData();
+                }
+            }
+
+            ShowHideSecondary();
+            if ($('#PO_STATUS').val() == 2) {
+                $('.disableForSubmit').attr("disabled", true);
+                $('.btndeleteRow').hide();
+                $('.btnSchduelItem').hide();
+                $('.btnediteRow').hide();
+                $('.btn').hide();
+                $('.select-chosen').attr("disabled", true);
+                $('.select-chosen').trigger("chosen:updated");
+                $('#SelecteDealerAddress_Id').attr("disabled", true);
+              
+            }
+            debugger;
+            showTotals();
+
+            GetDealerCreditTargetInfo();
+            $(".select-chosen").chosen();
+
+            if ('@Model.ISDEALERLOGIN'=='True') {
+                $('.po_hdr').attr("disabled", true);
+                $("#SelectedDealer_ID").chosen();
+                $("#SelectedRETAILERId").chosen();
+                $("#SelectedMECHANICId").chosen();
+                $(".hiddenstck").hide();
+            }
+
+            if ('@Model.ISPENDINGORDERFOUND' == 'True') {
+                if (@Model.SalesOrderDetailMasterList.Count> 0) {
+                    $('.uploadexceldv').hide();
+                }
+
+
+            }
+
+
+            if ('@Model.ActionName' != 'VIEW') {
+
+                var errorlist = @Html.Raw(Json.Encode(Model.ErrorList));
+                if (errorlist != null && errorlist.length > 0) {
+                    debugger;
+                    $('.modal-title').html("Bellow Item/s NOT available as of now");
+
+                    var v = "<div><table class='table border'><tr><th>SNO.</th><th>ITEMCODE</th><th>PARTNUMBER</th><th>DESCRIPTION</th></tr>";
+                    $.each(errorlist, function (i, error) {
+
+                        v += "<tr><td>" + (parseInt(i) + 1) + "</td><td>" + error.ITEMCODE + "</td><td>" + error.PARTNUMBER + "</td><td>" + error.ITEMDESCRIPTION + "</td></tr>";
+                    });
+                    v += "</table></div>";
+                    $('.modal-body').html(v);
+                    $('#myModal').modal('show');
+                }
+
+                getItemLineDiscountForAll();
+            } else {
+                $('.hideonview').hide();
+                $('#REMARKS').attr("disabled", true);
+            }
+
+            HideWaitingSymbol();
+
+        });
+
+ function FillProspectData(TYPE) {
+            debugger;
+            var userId = @Model.BaseUserInfo.User_ID;
+            var checkUrl = '@Url.Action("GetDealerOfUserAreasByUserID", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { userId: userId, TYPE: TYPE },//, str: str
+                success: function FillProspectDataSuccess(result) {
+                    if (result != null && result != undefined) {
+                        for (var i = 0; i < result.length; i++) {
+                            if (TYPE == '@Constants.PROSPECT_TYPE_DEALER') {
+                                for (var i = 0; i < result.length; i++) {
+                                    $('#SelectedDealer_ID').append('<option value="' + result[i].DEALER_ID + '">' + result[i].DEALERFULLNAME + '</option>');
+
+                                }
+                            }
+                            else if  (TYPE == '@Constants.PROSPECT_TYPE_RETAILER'){
+                                for (var i = 0; i < result.length; i++) {
+                                    $('#SelectedRETAILERId').append('<option value="' + result[i].PROSPECT_ID + '">' + result[i].PROSPECTFULLNAME + '</option>');
+
+                                }
+                            }
+                            else if  (TYPE == '@Constants.PROSPECT_TYPE_MECHANIC'){
+                                for (var i = 0; i < result.length; i++) {
+                                    $('#SelectedMECHANICId').append('<option value="' + result[i].PROSPECT_ID + '">' + result[i].PROSPECTFULLNAME + '</option>');
+
+                                }
+                            }
+                            else if  (TYPE == '@Constants.PROSPECT_TYPE_ERETAILER'){
+
+                            }
+                        }
+                    }
+                    if (TYPE == '@Constants.PROSPECT_TYPE_DEALER') {
+                        $("#SelectedDealer_ID").chosen();
+                        HideWaitingSymbol();
+                    }
+                    else if (TYPE == '@Constants.PROSPECT_TYPE_RETAILER') {
+                        $("#SelectedRETAILERId").chosen();
+                    }
+                    if (TYPE == '@Constants.PROSPECT_TYPE_MECHANIC') {
+                        $("#SelectedMECHANICId").chosen();
+
+                    }
+                    //HideWaitingSymbol();
+                },
+                error: function FillProspectDataFail(){ }
+            });
+        }
+        function onChangeProspectType(obj) {
+            ShowHideSecondary(obj);
+            $('#SelectedDealer_ID').val('');
+            $('#SelectedRETAILERId').val('');
+            $('#SelectedMECHANICId').val('');
+            $('#SelecteDealerAddress_Id').empty();
+            var v = "<option value=''>--SELECT CHANNEL PARTNER SHIPPING ADDRESS--</option>";
+            $("#SelecteDealerAddress_Id").html(v);
+            $("#SelectedDealer_ID").val('').trigger("chosen:updated");
+            $("#SelectedRETAILERId").val('').trigger("chosen:updated");
+            $("#SelectedMECHANICId").val('').trigger("chosen:updated");
+        }
+         function FillDealerAddressDdl() {
+            debugger;
+             var DEALERID = $('#SelectedDealer_ID').val();
+             if (DEALERID != "") {
+                 var checkUrl = '@Url.Action("GetDealerAddressByDealerId", "SalesOrder")';
+                 ShowWaitingSymbol();
+                 $.ajax({
+                     url: checkUrl,
+                     type: "GET",
+                     dataType: "JSON",
+                     data: { DEALERID: DEALERID },
+                     success: FillDealerAddressDdlSuccess,
+                     error: function FillDealerAddressDdlFail() { //debugger;
+                     }
+                 });
+                 GetDealerCreditTargetInfo();
+             }
+
+        }
+        function FillDealerAddressDdlSuccess(List) {
+            debugger;
+            $("#SelecteDealerAddress_Id").empty();
+            var v = "<option value=''>--SELECT CHANNEL PARTNER SHIPPING ADDRESS--</option>";
+            $.each(List.Data, function (i, item) {
+
+                v += "<option value=" + item.DEALER_ADDRESS_ID + ">" + item.DEALERADDRESS1 + " : " + item.DEALERADDRESS2 + ": " + item.MAINDEALERCODE + "</option>";
+                //debugger;
+            });
+            $("#SelecteDealerAddress_Id").html(v);
+            HideWaitingSymbol();
+        }
+
+
+         function FillPartData() {
+            debugger;
+            var PLANT_ID = @Model.BaseUserInfo.PLANT_ID;
+            var checkUrl = '@Url.Action("GetPartbyUserPlant", "SalesOrder")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { PLANT_ID: PLANT_ID },//, str: str
+                success: function FillPartDataSuccess(result) {
+                    debugger;
+                    if (result != null && result != undefined) {
+                        for (var i = 0; i < result.Data.length; i++) {
+                            //partdataArray.push({ id: result[i].PART_ID, name: result[i].PARTFULLNAME });
+                            $('#SelectedPart_Id_1').append('<option value="' + result.Data[i].PART_ID + '">' + result.Data[i].PARTFULLNAME + '</option>');
+                            $('#HiddenPartId').append('<option value="' + result.Data[i].PART_ID + '">' + result.Data[i].PARTFULLNAME + '</option>');
+
+                        }
+                        $("#SelectedPart_Id_1").chosen();
+                    }
+                },
+                error: function FillPartDataFail(){ }
+            });
+        }
+
+        function CheckDuplicatePartIDSelection() {
+            debugger;
+            var selectedPartID = $("#SelectedPartId").val();
+
+            var valid = true;
+            for (var i = 1; i <= numrows; i++) {
+                var alreadySelectedID = $('#SelectedPart_Id_' + i).val();
+                if (selectedPartID == alreadySelectedID) {
+                    alert("Part already Selected")
+                    $("#SelectedPartId").val("").trigger("chosen:updated");
+                    valid = false;
+                }
+            }
+            if (valid) {
+                $('#SelectedPartQty').focus();
+            }
+            //if (valid) {
+
+            //    $("#SelectedPartQty").val('');
+            //    valid = getItemLineDiscount();
+            //    $("#SelectedPartQty").focus();
+
+            //}
+
+            return valid;
+        }
+
+
+        function getItemLineDiscount(rownumber) {
+            debugger;
+           // $('#btnaddrow').focus();
+            var getvalid = true;
+            var PROSPECTTYPRID = $('#SelectedProspectType_Id').val();
+            var FROMID = getPoFromID();
+            if (rownumber != null) {
+
+                var PARTID = $('#SelectedPart_Id_' + rownumber).val();
+                var PARTQTY = $("#txtQty_" + rownumber).val();
+                if (PARTQTY == "") {
+                    PARTQTY = 0;
+                }
+                CalculateLineItemValues(PARTID, FROMID, PROSPECTTYPRID, PARTQTY, rownumber)//(ItemId, ItemQty, rownumber);
+            }
+            else {
+                var numrow = document.getElementById("loopcount").value;
+                var validagg = true;
+                for (var i = 1; i <= numrow; i++) {
+                    var PARTID = $('#SelectedPart_Id_' + i).val();
+                    var PARTQTY = $('#txtQty_' + i).val();
+                    if (PARTQTY == "") {
+                        PARTQTY = 0;
+                    }
+                    if (PARTID != '', PARTID != 0) {
+                        CalculateLineItemValues(PARTID, FROMID, PROSPECTTYPRID, PARTQTY, i)//(ddlpart, txtQty,i);
+                    }
+                }
+                return getvalid;
+            }
+            //$('#btnaddrow').focus();
+        }
+
+
+        function getPoFromID() {
+            var fromID;
+            var PROSPECTTYPRID = $('#SelectedProspectType_Id').val();
+            if (PROSPECTTYPRID == 1) {
+                fromID = $('#SelectedDealer_ID').val();
+            }
+            else if (PROSPECTTYPRID == 2) {
+                fromID = $('#SelectedRETAILERId').val();
+            }
+            else if (PROSPECTTYPRID == 3) {
+                fromID = $('#SelectedMECHANICId').val();
+            }
+            else {
+                fromID = 0;
+            }
+            return fromID;
+        }
+
+         var numrows = @i; // because you are starting with 1 row visible
+        var serialnumber = @i;
+        var rowsarray = ["0", "0"];
+        var isautosaveallow = false;
+        function AddDynamicRow() {
+            debugger;
+            var selectedPartId = $("#SelectedPartId").val();
+            var selectedQty = $("#SelectedPartQty").val();
+            if ($("#SelecteDealerAddress_Id").val() == '') {
+                alert('Please Select dealer address');
+                return false;
+            }
+
+            else if (selectedPartId == '') {
+                alert('Please Select Item');
+                $('#SelectedPartId').focus().trigger('chosen:activate');
+                return false;
+            } else if (selectedQty == '' || selectedQty == '0') {
+                alert('please enter quantity..');
+                $('#SelectedPartQty').focus();
+                return false;
+            }
+            var fromid = getPoFromID();
+            if (fromid == "") {
+                alert('please select customer');
+                return false;
+            }
+
+            var selectedPartNumber = $("#SelectedPartId option:selected").text();
+
+
+            numrows = numrows + 1;
+            serialnumber = serialnumber + 1;
+            rowsarray[numrows] = "0";
+
+            var table = document.getElementById("dynamictbl").getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            row.id = "partDtlRow_" + numrows;
+
+            var cell0 = row.insertCell(0);
+            cell0.style = "width:3%; clear: both";
+            cell0.align = "center";
+            cell0.innerHTML = serialnumber;
+
+            //var ddl = $('#HiddenPartId').clone(true);
+
+            //var celldv = row.insertCell(1);
+            //ddl[0].id = "SelectedPart_Id_" + numrows;
+            //ddl[0].name = "SelectedPart_Id_" + numrows;
+            //ddl[0].className = "form-control partchosen-select";
+            //ddl[0].setAttribute("onchange", "return CheckDuplicatePartIDSelection(" + numrows + ")");
+            //celldv.append(ddl[0]);
+
+
+            var cell1 = row.insertCell(1);
+            cell1.style = "width:15%";
+            var element1 = document.createElement("input");
+            element1.type = "text";
+            element1.className = "form-control";
+            element1.name = "SelectedPart_Name_" + numrows;
+            element1.id = "SelectedPart_Name_" + numrows;
+            element1.value = selectedPartNumber;
+            element1.setAttribute('readonly', 'true');
+            cell1.appendChild(element1);
+            var element1_1 = document.createElement("input");
+            element1_1.type = "hidden";
+            element1_1.className = "form-control";
+            element1_1.name = "SelectedPart_Id_" + numrows;
+            element1_1.id = "SelectedPart_Id_" + numrows;
+            element1_1.value = selectedPartId;
+            cell1.appendChild(element1_1);
+            var element1_2 = document.createElement("input");
+            element1_2.type = "hidden";
+            element1_2.className = "form-control";
+            element1_2.name = "IsPckingAllow_" + numrows;
+            element1_2.id = "IsPckingAllow_" + numrows;
+            cell1.appendChild(element1_2);
+
+
+
+            var cell2 = row.insertCell(2);
+            cell2.style = "width:7%";
+            var element2 = document.createElement("input");
+            element2.type = "text";
+            element2.className = "form-control numberinput enterkey";
+            element2.name = "txtQty_" + numrows;
+            element2.id = "txtQty_" + numrows;
+            //element2.setAttribute("autocomplete", "off");
+            //element2.setAttribute("onblur", "return getItemLineDiscount(" + numrows + ")");
+            element2.value = selectedQty;
+            element2.setAttribute('readonly', 'true');
+            cell2.appendChild(element2);
+
+            var element2_1 = document.createElement("input");
+            element2_1.type = "hidden";
+            element2_1.className = "form-control";
+            element2_1.name = "STDPACK_" + numrows;
+            element2_1.id = "STDPACK_" + numrows;
+            cell2.appendChild(element2_1);
+
+            //var element2_2 = document.createElement("input");MOQ
+            //element2_2.type = "hidden";
+            //element2_2.className = "form-control";
+            //element2_2.name = "BOXPACK_" + numrows;
+            //element2_2.id = "BOXPACK_" + numrows;
+            //cell2.appendChild(element2_2);
+            var element2_2 = document.createElement("input");
+            element2_2.type = "hidden";
+            element2_2.className = "form-control";
+            element2_2.name = "MOQ_" + numrows;
+            element2_2.id = "MOQ_" + numrows;
+            cell2.appendChild(element2_2);
+
+            var cell3 = row.insertCell(3);
+            cell3.style = "width:7%";
+            var element3 = document.createElement("input");
+            element3.type = "text";
+            element3.className = "form-control tdhiddenstck";
+            element3.name = "txtCurrentStock_" + numrows;
+            element3.id = "txtCurrentStock_" + numrows;
+            element3.setAttribute('readonly', 'true');
+            cell3.appendChild(element3);
+
+
+            var cell4 = row.insertCell(4);
+            cell4.style = "width:7%";
+            var element4 = document.createElement("input");
+            element4.type = "text";
+            element4.className = "form-control";
+            element4.name = "txtPendingQty_" + numrows;
+            element4.id = "txtPendingQty_" + numrows;
+            element4.setAttribute('readonly', 'true');
+            cell4.appendChild(element4);
+
+            var cell5 = row.insertCell(5);
+            cell5.style = "width:7%";
+            var element5 = document.createElement("input");
+            element5.type = "text";
+            element5.className = "form-control";
+            element5.name = "txtMrp_" + numrows;
+            element5.id = "txtMrp_" + numrows;
+            element5.setAttribute('readonly', 'true');
+            cell5.appendChild(element5);
+
+            var cell6 = row.insertCell(6);
+            cell6.style = "width:7%";
+            var element6 = document.createElement("input");
+            element6.type = "text";
+            element6.className = "form-control";
+            element6.name = "txtRate_" + numrows;
+            element6.id = "txtRate_" + numrows;
+            element6.setAttribute('readonly', 'true');
+            cell6.appendChild(element6);
+
+            var cell7 = row.insertCell(7);
+            cell7.style = "width:7%";
+            var element7 = document.createElement("input");
+            element7.type = "text";
+            element7.className = "form-control";
+            element7.name = "txtPRICESUPPORT_" + numrows;
+            element7.id = "txtPRICESUPPORT_" + numrows;
+            element7.setAttribute('readonly', 'true');
+            cell7.appendChild(element7);
+
+            var cell8 = row.insertCell(8);
+            cell8.style = "width:7%";
+            var element8 = document.createElement("input");
+            element8.type = "text";
+            element8.className = "form-control";
+            element8.name = "txtNETITEMVALUE_" + numrows;
+            element8.id = "txtNETITEMVALUE_" + numrows;
+            element8.setAttribute('readonly', 'true');
+            cell8.appendChild(element8);
+
+            var cell9 = row.insertCell(9);
+            cell9.style = "width:7%";
+            var element9 = document.createElement("input");
+            element9.type = "text";
+            element9.className = "form-control";
+            element9.name = "txtNETORDERVALUE_" + numrows;
+            element9.id = "txtNETORDERVALUE_" + numrows;
+            element9.setAttribute('readonly', 'true');
+            cell9.appendChild(element9);
+
+            var cell10 = row.insertCell(10);
+            cell10.style = "width:7%";
+            var element10 = document.createElement("input");
+            element10.type = "text";
+            element10.className = "form-control";
+            element10.name = "txtSCHEMEITEMDISCOUNT_" + numrows;
+            element10.id = "txtSCHEMEITEMDISCOUNT_" + numrows;
+            element10.setAttribute('readonly', 'true');
+            cell10.appendChild(element10);
+
+            var cell11 = row.insertCell(11);
+            cell11.style = "width:10%";
+            var element11 = document.createElement("input");
+            element11.type = "text";
+            element11.className = "form-control";
+            element11.name = "txtFINALITEMAMOUNT_" + numrows;
+            element11.id = "txtFINALITEMAMOUNT_" + numrows;
+            element11.setAttribute('readonly', 'true');
+            cell11.appendChild(element11);
+
+
+            var cell12 = row.insertCell(12);
+            cell12.style = "width:3%";
+            var elementhref = document.createElement("a");
+            elementhref.href = "##";
+            cell12.appendChild(elementhref);
+            elementhref.innerHTML = '<i class="fa fa-calendar" title="Schedule Order"></i>';
+            elementhref.id = "schduleItem_" + numrows;
+            elementhref.name = "schduleItem_" + numrows;
+            elementhref.className = "btnSchduelItem";
+            $('#schduleItem_' + numrows).attr("onclick", "schduelItem(" + numrows + ")");
+
+            var cell13 = row.insertCell(13);
+            cell13.style = "width:3%";
+            var elementhref = document.createElement("a");
+            elementhref.href = "##";
+            cell13.appendChild(elementhref);
+            elementhref.innerHTML = '<i class="fa fa-trash bg_red"></i>';
+            elementhref.id = "deleteRow_" + numrows;
+            elementhref.name = "deleteRow_" + numrows;
+            elementhref.className = "btndeleteRow";
+            $('#deleteRow_' + numrows).attr("onclick", "deletePart(" + numrows + ")");
+
+            var cell14 = row.insertCell(14);
+            cell14.style = "width:3%";
+            var elementhrefedit = document.createElement("a");
+            elementhrefedit.href = "##";
+            cell14.appendChild(elementhrefedit);
+            elementhrefedit.innerHTML = '<i class="fa fa-pencil"></i>';
+            elementhrefedit.id = "editRow_" + numrows;
+            elementhrefedit.name = "editRow_" + numrows;
+            elementhrefedit.className = "btnediteRow";
+            $('#editRow_' + numrows).attr("onclick", "editPart(" + numrows + ")");
+
+            document.getElementById("loopcount").value = numrows;
+
+            $("#SchemeClicked").val(false);
+
+            if ('@Model.ISDEALERLOGIN'=='True') {
+                $(".tdhiddenstck").parent().hide();
+            }
+
+
+            $('.enterkey').keypress(function (event) {
+                if (event.keyCode === 10 || event.keyCode === 13) {
+                    event.preventDefault();
+                }
+            });
+            isautosaveallow = true; // true for auto save
+            getItemLineDiscount(numrows);
+
+            $('#SelectedPartId').val('').trigger("chosen:updated");;
+            $('#SelectedPartQty').val('');
+            $('#SelectedPartId').focus().trigger('chosen:activate');
+            $('.uploadexceldv').hide();
+
+        }
+
+        function GetDealerCreditTargetInfo() {
+            var prospectType = $('#SelectedProspectType_Id').val();
+            if (prospectType == 1)
+            {
+                var DealerID = $('#SelectedDealer_ID').val();
+                if (DealerID != "") {
+                    $.ajax({
+                        url: '@Url.Action("GetDealerCreditTargetInfo", "SalesOrder")',
+                        type: "GET",
+                        dataType: "JSON",
+                        data: { DealerID: DealerID },
+                        success: onChangeDealearSuccess,
+                        error: onChangeDealearFail
+                    });
+                }
+            }
+        }
+        function onChangeDealearFail(result) { //debugger;
+        }
+        function onChangeDealearSuccess(result) {
+            $('#txtTOTALCREDITLIMIT').val(result.TOTALCREDITLIMIT);
+            $('#txtUTILIZECREDITLIMIT').val(result.UTILIZECREDITLIMIT);
+            $('#txtBALANCECREDITLIMIT').val(result.BALANCECREDITLIMIT);
+            $('#txtTOTALTARGET').val(result.TOTALTARGET);
+            $('#txtUTILIZETARGET').val(result.UTILIZETARGET);
+            $('#txtBALANCETARGET').val(result.BALANCETARGET);
+           // getItemLineDiscount();
+        }
+        // need to send to string parameter DEALERID, PODTL(itmeID # qty, itmeID # qty, itmeID # qty, itmeID # qty, )
+        function ApplySchemeOnPO(obj) {
+
+
+            debugger;
+            var DEALERID = getPoFromID();
+            var PODTL = poItemsAndQtyString();
+            if ($('#PO_HDR_ID').val() != "") {
+                debugger;
+
+                $.ajax({
+                    url: '@Url.Action("ApplySchemeOnPO", "SalesOrder")',
+                    type: "GET",
+                    dataType: "JSON",
+                    contentType: "application/json; charset=utf-8",
+                    data: { DEALERID: DEALERID, POID: $('#PO_HDR_ID').val() },
+                    success: ApplySchemeSuccess,
+                    error: function ApplySchemeFail(result) { //debugger;
+                    }
+                });
+            } else {
+                alert("Please select atleast one part");
+            }
+        }
+        function ApplySchemeSuccess(result) {
+            debugger;
+            var SCHEMEDISCOUNT = 0;
+            var numrow = document.getElementById("loopcount").value;
+            for (var i = 1; i <= numrow; i++) {
+                var ddlpart = $('#SelectedPart_Id_' + i).val();
+                if (ddlpart != null && ddlpart != undefined && ddlpart != "") {
+                    var isfound = false;
+                    $.each(result, function (index, obj) {
+                        if (obj.PARTID == ddlpart) {
+                            isfound = true;
+                            $('#txtSCHEMEITEMDISCOUNT_' + i).val(obj.SCHEMEDISCOUNT)
+                            SCHEMEDISCOUNT = parseFloat(SCHEMEDISCOUNT) + parseFloat(obj.SCHEMEDISCOUNT)
+
+                            $('#txtSCHEMEITEMDISCOUNT_' + i).attr("onclick", "return showItemSchemes(this);");
+                            $('#txtSCHEMEITEMDISCOUNT_' + i).addClass("schemeExistOnItem")
+                            return;
+                        }
+                    });
+                    if (!isfound) {
+                        $('#txtSCHEMEITEMDISCOUNT_' + i).val(0);
+                    }
+
+                }
+            }
+            $("#SchemeClicked").val(true);
+            $('#txtSCHEMEDISCOUNT').val(SCHEMEDISCOUNT.toFixed(2));
+            var tvalue = $("#txtTOTALPOVALUE").val();
+            var finalamt = parseFloat(tvalue) - parseFloat(SCHEMEDISCOUNT);
+            $('#txtFINALAMOUNT').val(finalamt.toFixed(2));
+            showFinalAmount();
+            $('#btnsubmit').focus();
+            showTotals();
+         }
+
+
+        function poItemsAndQtyString() {
+            debugger;
+
+            var ItemsAndQtyString = "";
+            if (numrows != 0) {
+                for (var i = 0; i <= numrows; i++) {
+                    var itemId = $('#SelectedPart_Id_' + i).val();
+                    if (itemId != undefined && itemId != '') {
+                        var itemQty = $('#txtQty_' + i).val();
+                        var itemString = itemId + '#' + itemQty + ',';
+                        if (ItemsAndQtyString != "" && ItemsAndQtyString != undefined) {
+                            ItemsAndQtyString = ItemsAndQtyString + itemString;
+                        }
+                        else {
+                            ItemsAndQtyString = itemString;
+                        }
+                    }
+                    debugger;
+                }
+            }
+            return ItemsAndQtyString;
+        }
+
+
+        function ShowHideSecondary() {
+            var selectedProspectTypeId = $('#SelectedProspectType_Id').val();
+            $('.poHdr').hide();
+            if (selectedProspectTypeId == 1) {
+                $('.forDealer').show();
+
+            }
+            else if (selectedProspectTypeId == 2) {
+                $('.forRetailer').show();
+
+            }
+            else if (selectedProspectTypeId == 3) {
+                $('.forMechanic').show();
+
+            }
+        }
+
+        function CheckValidation(action) {
+
+            ShowWaitingSymbol();
+            var validagg = true;
+            var isappschemeclick = $("#SchemeClicked").val();
+
+            var customerType = $("#SelectedProspectType_Id option:selected").text();
+            var prosid = $("#SelectedProspectType_Id").val();
+           
+            if (customerType.toUpperCase == '@Constants.PROSPECT_TYPE_DEALER.ToUpper()' || prosid == 1) {
+                 
+                var dealerId = $('#SelectedDealer_ID').val();
+                var dealerAddressId = $('#SelecteDealerAddress_Id').val();
+                if (dealerId == '' || dealerId == undefined) {
+                    $('#SelectedDealer_ID').focus();
+                    validagg = false;
+                    alert("Please Select Dealer");
+                }
+                if (dealerAddressId == '' || dealerAddressId == undefined) {
+                    $('#SelecteDealerAddress_Id').focus();
+                    alert("Please Select Customer Address");
+                }
+            }
+            else if (customerType.toUpperCase == '@Constants.PROSPECT_TYPE_RETAILER.ToUpper()' || prosid == 2) {
+                
+                var retailerId = $('#SelectedRETAILERId').val();
+                var dealerId = $('#SelectedDealer_ID').val();
+                if (retailerId == '' || retailerId == undefined) {
+                    $('#SelectedRETAILERId').focus();
+                    validagg = false;
+                    alert("Please Select Rerailer");
+                }
+                if (dealerId == '' || dealerId == undefined) {
+                    $('#SelectedDealer_ID').focus();
+                    alert("Please Select Dealer");
+                }
+            }
+            else if (customerType.toUpperCase == '@Constants.PROSPECT_TYPE_MECHANIC.ToUpper()' || prosid == 3) {
+                var retailerId = $('#SelectedRETAILERId').val();
+                var mechanicId = $('#SelectedMECHANICId').val();
+                if (retailerId == '' || retailerId == undefined) {
+                    $('#SelectedRETAILERId').focus();
+                    validagg = false;
+                    alert("Please Select Retailer");
+                }
+                if (mechanicId == '' || mechanicId == undefined) {
+                    $('#SelectedMECHANICId').focus();
+                    alert("Please Select Mechanic");
+                }
+            }
+
+            if (isappschemeclick == true || isappschemeclick == "true") {
+                var numrow = document.getElementById("loopcount").value;
+                var address = $("#SelecteDealerAddress_Id").val();
+
+                if ($("#SelectedRETAILERId option:selected").text() == '@Constants.PROSPECT_TYPE_DEALER') {
+                    if (address == "") {
+                        validagg = false;
+                        $("#SelecteDealerAddress_Id").focus();
+                        alert("Please select address");
+                    }
+                }
+                else {
+                    for (var i = 1; i <= numrow; i++) {
+                        var ddlpart = $('#SelectedPart_Id_' + i).val();
+                        var txtQty = $('#txtQty_' + i).val();
+                        if (ddlpart == "") {
+                            $("#SelectedPart_Id_" + i).focus();
+                            validagg = false;
+                            alert("Please Select Part number");
+                        } else if (txtQty == "" || txtQty < 1) {
+                            $("#txtQty_" + i).focus();
+                            validagg = false;
+                            alert("Please enter part Qty");
+                        }
+                    }
+                }
+            }
+            else {
+                alert("Please click on Apply Scheme to process order..");
+                validagg = false;
+                $('#btnscheme').focus();
+            }
+            if (action == "Submit") {
+                if ($("#dynamictbl tbody tr").length == 0) {
+                    alert("Please Enter at-least one item to process PO..");
+                    validagg = false;
+                }
+                else {
+                    if ($("#REMARKS").val() == "") {
+                        alert("Please Enter Po Remarks");
+                        validagg = false;
+                    }
+                }
+            }
+            if (validagg == true) {
+                HideWaitingSymbol();
+                validagg = confirm("Yor are about to " + action + " this data \n Do you want to continue?");
+            }
+            else { HideWaitingSymbol();}
+            return validagg;
+        }
+
+        function showTotals() {
+            debugger;
+            var totalAmount=0;
+            var txtAmount = 0;
+            if (numrows > 0) {
+                for (var i = 1; i <= numrows; i++) {
+
+                    txtAmount = $('#txtQty_' + i).val() != "" ? $('#txtQty_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+
+                }
+                $('#lblLineItemTotalQty').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtCurrentStock_' + i).val() != "" ? $('#txtCurrentStock_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalStock').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtPendingQty_' + i).val() != "" ? $('#txtPendingQty_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalPendingQty').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtMrp_' + i).val() != "" ? $('#txtMrp_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalMrp').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtRate_' + i).val() != "" ? $('#txtRate_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalRate').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtPRICESUPPORT_' + i).val() != "" ? $('#txtPRICESUPPORT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalPriceSupport').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtNETITEMVALUE_' + i).val() != "" ? $('#txtNETITEMVALUE_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalNetItemValue').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtNETORDERVALUE_' + i).val() != "" ? $('#txtNETORDERVALUE_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalOrdreValue').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtSCHEMEITEMDISCOUNT_' + i).val() != "" ? $('#txtSCHEMEITEMDISCOUNT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalSchemeItemDiscount').text(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtFINALITEMAMOUNT_' + i).val() != "" ? $('#txtFINALITEMAMOUNT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = parseFloat(totalAmount) + parseFloat(txtAmount);
+                    }
+                }
+                $('#lblLineItemTotalFinalAmount').text(parseFloat(totalAmount).toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtNETORDERVALUE_' + i).val() != "" ? $('#txtNETORDERVALUE_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#txtTOTALPOVALUE').val(totalAmount.toFixed(2));
+
+                totalAmount = 0;
+                for (var i = 1; i <= numrows; i++) {
+                    txtAmount = $('#txtSCHEMEITEMDISCOUNT_' + i).val() != "" ? $('#txtSCHEMEITEMDISCOUNT_' + i).val() : 0;
+                    if (txtAmount != undefined) {
+                        totalAmount = totalAmount + parseFloat(txtAmount);
+                    }
+                }
+                $('#txtSCHEMEDISCOUNT').val(totalAmount.toFixed(2));
+            }
+
+
+        }
+        function showFinalAmount() {
+            var totalValue = 0;
+            var discount = 0;
+            var finalAmt = 0;
+            for (var i = 1; i <= numrows; i++) {
+                totalValue = $('#txtNETORDERVALUE_' + i).val() != "" ? $('#txtNETORDERVALUE_' + i).val() : 0;
+                discount = $('#txtSCHEMEITEMDISCOUNT_' + i).val() != "" ? $('#txtSCHEMEITEMDISCOUNT_' + i).val() : 0;
+                finalAmt = totalValue - discount
+                if (finalAmt != undefined) {
+                    $('#txtFINALITEMAMOUNT_' + i).val(parseFloat(finalAmt).toFixed(2));
+                }
+            }
+        }
+
+        //$('#txtSCHEMEDISCOUNT').val(totalAmount.toFixed(2));
+
+
+
+        function CalculateLineItemValues(PARTID, FROMID, PROSPECTTYPRID, PARTQTY, rownumber) {
+            $("#SchemeClicked").val(false);
+            if (FROMID != "" || FROMID != 0) {
+                var ISPCKINGALLOW = $('#IsPckingAllow_' + rownumber).val();
+               // alert('hi');
+               // alert(ISPCKINGALLOW);
+                //alert(PARTQTY);
+                //alert(ISPCKINGALLOW);
+                if (PARTQTY != 0 && ISPCKINGALLOW != "") {
+                    CalculateStdPacking(PARTQTY, ISPCKINGALLOW, rownumber);
+                }
+                var PARTQTY = $('#txtQty_' + rownumber).val();
+                if (PARTQTY == "") {
+                    PARTQTY = 0;
+                }
+                $.ajax({
+                    url: '@Url.Action("GetItemLineDiscount", "Scheme")',
+                    type: "GET",
+                    dataType: "JSON",
+                    data: { PARTID: PARTID, FROMID: FROMID, PROSPECTTYPRID: PROSPECTTYPRID, PARTQTY: PARTQTY, RowNumber: rownumber },
+                    async: false,
+                    success: getItemLineDiscountSuccess,
+                    error: function getItemLineDiscountFail(result) { //debugger;
+                    }
+                });
+            }
+            else {
+                //alert("PLEASE SELECT CHANNEL PARTNER");
+                //$("#DEALER_ID").focus();
+            }
+        }
+        function getItemLineDiscountSuccess(result) {
+
+            debugger;
+
+            //$('#BOXPACK_' + result.RowNumber).val(result.BOXPACK);
+            $('#MOQ_' + result.RowNumber).val(result.MOQ);
+            $('#STDPACK_' + result.RowNumber).val(result.STDPACK);
+            $('#txtCurrentStock_' + result.RowNumber).val(parseFloat(result.CurrentStock == null ? 0 : result.CurrentStock).toFixed(2));
+            $('#txtPendingQty_' + result.RowNumber).val(parseFloat(result.PendingQty).toFixed(2));
+            $('#txtMrp_' + result.RowNumber).val(parseFloat(result.MRP).toFixed(2));
+            $('#txtRate_' + result.RowNumber).val(parseFloat(result.RATE).toFixed(2));
+            $('#txtPRICESUPPORT_' + result.RowNumber).val(parseFloat(result.PRICESUPPORT).toFixed(2));
+            $('#txtNETITEMVALUE_' + result.RowNumber).val(parseFloat(result.NETITEMVALUE).toFixed(2));
+            $('#txtNETORDERVALUE_' + result.RowNumber).val(parseFloat(result.NETORDERVALUE).toFixed(2));
+            $('#txtSCHEMEITEMDISCOUNT_' + result.RowNumber).val(parseFloat(result.SCHEMEITEMDISCOUNT).toFixed(2));
+
+            //txtSCHEMEITEMDISCOUNTvalue = $('#txtSCHEMEITEMDISCOUNT_' + i).val() != "" ? $('#txtSCHEMEITEMDISCOUNT_' + i).val() : 0;
+            //txtNETORDERVALUEvalue = $('#txtNETORDERVALUE_' + i).val() != "" ? $('#txtNETORDERVALUE_' + i).val() : 0;
+            debugger;
+            $('#txtFINALITEMAMOUNT_' + result.RowNumber).val(parseFloat(result.FINALITEMAMOUNT).toFixed(2));//.val(txtNETORDERVALUEvalue - txtSCHEMEITEMDISCOUNTvalue);
+            $('#IsPckingAllow_' + result.RowNumber).val(result.ISPCKINGALLOW);
+
+            $("#txtQty_" + result.RowNumber).val(result.PART_QTY)
+
+            showTotals();
+            AddRemoveAttributeOnLineItem(result.RowNumber);
+            debugger;
+            if (isautosaveallow) { // we check this only when its add row clicked
+                
+                AutoSaveSaleOrderLine(result.rownumber);
+                isautosaveallow = false;
+            }
+
+        }
+
+        function CalculateStdPacking(qty, ispackigallow, rownum) {
+            debugger;
+            var stdpacking;
+            qty = parseInt(qty);
+            if (ispackigallow == "Y") {
+                stdpacking = parseFloat($('#STDPACK_' + rownum).val());
+            }
+            else {
+                //var boxpackVal = $('#BOXPACK_' + rownum).val();
+                //var arrayboxpackVal = boxpackVal.split('X');
+                var moq=$('#MOQ_' + rownum).val();
+                stdpacking = parseFloat(moq);
+            }
+            var reminder = qty % stdpacking;
+            var divident = parseInt(qty / stdpacking);
+            var halfqty = parseInt(stdpacking / 2);
+            if (reminder != 0) {
+                if (stdpacking > qty) {
+                    $('#txtQty_' + rownum).val(parseFloat(stdpacking).toFixed(2));
+                } else if (halfqty > parseInt(reminder)) {
+                    $('#txtQty_' + rownum).val(parseFloat(divident * stdpacking).toFixed(2));
+                }
+                else if (halfqty <= parseInt(reminder)) {
+                    $('#txtQty_' + rownum).val(parseFloat((divident + 1) * stdpacking).toFixed(2));
+                }
+            }
+        }
+
+
+        // forceNumeric() plug-in implementation
+        $(document).on('keydown', '.numberinput', function (e) {
+            //	$('.numberinput').keydown(function (e) {
+            var key = e.which || e.keyCode;
+            var curuntThis = this;
+            var textboxName;
+            var textboxValue;
+
+            if (!e.shiftKey && !e.altKey && !e.ctrlKey &&
+                // numbers
+                key >= 48 && key <= 57 ||
+                // Numeric keypad
+                key >= 96 && key <= 105 ||
+                // comma, period and minus, . on keypad
+                //key == 190 || key == 109 ||  key == 110 ||
+               // key == 188 ||
+                // Backspace and Tab and Enter
+                key == 8 || key == 9 || key == 13 ||
+                // Home and End
+                key == 35 || key == 36 ||
+                // left and right arrows
+                key == 37 || key == 39 ||
+                // Del and Ins
+                key == 46 || key == 45) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+
+        var selectedoldcustomer;
+        var firsttime = 0;
+        function FillPendingPoData() {
+            debugger;
+            var prospectTypeId = $("#SelectedProspectType_Id").val();
+            var customerId = 0;
+            var scustomerid = "";
+            if (prospectTypeId == 1)//meanse dealer
+            {
+                customerId = $('#SelectedDealer_ID').val();
+                scustomerid = "SelectedDealer_ID";
+            } else if (prospectTypeId == 2) //meanse retailer
+            {
+                customerId = $('#SelectedRETAILERId').val();
+                scustomerid = "SelectedRETAILERId";
+            } else if (prospectTypeId == 3) { //meanse mechanic
+                customerId = $('#SelectedMECHANICId').val();
+                scustomerid = "SelectedMECHANICId";
+            }
+            if (customerId != 0) {
+                if (firsttime == 0) {
+                    selectedoldcustomer = customerId;
+                    firsttime = 1;
+                }
+                var checkUrl = '@Url.Action("CheckPendingOrderExsistSuccess", "SalesOrder")';
+                $.ajax({
+                    url: checkUrl,
+                    type: "GET",
+                    dataType: "JSON",
+                    async: false,
+                    data: { CustomerId: customerId, ProspectTypeId: prospectTypeId },//, str: str
+                    success: function CheckPendingOrderExsistSuccess(result) {
+                        //debugger;
+                        if (result != null && result != undefined && result == "Y") {
+
+                            return location.href = "/SalesOrder/FillPendingPo" + "?CustomerId=" + customerId + "&ProspectTypeId=" + prospectTypeId + "@Constants.HASH_SALEORDED";
+                        }
+                        else {
+                            debugger;
+                            if (customerId != selectedoldcustomer) {
+                                var table = document.getElementById("dynamictbl").getElementsByTagName('tbody')[0];
+                                var rowCount = table.rows.length;
+                                if (rowCount > 0) {
+                                    $("#" + scustomerid).val(selectedoldcustomer).trigger("chosen:updated");
+                                    alert("You can not change the customer as you have saved some data.");
+                                } else {
+                                    firsttime = 0;
+                                }
+                            }
+                        }
+
+                    },
+                    error: function CheckPendingOrderExsistFail() { }
+                });
+            }
+        }
+
+        function showOrdersOfPendingQty(obj) {
+            var fromid = getPoFromID();
+            var prospectTypeId = $('#SelectedProspectType_Id').val();
+            var txtName = obj.name.split('_');
+            var partId = $('#SelectedPart_Id_' + txtName[1]).val();
+            debugger
+            var checkUrl = '@Url.Action("GetOrdersOfPendingQty", "SalesOrder")';
+             $.ajax({
+                 url: checkUrl,
+                 type: "GET",
+                 dataType: "JSON",
+                 data: { fromid: fromid, prospectTypeId: prospectTypeId, partId: partId },
+                 success: function showOrdersOfPendingQtySuccess(result) {
+
+                     var v = "<div><table class='table border'>"+
+                         "<thead> <tr><th>PO NUMBER</th><th>PO DATE</th><th>PENDING QTY</th></tr></thead > <tbody>";
+                     $.each(result, function (i, item) {
+                         v += "<tr><td>" + item.PO_NO + "</td><td>" + item.PO_DATESTRING + "</td><td>" + item.PENDINGQTY +"</td></tr>";
+                     });
+                     v +="</tbody ></table ></div>"
+                     $('#ShowInfo-modal-title').html("ORDERS OF PENDING QTY");
+                     $('#ShowInfo-modal-body').html(v);
+                     $('#ShowInfo').modal('show');
+                 },
+                 error: function showOrdersOfPendingQtyFail(){ }
+             });
+        }
+
+        function showItemSchemes(obj) {
+            var fromid = getPoFromID();
+            var prospectTypeId = $('#SelectedProspectType_Id').val();
+            var txtName = obj.name.split('_');
+            var partId = $('#SelectedPart_Id_' + txtName[1]).val();
+            var itemQty = $('#txtQty_' + txtName[1]).val();
+            var poid = $('#PO_HDR_ID').val();
+            if (poid == null) {
+                poid = 0;
+            }
+            debugger
+            var checkUrl = '@Url.Action("GetItemSchemesName", "SalesOrder")';
+             $.ajax({
+                 url: checkUrl,
+                 type: "GET",
+                 dataType: "JSON",
+                 data: { pohdrid: poid, fromid: fromid, prospectTypeId: prospectTypeId, partId: partId, itemQty: itemQty},
+                 success: function showItemSchemesSuccess(result) {
+                     if (result != "") {
+                         var v = "<table class='table border'><thead><tr><th>SCHEME CODE</th><th>SCHEME NAME</th><th>SCHEME DATE</th></th><th>DISCOUNT AMOUNT</th></tr></thead ><tbody>";
+                         $.each(result, function (i, item) {
+                             v += "<tr><td>" + item.SCHEMECODE + "</td><td>" + item.SCHEMENAME + "</td><td>" + item.SCHEMEDATESTRING + "</td><td>" + item.DISTCOUNTAMOUNT + "</td></tr>";
+                         });
+                         v += "</tbody ></table >"
+                         $('#ShowInfo-modal-title').html("AVAILABLE SCHEMES ON ITEM");
+                         $('#ShowInfo-modal-body').html(v);
+                         $('#ShowInfo').modal('show');
+                     }
+                 },
+                 error: function showItemSchemesFail(){ }
+             });
+        }
+
+        function AddRemoveAttributeOnLineItem(Rownumber) {
+            var pendingQty = $('#txtPendingQty_' + Rownumber).val();
+            var schemeAmt = $('#txtSCHEMEITEMDISCOUNT_' + Rownumber).val();
+            var priceSup = $('#txtPRICESUPPORT_' + Rownumber).val();
+
+            if (pendingQty == 0 || pendingQty == '') {
+                $('#txtPendingQty_' + Rownumber).removeAttr("onclick");
+                $('#txtPendingQty_' + Rownumber).removeClass("pendingQtyExist")
+            }
+            else {
+                $('#txtPendingQty_' + Rownumber).attr("onclick", "return showOrdersOfPendingQty(this);");
+                $('#txtPendingQty_' + Rownumber).addClass("pendingQtyExist")
+            }
+            if (schemeAmt == 0 || schemeAmt == '') {
+                $('#txtSCHEMEITEMDISCOUNT_' + Rownumber).removeAttr("onclick");
+                $('#txtSCHEMEITEMDISCOUNT_' + Rownumber).removeClass("schemeExistOnItem")
+            }
+            else {
+                $('#txtSCHEMEITEMDISCOUNT_' + Rownumber).attr("onclick", "return showItemSchemes(this);");
+                $('#txtSCHEMEITEMDISCOUNT_' + Rownumber).addClass("schemeExistOnItem")
+            }
+            if (priceSup == 0 || priceSup == '') {
+
+                $('#txtPRICESUPPORT_' + Rownumber).removeClass("priceSupportOnItem")
+            }
+            else {
+
+                $('#txtPRICESUPPORT_' + Rownumber).addClass("priceSupportOnItem")
+            }
+        }
+
+        function ViewAvailableScheme() {
+            var prospectTypeId = $("#SelectedProspectType_Id").val();
+            if (prospectTypeId == 1)//meanse dealer
+            {
+                var DEALERID = $('#SelectedDealer_ID').val();
+                if (DEALERID != "") {
+                    var url = '/SalesOrder/ViewDealerSceheme?DealerId=' + DEALERID + "@Constants.HASH_SALEORDED";
+                   // window.location.href = url;
+                    window.open(url, '_blank');
+                } else {
+                    alert("Please select customer");
+                }
+            } else {
+                alert("Scheme not available.");
+            }
+        }
+
+        function onCustomerSelect() {
+            var dlrid = 0;
+            dlrid = $('#SelectedDealer_ID').val() == ""? 0 : $('#SelectedDealer_ID').val();
+            
+             var checkUrl = '@Url.Action("CheckDealerSelected", "SalesOrder")';
+                    $.ajax({
+                        url: checkUrl,
+                        type: "POST",
+                        dataType: "JSON",
+                        data: { dealerid: dlrid },
+                        success: function showItemSchemesSuccess(result) {
+                             
+                            if (result != "") {
+                                alert("Other user (" + result +") is in process to place order for this customer, please wait ..");
+                                $("#SelectedDealer_ID").val("").trigger("chosen:updated");
+                            }
+                            else {
+                                 
+                                FillPendingPoData();
+                                FillDealerAddressDdl();
+                                getItemLineDiscountForAll();
+                            }
+                        },
+                        error: function showItemSchemesFail() {
+                            alert("Internal server error occoured");
+                        }
+                    });
+
+            
+        }
+
+        function getItemLineDiscountForAll() {
+
+            var table = document.getElementById("dynamictbl").getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
+            debugger;
+
+            for (var i = 1; i <= rowCount; i++) {
+                getItemLineDiscount(i);
+            }
+        }
+
+        $('#SelectedPartQty').keypress(function (e) {
+            if (e.which == 13) {
+                $('#btnaddrow').focus();
+            }
+        });
+
+
+        function AutoSaveSaleOrderLine() {
+            // write code for auto save the order
+            debugger;
+            var form = $("#poformid");
+            var url = form.attr('action');
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), //
+                success: function (result) {
+                    debugger;
+                    $("#PO_HDR_ID").val(result.POId);
+                    $('#success_msgajax').hide();
+                    $('#success_msgajax_data').html(result.Msg);
+                    $('#success_msgajax').show();
+                }
+            });
+        }
+
+
+
+        function deletePart(RN) {
+            var partid = $("#SelectedPart_Id_" + RN).val();
+            $('.modal-title').html("DELETE PART");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_POHDRID').val($("#PO_HDR_ID").val());
+            $('#Del_PARTID').val(partid);
+            $('#Del_RN').val(RN);
+            $('#DeleteModel').modal('show');
+        }
+
+
+        $("#SubmitDelete").click(function () {
+            var form = $("#PostDelete");
+            var url = form.attr('action');
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(),
+                success: function (result) {
+                    debugger;
+                    $('.btn-secondary').click();
+                    $('#success_msgajax').hide();
+                    if (result.Msg == "OK") {
+
+                        deleteRow(result.RowNum);
+                        if (result.RowNum == 1) {
+                            $('.uploadexceldv').show();
+                        }
+                        $('#success_msgajax_data').html("Details deleted successfully");
+                    } else {
+                        deleteRow(result.RowNum);
+                        $('.uploadexceldv').show();
+
+                        $('#success_msgajax_data').html("Details deleted successfully");
+                    }
+
+                    $('#success_msgajax').show();
+                }
+            });
+
+        });
+
+        function deleteRow(Id) {
+
+            try {
+                debugger;
+                var rowid = "partDtlRow_" + Id;
+                $("#" + rowid).remove();
+                var table = document.getElementById("dynamictbl").getElementsByTagName('tbody')[0];
+                var rowCount = table.rows.length;
+                var newserialnumber = 0;
+                for (var i = 0; i < rowCount; i++) {
+                    newserialnumber = newserialnumber + 1;
+                    var row = table.rows[i];
+                    var serialtd = row.cells[0];
+                    serialtd.innerHTML = newserialnumber;
+                }
+                serialnumber = newserialnumber;
+                showTotals();
+            }
+            catch (e) {
+                alert(e);
+            }
+        }
+
+
+        function CancelRecord() {
+            $('#SelectedRowNum').val('');
+            $('#SelectedPartQty').val('');
+            $('#SelectedPartId').val('').trigger("chosen:updated");
+            $('#SelectedPartId').focus().trigger('chosen:activate');
+            $('#dvupdate').hide();
+            $('#btnaddrow').show();
+            $('#btndeleteall').show();
+        }
+
+
+        function UpdateRecord() {
+            var hiddenrow = $('#SelectedRowNum').val();
+            var partid = $('#SelectedPartId').val();
+            var partqty = $('#SelectedPartQty').val();
+            var selectedPartNumber = $("#SelectedPartId option:selected").text();
+
+          var oldqty= $("#updateqty").val();
+          var oldpart= $("#updatepartid").val();
+          var poid = $("#PO_HDR_ID").val();
+
+            //****************
+            var checkUrl = '@Url.Action("UpdateScheduleDTL", "SalesOrder")';
+                $.ajax({
+                    url: checkUrl,
+                    type: "POST",
+                    dataType: "JSON",
+                    data: { partId: oldpart, poId: poid },
+                    success: function SchSuccess(result) {
+                         
+                        if (result == "Delete") {
+                            var valid = true;
+                            valid = confirm("SAVED delivery plan for item will be RESET \n Do you want to continue?");
+                            if (valid) {
+
+
+                                if (oldqty != partqty || oldpart != partid) {
+
+                                    var checkUrl = '@Url.Action("DeleteScheduleDetailByPoId", "SalesOrder")';
+                                    $.ajax({
+                                        url: checkUrl,
+                                        type: "POST",
+                                        dataType: "JSON",
+                                        data: { partid: oldpart, PoId: poid },
+                                        success: function DeleteSuccess(result) {
+                                            if (partid == '') {
+                                                alert('please Select Item');
+                                                $('#SelectedPartId').focus().trigger('chosen:activate');
+                                                return false;
+                                            } else if (partqty == '' || partqty == '0') {
+                                                alert('please Fill Qty');
+                                                $('#SelectedPartQty').focus();
+                                                return false;
+                                            }
+                                            $('#SelectedPart_Name_' + hiddenrow).val(selectedPartNumber);
+                                            $('#SelectedPart_Id_' + hiddenrow).val(partid);
+                                            $('#txtQty_' + hiddenrow).val(partqty);
+
+                                            isautosaveallow = true; // true for auto save
+                                            getItemLineDiscount(hiddenrow);
+                                            $('#dvupdate').hide();
+                                            $('#btnaddrow').show();
+                                            $('#btndeleteall').show();
+                                            $('#SelectedRowNum').val('');
+                                            $('#SelectedPartQty').val('');
+                                            $('#SelectedPartId').val('').trigger("chosen:updated");
+                                        },
+                                        error: function showItemSchemesFail() { }
+                                    });
+                                }
+                                else {
+                                    $('#dvupdate').hide();
+                                    $('#btnaddrow').show();
+                                    $('#btndeleteall').show();
+                                    $('#SelectedRowNum').val('');
+                                    $('#SelectedPartQty').val('');
+                                    $('#SelectedPartId').val('').trigger("chosen:updated");
+                                }
+                            }
+                            else {
+
+                                $('#SelectedPartId').val(oldpart).trigger("chosen:updated");;
+                                $('#SelectedPartQty').val(oldqty);
+
+                                $('#dvupdate').show();
+                                $('#btnaddrow').hide();
+                                $('#btndeleteall').hide();
+
+                            }
+                        }
+
+
+                        else {
+                           // alert('hi');
+                            if (partid == '') {
+                                alert('please Select Item');
+                                $('#SelectedPartId').focus().trigger('chosen:activate');
+                                return false;
+                            } else if (partqty == '' || partqty == '0') {
+                                alert('please Fill Qty');
+                                $('#SelectedPartQty').focus();
+                                return false;
+                            }
+                            $('#SelectedPart_Name_' + hiddenrow).val(selectedPartNumber);
+                            $('#SelectedPart_Id_' + hiddenrow).val(partid);
+                            $('#txtQty_' + hiddenrow).val(partqty);
+
+                            isautosaveallow = true; // true for auto save
+                            getItemLineDiscount(hiddenrow);
+                            $('#dvupdate').hide();
+                            $('#btnaddrow').show();
+                            $('#btndeleteall').show();
+                            $('#SelectedRowNum').val('');
+                            $('#SelectedPartQty').val('');
+                            $('#SelectedPartId').val('').trigger("chosen:updated");
+                        }
+                    },
+                    error: function showItemSchemesFail() { }
+                });
+            //****************
+
+
+
+        }
+
+        function editPart(rowNumber) {
+
+            $('#SelectedRowNum').val(rowNumber);
+            var partid = $('#SelectedPart_Id_' + rowNumber).val();
+            var partqty = $('#txtQty_' + rowNumber).val();
+            $('#SelectedPartId').val(partid).trigger("chosen:updated");;
+            $('#SelectedPartQty').val(partqty);
+
+            $('#dvupdate').show();
+            $('#btnaddrow').hide();
+            $('#btndeleteall').hide();
+
+            $("#updateqty").val(partqty);
+            $("#updatepartid").val(partid);
+
+        }
+        function addRowInSchdule(obj) {
+
+            debugger;
+            var tablelen = $('#tblScheduleOrder tbody tr').length;
+            //var txtDriver = $('#SchduleDate_' + tablelen).val();
+
+            //if (txtDriver== "") {
+            //    alert("Please Enter Detail");
+            //    return false;
+            //}
+            var rowno = $(obj).attr("data-row");
+
+            $('#tblScheduleOrder tbody tr').each(function (i, data) {
+                if ($(this).find('input[type="text"]').val() != "" && $(this).closest('input[type="text"]').length != 0) {
+                    $(this).find('td').eq(0).text(i + 1);
+                }
+            });
+            if (tablelen < 5) {
+                $('#tblScheduleOrder tbody').append('<tr><td>' + (tablelen + 1) + '</td><td><div class="input-group date fromdatepicker"><input type=text value = "" name = sechduelDate_' + (tablelen + 1) + ' id=sechduelDate_' + (tablelen + 1) + ' class="form-control openclass drivername datepicker" readonly="true" onchange="scheduleDateValidation(this)"><span class="input-group-append input-group-addon"> <i class="input-group-text2 fa fa-calendar"></i></span></div></td ><td><input id="txtItemQty_' + (tablelen + 1) + '" name="txtItemQty_' + (tablelen + 1) + '" class="form-control" type="text" data-rn="' + rowno + '" value="" onblur="stdpackapply(this)" style="text-align:right;"></td > <td  align=center><input type=text value = "" name = oldsechduelDate_' + (tablelen + 1) + ' id=oldsechduelDate_' + (tablelen + 1) + ' style="display:none;"><a href=## onclick="return DeleteRowItemSechdule(this)"><i class="fa fa-trash bg_red"></i></a></td><td><input type="text" id="PoScheduleId" value="" style="display:none;"></td></tr > ');
+                tablelen = $('#tblScheduleOrder tbody tr').length;
+                $('#DriverDetailCount').attr('value', tablelen);
+
+                var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+                var lastDay = new Date(y, m + 1, 0);
+                $('.datepicker').datepicker({
+                    format: 'dd/M/yyyy',
+                    startDate: new Date(),
+                    endDate: lastDay,
+                    orientation: "bottom auto", autoclose: true,
+                });
+            }
+            else {
+                alert("One order can not be Scheduled more than 5 times");
+            }
+        };
+
+        function DeleteRowItemSechdule(obj) {
+            debugger;
+            if ($('#tblScheduleOrder tbody tr').length == 1) {
+                alert("Atleast one Driver required");
+                return false;
+            }
+
+
+            var qty = $(obj).closest('tr').find("td:nth-child(3) input[type=text]").val() == "" ? 0 : $(obj).closest('tr').find("td:nth-child(3) input[type=text]").val();
+            var id = $(obj).closest('tr').find("td:nth-child(5) input[type=text]").val();
+
+            if (id != "") {
+                var checkUrl = '@Url.Action("DeleteScheduleDetailofItem", "SalesOrder")';
+                $.ajax({
+                    url: checkUrl,
+                    type: "POST",
+                    dataType: "JSON",
+                    data: { Scheduleid: id },
+                    success: function showItemSchemesSuccess(result) {
+
+                    },
+                    error: function showItemSchemesFail() { }
+                });
+            }
+            $(obj).closest('tr').remove();
+
+            var totalqty = parseFloat($("#txtItemQty_1").val()) + parseFloat(qty)
+            $("#txtItemQty_1").val(parseFloat(totalqty));
+            var tablelen = $('#tblScheduleOrder tbody tr').length;
+            $('#DriverDetailCount').attr('value', tablelen);
+        }
+
+
+        function schduelItem(RN) {
+            debugger;
+            var partid = $("#SelectedPart_Id_" + RN).val();
+            var partFullName = $("#SelectedPart_Name_" + RN).val();
+            var poid = $("#PO_HDR_ID").val();
+            var d = new Date();
+            var mrp = $("#txtMrp_" + RN).val();
+            var discount = $("#txtPRICESUPPORT_" + RN).val();
+            var htm = "";
+             var checkUrl = '@Url.Action("GetScheduleDetailofItem", "SalesOrder")';
+             $.ajax({
+                 url: checkUrl,
+                 type: "POST",
+                 dataType: "JSON",
+                 data: { partid: partid, poId: poid},
+                 success: function showItemSchemesSuccess(result) {
+
+                     if (result.length > 0) {
+
+                         var j=1
+                         htm = '<div><input type="text" id="dispalyorderid" value="' + RN + '" style="display:none;"><input type="text" id="sch_partid" value="' + partid + '" style="display:none;"><input type="text" id="sch_mrp" value="' + mrp + '" style="display:none;"><input type="text" id="sch_discount" value="' + discount + '" style="display:none;"></div><div class="col-md-12" id="tblDive"><div><b>Part Name</b>: (' + partFullName +')</div> <br/><table id="tblScheduleOrder" style="width:100%" class="table"><thead><tr><th>S. No </th><th>SCHEDULE DELIVERY DATE</th><th>ITEM ORDER QTY</th><th style="text-align:center">ACTION</th></tr></thead><tbody>';
+                         $.each(result, function (i, item) {
+                             if (j == 1) {
+                                 htm = htm + '<tr><td>' + j + '</td><td><div class="input-group date fromdatepicker"><input class="form-control datepicker" id="scheduleDate_' + j + '" name="scheduleDate_' + j + '" readonly="readonly" title="Schdule Date" type="text" data-schdate="' + formateJsonDate(item.SCHEDULEDATE) + '" value="' + formateJsonDate(item.SCHEDULEDATE) + '" onchange="DateValidation(this)"><span class="input-group-append input-group-addon"><i class="input-group-text2 fa fa-calendar"></i></span></div></td><td align="center"><input id="txtItemQty_' + j + '" name="txtItemQty_' + j + '" class="form-control" type="text" value="' + item.ITEMQTY + '" data-qty="' + $("#txtQty_" + RN).val() +'" readonly="readonly" style="text-align:right;"></td><td align="center"><input type="text" value = "' + formateJsonDate(item.SCHEDULEDATE) + '" name = "oldsechduelDate_' + j + '" id="oldsechduelDate_' + j + '" style="display:none;"></td><td><input type="text" id="PoScheduleId" value="' + item.PO_SCHEDULE_ID + '" style="display:none;"></td></tr>';
+                             }
+                             else {
+                                 htm = htm + '<tr><td>' + j + '</td><td><div class="input-group date fromdatepicker"><input class="form-control datepicker" id="scheduleDate_' + j + '" name="scheduleDate_' + j + '" readonly="readonly" title="Schdule Date" type="text" data-schdate="' + formateJsonDate(item.SCHEDULEDATE) + '" value="' + formateJsonDate(item.SCHEDULEDATE) + '"  onchange="DateValidation(this)"><span class="input-group-append input-group-addon"><i class="input-group-text2 fa fa-calendar"></i></span></div></td><td align="center"><input id="txtItemQty_' + j + '" name="txtItemQty_' + j + '" class="form-control" type="text" value="' + item.ITEMQTY + '" data-rn="' + RN + '" onblur="stdpackapply(this)" style="text-align:right;"></td><td align="center"><input type="text" value = "' + formateJsonDate(item.SCHEDULEDATE) + '" name = "oldsechduelDate_' + j + '" id="oldsechduelDate_' + j + '" style="display:none;"><a href="##" class="deleteBtnDriver hideonview" onclick="return DeleteRowItemSechdule(this)"><i class="fa fa-trash bg_red"></i></a></td><td><input type="text" id="PoScheduleId" value="' + item.PO_SCHEDULE_ID + '" style="display:none;"></td></tr>';
+                             }
+
+                             j++;
+                         });
+                             htm += '</tbody></table><div class="col-md-12"><input name="command" style="margin-bottom: 6px;" type="button" data-row="' + RN + '" value="ADD MORE" class="btn btn-default btn-s" id="addbutton" onclick="return addRowInSchdule(this)"></div></div>';
+                       }
+                     else {
+
+                         htm = '<div><input type="text" id="dispalyorderid" value="' + RN + '" style="display:none;"><input type="text" id="sch_partid" value="' + partid + '" style="display:none;"><input type="text" id="sch_mrp" value="' + mrp + '" style="display:none;"><input type="text" id="sch_discount" value="' + discount + '" style="display:none;"></div><div class="col-md-12" id="tblDive"><div><b>Part Name</b>: (' + partFullName +')</div> <br/><table id="tblScheduleOrder" style="width:100%" class="table"><thead><tr><th>S. No </th><th>SCHEDULE DELIVERY DATE</th><th>ITEM ORDER QTY</th><th style="text-align:center">ACTION</th></tr></thead><tbody><tr><td>1</td><td><div class="input-group date fromdatepicker"><input class="form-control datepicker" id="scheduleDate_1" name="scheduleDate_1" readonly="readonly" title="Schdule Date" type="text" value="" onchange="scheduleDateValidation(this)"><span class="input-group-append input-group-addon"><i class="input-group-text2 fa fa-calendar"></i></span></div></td><td align="center"><input id="txtItemQty_1" name="txtItemQty_1" class="form-control" type="text" value="' + $("#txtQty_" + RN).val() + '" data-qty="' + $("#txtQty_" + RN).val() +'" readonly="readonly" style="text-align:right;"></td><td align="center"><input type="text" value = "" name = "oldsechduelDate_1" id="oldsechduelDate_1" style="display:none;"></td><td><input type="text" id="PoScheduleId" value="" style="display:none;"></td></tr></tbody></table><div class="col-md-12"><input name="command" style="margin-bottom: 6px;" type="button" data-row="' + RN + '" value="ADD MORE" class="btn btn-default btn-s" id="addbutton" onclick="return addRowInSchdule(this)"></div></div>';
+                         //$("#txtItemQty_1").val($("#txtQty_" + RN).val());
+                     }
+
+                     $('#ScheduleModel-title').html("SCHDULE ITEM ORDER DATE");
+                     $('#ScheduleModel-body').html(htm);
+                     $('#Del_POHDRID').val($("#PO_HDR_ID").val());
+                     $('#Del_PARTID').val(partid);
+                     $('#Del_RN').val(RN);
+                     $('#ScheduleModel').modal('show');
+
+                     var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+                     var lastDay = new Date(y, m + 1, 0);
+                     $('.datepicker').datepicker({
+                         format: 'dd/M/yyyy',
+                         startDate: new Date(),
+                         endDate: lastDay,
+                         orientation: "bottom auto", autoclose: true,
+                     });
+
+
+
+                     $('#Schedulemodal-dialog').attr("style", "top: 11% !important;");
+                     $('#ScheduleModel-body').attr("style", "padding: 0rem !important;");
+                     $('#tblDive').attr("style", "padding-right: 0px !important; padding-left: 0px !important;");
+                 },
+                 error: function showItemSchemesFail(){ }
+             });
+
+
+
+            //var poId = $("#PO_HDR_ID").val();
+            //getScheduleDetailofItem(partid, poId);
+        }
+
+        function getScheduleDetailofItem(partid,poId) {
+            var checkUrl = '@Url.Action("GetScheduleDetailofItem", "SalesOrder")';
+             $.ajax({
+                 url: checkUrl,
+                 type: "POST",
+                 dataType: "JSON",
+                 data: { partid: partid, poId: poId},
+                 success: function showItemSchemesSuccess(result) {
+                     if (result != "") {
+                     }
+                 },
+                 error: function showItemSchemesFail(){ }
+             });
+        }
+
+        //$("#SubmitDelete").click(function () {
+        //    var form = $("#PostDelete");
+        //    var url = form.attr('action');
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: url,
+        //        data: form.serialize(),
+        //        success: function (result) {
+        //            debugger;
+        //            $('.btn-secondary').click();
+        //            $('#success_msgajax').hide();
+        //            if (result.Msg == "OK") {
+        //                deleteRow(result.RowNum);
+        //                $('#success_msgajax_data').html("Details deleted successfully");
+        //            } else {
+        //                deleteRow(result.RowNum);
+        //                $('.uploadexceldv').show();
+
+        //                $('#success_msgajax_data').html("Details deleted successfully");
+        //            }
+
+        //            $('#success_msgajax').show();
+        //        }
+        //    });
+
+        //});
+
+
+        function stdpackapply(input) {
+            var qty=$(input).val();
+            var rownumber = $(input).attr("data-rn");
+            //alert(rownumber)
+            var id = $(input).attr("id");
+            //alert(id)
+            var ISPCKINGALLOW = $('#IsPckingAllow_' + rownumber).val();
+            //alert(ISPCKINGALLOW)
+            CalculateStdPackingForSchedule(qty, ISPCKINGALLOW, rownumber,id)
+        }
+
+        function CalculateStdPackingForSchedule(qty, ispackigallow, rownum, id) {
+            //var mastrqty = $("#txtItemQty_1").val();
+            var mastrqty = $("#txtItemQty_1").attr("data-qty");
+
+            var stdpacking;
+            qty = parseInt(qty);
+            if (ispackigallow == "Y") {
+                stdpacking = parseFloat($('#STDPACK_' + rownum).val());
+            }
+            else {
+
+                var moq = $('#MOQ_' + rownum).val();
+
+                stdpacking = parseFloat(moq);
+            }
+            var reminder = qty % stdpacking;
+            var divident = parseInt(qty / stdpacking);
+            var halfqty = parseInt(stdpacking / 2);
+            if (reminder != 0) {
+                if (stdpacking > qty) {
+
+                    //mastrqty = parseFloat(mastrqty) - parseFloat(stdpacking);
+                    //if (mastrqty == 0) {
+                    //    $('#' + id).val(parseFloat(0));
+                    //}
+                    //else {
+                    //    $('#' + id).val(parseFloat(stdpacking));
+                    //}
+
+                    $('#' + id).val(parseFloat(stdpacking));
+
+                } else if (halfqty > parseInt(reminder)) {
+                    //mastrqty = parseFloat(mastrqty) - parseFloat(divident * stdpacking);
+                    //if (mastrqty == 0) {
+                    //    $('#' + id).val(parseFloat(0));
+                    //}
+                    //else {
+                    //    $('#' + id).val(parseFloat(divident * stdpacking));
+                    //}
+                    $('#' + id).val(parseFloat(divident * stdpacking));
+                }
+                else if (halfqty <= parseInt(reminder)) {
+
+                    //mastrqty = parseFloat(mastrqty) - parseFloat((divident + 1) * stdpacking);
+                    //if (mastrqty == 0) {
+                    //    $('#' + id).val(0);
+                    //}
+                    //else {
+                    //    $('#' + id).val(parseFloat((divident + 1) * stdpacking));
+                    //}
+
+                    $('#' + id).val(parseFloat((divident + 1) * stdpacking));
+                }
+            }
+            else {
+                //mastrqty = mastrqty - qty;
+                //if (mastrqty == 0) {
+                //    $('#' + id).val(0);
+                //}
+                //else {
+                //    $('#' + id).val(qty);
+                //}
+                $('#' + id).val(qty);
+            }
+            var A = 0; var total = 0;
+
+            $('#tblScheduleOrder tbody tr').each(function (i, tr) {
+
+                if (i > 0) {
+
+                    total = parseFloat(total) + parseFloat(($(tr).find("td:nth-child(3) input[type=text]")).val() == "" ? 0 : ($(tr).find("td:nth-child(3) input[type=text]")).val());
+                }
+
+            });
+            A = mastrqty - total;
+            if (A > 0 ) {
+                $("#txtItemQty_1").val(parseFloat(A));
+            }
+            else {
+                $('#' + id).val(0);
+            }
+        }
+
+
+
+        $("#SubmitSchedule").click(function () {
+            var poId = $("#PO_HDR_ID").val();
+            var partid = $("#sch_partid").val();
+            var mrp = $("#sch_mrp").val();
+            var dis = $("#sch_discount").val();
+            var displayorderid = $("#dispalyorderid").val();
+
+            //*******save schedule detail
+            var arr = new Array();
+            $('#tblScheduleOrder tbody tr').each(function (i, tr) {
+                arr[i] = {
+
+                    scheduledate: ($(tr).find("td:nth-child(2) input[type=text]")).val(),
+                    scheduleqty: ($(tr).find("td:nth-child(3) input[type=text]")).val(),
+                    oldscheduledate: ($(tr).find("td:nth-child(4) input[type=text]")).val() == "" ? ($(tr).find("td:nth-child(2) input[type=text]")).val() : ($(tr).find("td:nth-child(4) input[type=text]")).val(),
+                    PoScheduleId: ($(tr).find("td:nth-child(5) input[type=text]")).val() == "" ? 0: ($(tr).find("td:nth-child(5) input[type=text]")).val()
+
+                }
+
+            });
+            $('#XmlScheduleDetails').val(JSON.stringify(arr));
+            //*******************
+            var datecnt = 0;
+            var qtycnt = 0;
+            $('#tblScheduleOrder tbody tr').each(function (i, tr) {
+
+                var dt = ($(tr).find("td:nth-child(2) input[type=text]")).val();
+                if (dt == "") {
+                    datecnt += 1;
+                }
+                var scheduleqty = ($(tr).find("td:nth-child(3) input[type=text]")).val() == "" ? 0 : ($(tr).find("td:nth-child(3) input[type=text]")).val();
+                if (scheduleqty == 0) {
+                    qtycnt += 1;
+                }
+
+            });
+
+          //*******save schedule detail end
+            if (datecnt == 0) {
+                if (qtycnt == 0) {
+                    var checkUrl = '@Url.Action("SaveScheduleDetailofItem", "SalesOrder")';
+                    $.ajax({
+                        url: checkUrl,
+                        type: "POST",
+                        dataType: "JSON",
+                        data: { partid: partid, poId: poId, mrp: mrp, discount: dis, displayorderid: displayorderid, schDetail: JSON.stringify(arr) },
+                        success: function showItemSchemesSuccess(result) {
+                            if (result == "Ok") {
+                                $("#btnclose").click();
+                                alert("DELIVERY PLAN saved for this item");
+
+                            }
+                            else {
+                                alert("Internal server error occoured");
+                            }
+                        },
+                        error: function showItemSchemesFail() {
+                            alert("Internal server error occoured");
+                        }
+                    });
+                }
+                else {
+                    alert("All Qty should be > 0");
+                }
+            }
+            else {
+                alert("Please enter all schedule Date");
+            }
+        });
+
+
+        function formtDate(date) {
+            //debugger;
+
+            if (date != "") {
+
+                var newdate = new Date(date);
+
+                var monthNames = [
+                    "Jan", "Feb", "Mar",
+                    "Apr", "May", "Jun", "Jul",
+                    "Aug", "Sep", "Oct",
+                    "Nov", "Dec"
+                ];
+
+                var day = newdate.getDate();
+                if (day < 10) {
+
+                    day = '0' + day;
+                }
+                var monthIndex = newdate.getMonth();
+                var year = newdate.getFullYear();
+                if (year > 2010) {
+
+                    return day + '/' + monthNames[monthIndex] + '/' + year;
+                }
+                else {
+                    return "";
+                }
+            }
+        }
+
+        function scheduleDateValidation(input) {
+            var sdate = $(input).val();
+            var poId = $("#PO_HDR_ID").val();
+            var sdatecnt = 0;
+                $('#tblScheduleOrder tbody tr').each(function (i, tr) {
+
+                    var dt = ($(tr).find("td:nth-child(2) input[type=text]")).val();
+                    if (dt == sdate) {
+                        sdatecnt += 1;
+                    }
+                });
+
+            if (sdatecnt == 1) {
+                var checkUrl = '@Url.Action("CheckScheduleDate", "SalesOrder")';
+                $.ajax({
+                    url: checkUrl,
+                    type: "POST",
+                    dataType: "JSON",
+                    data: { scheduleDate: sdate, poId: poId },
+                    success: function showItemSchemesSuccess(result) {
+                        if (result == "Not Add") {
+                            alert("Can't add new Schedule Date, you have already 5 Scheduled dates");
+                            $(input).val('');
+                        }
+                        if (result != "Not Add" && result != "Add" && result != "") {
+
+                            var date_Array = result.split(',');
+                            var cnt = date_Array.length;
+
+                            //$.each(date_Array, function (k) {
+                            //    alert(date_Array[k]);
+
+                            //});
+                            $('#tblScheduleOrder tbody tr').each(function (i, tr) {
+                                var pagedate = ($(tr).find("td:nth-child(2) input[type=text]")).val();
+
+                                if ($.inArray(pagedate, date_Array) > -1) {
+                                    //do something
+                                }
+                                else {
+                                    cnt += 1;
+                                }
+                            });
+
+                            if (cnt > 5) {
+                                alert("Can't add new Schedule Date, you have already 5 Scheduled dates");
+                                $(input).val('');
+                            }
+
+
+
+
+                        }
+                    },
+                    error: function showItemSchemesFail() { }
+                });
+            }
+            else {
+                alert("Schedule Date already Added");
+                $(input).val('');
+            }
+
+        }
+
+
+        function DateValidation(input) {
+            var id = $(input).attr("id");
+
+            var sdate = $(input).val();
+            var schdate = $(input).attr("data-schdate");
+            var sdatecnt = 0;
+            $('#tblScheduleOrder tbody tr').each(function (i, tr) {
+
+                var dt = ($(tr).find("td:nth-child(2) input[type=text]")).val();
+                if (dt == sdate) {
+                    sdatecnt += 1;
+                }
+            });
+
+            if (sdatecnt > 1) {
+                alert("Schedule Date already Added");
+                $(input).val('');
+            }
+            else {
+                scheduleDateValidation(input);
+            }
+        }
+
+        function deleteAllDTLByPoid(input) {
+           
+
+            if ($("#dynamictbl tbody tr").length > 0) {
+
+                var valid = true;
+                valid = confirm("Delete All items in this PO \n Do you want to continue?");
+                if (valid) {
+                    var checkUrl = '@Url.Action("DeleteAllPoDTLByPoId", "SalesOrder")';
+                    $.ajax({
+                        url: checkUrl,
+                        type: "POST",
+                        dataType: "JSON",
+                        data: { poId: input },
+                        success: function showItemSchemesSuccess(result) {
+
+                            if (result == "OK") {
+
+
+
+                                $('#dynamictbl tbody').find('tr').each(function () {
+                                    $(this).remove();
+                                });
+
+                                $("#lblLineItemTotalQty").text('');
+                                $("#lblLineItemTotalStock").text('');
+                                $("#lblLineItemTotalPendingQty").text('');
+                                $("#lblLineItemTotalMrp").text('');
+                                $("#lblLineItemTotalRate").text('');
+                                $("#lblLineItemTotalPriceSupport").text('');
+                                $("#lblLineItemTotalNetItemValue").text('');
+                                $("#lblLineItemTotalOrdreValue").text('');
+                                $("#lblLineItemTotalSchemeItemDiscount").text('');
+                                $("#lblLineItemTotalFinalAmount").text('');
+                                $("#txtTOTALPOVALUE").val(0.00);
+                                $("#txtSCHEMEDISCOUNT").val(0.00);
+                                $("#txtFINALAMOUNT").val(0.00);
+                                $(".uploadexceldv").show();
+
+                            }
+                            else {
+                                alert("Internal server error occoured");
+                            }
+                        },
+                        error: function showItemSchemesFail() {
+                            alert("Internal server error occoured");
+                        }
+                    });
+                }
+            }
+            else {
+                alert("NO Items available to delete..");
+            }
+        }
+
+
+        function refreshPriceList() {
+            ShowWaitingSymbol();
+            var dlrid = 0;
+            dlrid = $('#SelectedDealer_ID').val() == "" ? 0 : $('#SelectedDealer_ID').val();
+            if ($("#SelecteDealerAddress_Id").val() != "") {
+
+                var checkUrl = '@Url.Action("RefreshPriceByDealer", "SalesOrder")';
+                $.ajax({
+                    url: checkUrl,
+                    type: "POST",
+                    dataType: "JSON",
+                    data: { dealerid: dlrid },
+                    success: function showItemSchemesSuccess(result) {
+
+                        if (result != "Price Successfully Refreshed") {
+                            alert(result);
+                        }
+
+                        HideWaitingSymbol();
+
+
+                    },
+                    error: function showItemSchemesFail() {
+                        HideWaitingSymbol();
+                        alert("Internal server error occoured");
+                    }
+                });
+            }
+            else {
+                HideWaitingSymbol();
+            }
+            
+            
+        }
+    </script>
+}
+
+
+

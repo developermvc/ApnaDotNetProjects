@@ -1,0 +1,1037 @@
+﻿@model LumaxDMS.Models.EmployeeModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Create Employee";
+}
+@section CSS
+{
+    <link href="~/Content/css/bootstrap-datepicker.css" rel="stylesheet" />
+}
+@using (Html.BeginForm("CreateEmployee", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Emp_Id)
+
+    <div class="card card_ps">
+        <div class="header_ps">
+            @if (Model.ActionName == Constants.BTN_CREATE)
+            {
+                <span>CREATE EMPLOYEE:        GENEREL INFO</span>
+            }
+            else
+            {
+                <span>UPDATE EMPLOYEE :       GENEREL INFO</span>
+            }
+        </div>
+        <div id="dv_displaydetail" class="card-body custom_responsive2" style="padding-top: 20px;">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Employee Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.EmpCode, new { @class = "form-control", onblur = "return ValidateEmpCodeExist(this)" })
+                    @Html.ValidationMessageFor(model => model.EmpCode)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Hd Qtr:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m => m.HdQtrId, new SelectList(Model.HdQtrList, "City_Id", "CityName"), "-- Select--", new { @class = "form-control chosen-select" })
+                    @Html.ValidationMessageFor(m => m.HdQtrId)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Department Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m => m.Department_Id, new SelectList(Model.DepartmentList, "Department_Id", "DepartmentName"), "-- Select--", new { @class = "form-control chosen-select" })
+                    @Html.ValidationMessageFor(model => model.Department_Id)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Designation Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m => m.Designation_Id, new SelectList(Model.DesignationList, "Designation_Id", "DesignationName"), "-- Select--", new { @class = "form-control chosen-select" })
+                    @Html.ValidationMessageFor(model => model.Designation_Id)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Contact Title:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m => m.ContactTitle, new SelectList(Model.ContactList, "Value", "Text"), "--select--", new { @class = "form-control" })
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        First Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.FirstName)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        Middle Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.MiddleName, new { @class = "form-control" })
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Last Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.LastName)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Mobile Number:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.MobileNumber, new { @class = "form-control", onblur = "return ValidateEmpMobileNumberExist(this)" })
+                    @Html.ValidationMessageFor(model => model.MobileNumber)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Email:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", onblur = "return ValidateEmpemailExist(this)" })
+                    @Html.ValidationMessageFor(model => model.Email)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Birth Date:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <div class="input-group date fromdatepicker">
+                        @Html.TextBoxFor(@model => model.BirthDate, new { @class = "form-control datepicker", @onchange = "return CheckValidateDate();", @readonly = "readonly" })
+                        <span class="input-group-append input-group-addon ">
+                            <i class="input-group-text2 fa fa-calendar"></i>
+                        </span>
+
+                    </div>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Gender:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m => m.Gender, new SelectList(Model.GenderList, "Value", "Text"), "--select--", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Gender)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Blood Group:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m => m.BloodGroup, new SelectList(Model.BloodGroupList, "Value", "Text"), "--select--", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.BloodGroup)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Marital Status:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m => m.MaritalStatus, new SelectList(Model.MaritalStatusList, "Value", "Text"), "--select--", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.MaritalStatus)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Spouse:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.SPOUSE, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.SPOUSE)
+                </div>
+                @Html.HiddenFor(m => m.SelectedPlantId)
+
+
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        Reporting Manager:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m => m.SelectedRManagerId, new SelectList(Model.ReportingManagerList, "Emp_Id", "DISPLAYEMPNAME"), "-- Select--", new { @class = "form-control chosen-select" })
+                    @Html.ValidationMessageFor(m => m.SelectedRManagerId)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Father:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.FATHER_SPOUSE, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.FATHER_SPOUSE)
+                </div>
+
+            </div>
+            <div class="row row_pt">
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        Regional Manager:
+                    </label>
+                </div>
+                <div class="col-lg-6 col-xs-12">
+                    @Html.DropDownListFor(m => m.SelectedRMId, new SelectList(Model.ReportingManagerList, "Emp_Id", "DISPLAYEMPNAME"), "-- Select--", new { @class = "form-control chosen-select" })
+                    @Html.ValidationMessageFor(m => m.SelectedRMId)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        Is HO User:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsHOUser)
+                </div>
+                </div>
+                <div class="clearfix" style="padding-top: 10px;"></div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd" class="redlabel">
+                            Qualification 1:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.Qualification1, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Qualification1)
+                    </div>
+
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Qualification 2:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.Qualification2, new { @class = "form-control" })
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd" class="redlabel">
+                            Joining Date:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <div class="input-group date fromdatepicker">
+                            @Html.TextBoxFor(@model => model.JoiningDate, new { @class = "form-control datepicker", @onchange = "return CheckValidate();", @readonly = "readonly" })
+                            <span class="input-group-append input-group-addon ">
+                                <i class="input-group-text2 fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd" class="redlabel">
+                            Confirmation Date:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <div class="input-group date fromdatepicker">
+                            @Html.TextBoxFor(@model => model.ConfirmationDate, new { @class = "form-control datepicker", @onchange = "return CheckValidateDate();", @readonly = "readonly" })
+                            <span class="input-group-append input-group-addon ">
+                                <i class="input-group-text2 fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Leaving Date:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <div class="input-group date fromdatepicker">
+                            @Html.TextBoxFor(@model => model.LeavingDate, new { @class = "form-control datepicker", @onchange = "return CheckLeaveValidateDate();", @readonly = "readonly" })
+                            <span class="input-group-append input-group-addon ">
+                                <i class="input-group-text2 fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="clearfix" style="padding-top: 10px;"></div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="header_ps">
+                            <span>ACCOUNT INFO DETAILS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix" style="padding-top: 10px;"></div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Bank Account No.:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.BankACNo, new { @class = "form-control", onblur = "return ValidateEmpBankAcNoExist(this)" })
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Bank Name:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.BankName, new { @class = "form-control" })
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Bank Branch:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.BankBranch, new { @class = "form-control" })
+                    </div>
+
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            PF No.:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.PFNo, new { @class = "form-control", onblur = "return ValidateEmpPFNoExist(this)" })
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            PAN No.:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.PANNo, new { @class = "form-control", onblur = "return ValidateEmpPANNoExist(this)" })
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Remarks:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control" })
+                    </div>
+
+                </div>
+                <div class="row row_pt">
+
+
+
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Category:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.CATEGORY, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CATEGORY)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Cader:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.CADER, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CADER)
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Cost Center:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.COST_CENTRE, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.COST_CENTRE)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Total MP:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.TOTAL_NO_MP, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TOTAL_NO_MP)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            PF ESTD Code:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.PF_ESTD_CODE, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PF_ESTD_CODE)
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            PF UAN:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.PF_UAN, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PF_UAN)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            VPF Contb. Rate:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.VPF_CONTB_RATE, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.VPF_CONTB_RATE)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            IFSC Code:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.IFSC_CODE, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IFSC_CODE)
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Leave PL entitled:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.LEAVE_PL_ENTITLED, new { @class = "form-control numberinput" })
+                        @Html.ValidationMessageFor(model => model.LEAVE_PL_ENTITLED)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Leave CL entitled:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.LEAVE_CL_ENTITLED, new { @class = "form-control numberinput" })
+                        @Html.ValidationMessageFor(model => model.LEAVE_CL_ENTITLED)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Leave SL entitled:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.LEAVE_SL_ENTITLED, new { @class = "form-control numberinput" })
+                        @Html.ValidationMessageFor(model => model.LEAVE_SL_ENTITLED)
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Gross Basic:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.GROSS_BASIC, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GROSS_BASIC)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Gross HRA:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.GROSS_HRA, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GROSS_HRA)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Gross Conveyance:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.GROSS_CONVEYANCE, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GROSS_CONVEYANCE)
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Gross Childern Edu:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.GROSS_CHILDREN_EDUCATION, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GROSS_CHILDREN_EDUCATION)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Gross Uniform Maint:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.GROSS_UNIFORM_MAINTENANCE, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GROSS_UNIFORM_MAINTENANCE)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Gross Car Amount:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.GROSS_CAR_AMOUNT, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GROSS_CAR_AMOUNT)
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Gross SPL Allowance:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.GROSS_SPECIAL_ALLOWANCE, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GROSS_SPECIAL_ALLOWANCE)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Gross Salary:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.GROSS_SALARY, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GROSS_SALARY)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Emergency Cont Prs:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.EMERGENCY_CONT_PRS, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.EMERGENCY_CONT_PRS)
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Emergency Cont no:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.EMERGENCY_CONT_NO, new { @class = "form-control numberinput", @onblur = "return IsPhoneNumber(this)" })
+                        @Html.ValidationMessageFor(model => model.EMERGENCY_CONT_NO)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Salary:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.Salary, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Salary)
+                    </div>
+
+                </div>
+                <div class="clearfix" style="padding-top: 10px;"></div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="header_ps">
+                            <span>ADDRESS DETAILS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix" style="padding-top: 10px;"></div>
+                <div class="row">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd" class="redlabel">
+                            Address Line1:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.CustAddLine1, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CustAddLine1)
+                        @Html.HiddenFor(m => m.Emp_Ad_Id, new { @id = "hdnEmp_Ad_Id", @Name = "hdnEmp_Ad_Id" })
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd" class="redlabel">
+                            Address Line 2:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.CustAddLine2, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CustAddLine2)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Address Line3:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.TextBoxFor(model => model.CustAddLine3, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CustAddLine3)
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd" class="redlabel">
+                            City:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.DropDownListFor(m => m.City_Id, new SelectList(Model.HdQtrList, "City_Id", "CityName"), "-- Select--", new { @class = "form-control chosen-select", @onchange = "return GetPinCodeByCityId(this);" })
+                        @Html.ValidationMessageFor(m => m.City_Id)
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd" class="redlabel">
+                            Pin Code:
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        @Html.DropDownListFor(m => m.Pin_Id, new SelectList(Model.PinCodeList, "Pin_Id", "PinCode"), "-- Select--", new { @class = "form-control chosen-select" })
+                        @Html.ValidationMessageFor(m => m.Pin_Id)
+                    </div>
+                </div>
+
+
+                <div class="row row_pt">
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Employee Image
+                        </label>
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <input type="file" id="emppathimage" name="emppathimage" style="display:none;">
+                        <a onclick="$('#emppathimage').click();">
+                            <img id="uploademppreview" src="@Model.EMPIMGPATH" width="50%" />
+
+                        </a>
+                        <br>
+                        @*<img src="" height="200" alt="Image preview...">*@
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <label for="pwd">
+                            Pan Image:
+                        </label>
+
+                    </div>
+                    <div class="col-lg-2 col-xs-12">
+                        <input type="file" id="panpathimage" name="panpathimage" style="display:none;">
+                        <a onclick="$('#panpathimage').click();">
+                            <img id="uploadpanpreview" src="@Model.PANIMGPATH" width="50%" />
+                        </a>
+
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row" style="margin-top: -4px !important;">
+                <div class="col-lg-12 text-right margin_lf">
+                    @if (Model.ActionName == Constants.BTN_CREATE)
+                    {
+                        <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn_font" onclick="return checkValidation()" />
+                    }
+                    else if (Model.ActionName == Constants.BTN_EDIT)
+                    {
+                        <input type="submit" class="btn btn_font" name="btntype" value="Update" id="btnupdate" onclick="return checkValidation()" />
+                    }
+                    <input type="button" class="btn btn_font" name="btntype" value="Clear" onclick="return Clear();" />
+                </div>
+            </div>
+        </div>
+
+}
+@section JS
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#BirthDate').val(formatDate($('#BirthDate').val()));
+            $('#ConfirmationDate').val(formatDate($('#ConfirmationDate').val()));
+            $('#LeavingDate').val(formatDate($('#LeavingDate').val()));
+            $('#JoiningDate').val(formatDate($('#JoiningDate').val()));
+
+            var p = $("#uploademppreview");
+            $("#emppathimage").change(function () {
+                p.fadeOut();
+                var Freader = new FileReader();
+                Freader.readAsDataURL(document.getElementById("emppathimage").files[0]);
+                Freader.onload = function (oFREvent) {
+                    var scrll = oFREvent.target.result;
+                    p.attr('src', oFREvent.target.result).fadeIn();
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            var p = $("#uploadpanpreview");
+            $("#panpathimage").change(function () {
+                p.fadeOut();
+                var Freader = new FileReader();
+                Freader.readAsDataURL(document.getElementById("panpathimage").files[0]);
+                Freader.onload = function (oFREvent) {
+                    var scrll = oFREvent.target.result;
+                    p.attr('src', oFREvent.target.result).fadeIn();
+                }
+            });
+        });
+
+
+
+
+
+
+        var data = '@Html.Raw(Json.Encode(Model.HdQtrList))';
+        $(document).ready(function () {
+            $('.fromdatepicker').datepicker({
+                format: 'dd/M/yyyy',
+                orientation: "bottom auto", autoclose: true,
+            });
+
+
+
+            $(".chosen-select").chosen();
+        });
+
+
+        function CheckValidateDate() {
+
+            if ($('#JoiningDate').val() != "") {
+                if (new Date($('#ConfirmationDate').val()) < new Date($('#JoiningDate').val())) {
+                    alert("Confirmation date should be grater then Joining")
+                    $('#ConfirmationDate').val('');
+
+                }
+            }
+            else {
+                alert("Please fill Joining date")
+            }
+        }
+
+        function CheckLeaveValidateDate() {
+
+            if ($('#JoiningDate').val() != "") {
+                if (new Date($('#LeavingDate').val()) < new Date($('#JoiningDate').val())) {
+                    alert("Leaving date should be grater then Joining")
+                    $('#LeavingDate').val('');
+
+                }
+            }
+            else {
+                alert("Please fill Joining date")
+            }
+        }
+
+
+
+        function CheckValidate() {
+
+            $('#ConfirmationDate').val('');
+            $('#LeavingDate').val('');
+
+        }
+
+        function GetPinCodeByCityId(obj) {
+            debugger;
+            var cityId = obj.value;
+            var checkUrl = '@Url.Action("GetPinCodeByCityId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { CityId: cityId },
+                success: GetPinCodeByCityIdSuccess,
+                error: GetPinCodeByCityIdFail
+            });
+
+        }
+
+        function GetPinCodeByCityIdSuccess(result) {
+            debugger;
+            FillPinList(result);
+
+            $("#Pin_Id").val('').trigger("chosen:updated");
+
+        }
+
+        function GetPinCodeByCityIdFail() {
+
+        }
+
+        function FillPinList(PinList) {
+            debugger;
+            var v = "<option>--Select--</option>";
+            $.each(PinList, function (i, pin) {
+
+                v += "<option value=" + pin.PIN_ID + ">" + pin.PINCODE + "</option>";
+
+            });
+
+            $("#Pin_Id").html(v);
+        }
+        function ValidateEmpCodeExist(element) {
+            debugger;
+            var empcode = $(element).val();
+            var empid = $('#Emp_Id').val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckIsEmpCodeExist", "Admin")',
+                data: JSON.stringify({ employeeCode: empcode, employeeId: empid }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == true) {
+                        alert("Employee code already exists");
+                        $('#EmpCode').val('');
+                        $('#EmpCode').focus();
+                    }
+                },
+                error: function (data) {
+                    // throw ex;
+                }
+
+            });
+        }
+
+        function ValidateEmpMobileNumberExist(element) {
+            debugger;
+            var empmobilenumber = $(element).val();
+            if (empmobilenumber != "") {
+            var empid = $('#Emp_Id').val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckIsEmpMobileNumberExist", "Admin")',
+                data: JSON.stringify({ mobileNumber: empmobilenumber, employeeId: empid }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == true) {
+                        alert("Mobile Number already exists");
+                        $('#MobileNumber').val('');
+                        $('#MobileNumber').focus();
+                    }
+                },
+                error: function (data) {
+                    // throw ex;
+                }
+
+                });
+            }
+        }
+
+        function ValidateEmpemailExist(element) {
+            debugger;
+            var empemail = $(element).val();
+            var empid = $('#Emp_Id').val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckIsEmpemailExist", "Admin")',
+                data: JSON.stringify({ employeeEmail: empemail, employeeId: empid }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == true) {
+                        alert("Email already exists");
+                        $('#Email').val('');
+                        $('#Email').focus();
+                    }
+                },
+                error: function (data) {
+                    // throw ex;
+                }
+
+            });
+        }
+        function ValidateEmpBankAcNoExist(element) {
+            debugger;
+            var empBankACNo = $(element).val();
+            var empid = $('#Emp_Id').val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckIsEmpBankACNoExist", "Admin")',
+                data: JSON.stringify({ bankAcNo: empBankACNo, employeeId: empid }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == true) {
+                        alert("Bank Account No. already exists");
+                        $('#BankACNo').val('');
+                        $('#BankACNo').focus();
+                    }
+                },
+                error: function (data) {
+                    // throw ex;
+                }
+
+            });
+        }
+        function ValidateEmpPFNoExist(element) {
+            debugger;
+            var empPFNo = $(element).val();
+            var empid = $('#Emp_Id').val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckIsEmpPFNoExist", "Admin")',
+                data: JSON.stringify({ PFNo: empPFNo, employeeId: empid }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == true) {
+                        alert("PF No. already exists");
+                        $('#PFNo').val('');
+                        $('#PFNo').focus();
+                    }
+                },
+                error: function (data) {
+                    // throw ex;
+                }
+
+            });
+        }
+        function ValidateEmpPANNoExist(element) {
+            debugger;
+            var empPANNo = $(element).val();
+            var empid = $('#Emp_Id').val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckIsEmpPANNoExist", "Admin")',
+                data: JSON.stringify({ PANNo: empPANNo, employeeId: empid }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == true) {
+                        alert("PAN No. already exists");
+                        $('#PANNo').val('');
+                        $('#PANNo').focus();
+                    }
+                },
+                error: function (data) {
+                    // throw ex;
+                }
+
+            });
+        }
+
+        function Clear()
+        {
+            $('input[type="text"]').val('');
+            $('select option[value=""]').attr('Selected', 'Selected');
+            $('input[type="checkbox"]').attr('checked', false);
+        }
+
+
+        function checkValidation() {
+            var valid = true;
+            var Department_Id = $('#Department_Id').val();
+            var Designation_Id = $('#Designation_Id').val();
+            var HdQtrId = $('#HdQtrId').val();
+            var City_Id = $('#City_Id').val();
+            var Pin_Id = $('#Pin_Id').val();
+            var SelectedPlantId = $('#SelectedPlantId').val();
+            var selectedTitle = $('#ContactTitle').val();
+            var birthDate = $('#BirthDate').val();
+            var joiningDate = $('#JoiningDate').val();
+            var confirmationDate = $('#ConfirmationDate').val();
+            var SelectedRManagerId = $('#SelectedRManagerId').val();
+
+            if (Department_Id == "" || Department_Id == null) {
+                $('#Department_Id').trigger('chosen:activate');
+                alert("Please select department");
+                valid = false;
+            } else if (Designation_Id == "" || Designation_Id == null) {
+                $('#Designation_Id').trigger('chosen:activate');
+                alert("Please select designation");
+                valid = false;
+            } else if (HdQtrId == "" || HdQtrId == null) {
+                $('#HdQtrId').trigger('chosen:activate');
+                alert("Please select head qtr");
+                valid = false;
+            } else if (birthDate == "" || birthDate == null) {
+                $('#BirthDate').focus();
+                alert("Please select DOB");
+                valid = false;
+            } else if (joiningDate == "" || joiningDate == null) {
+                $('#JoiningDate').focus();
+                alert("Please select Joining Date");
+                valid = false;
+            } else if (confirmationDate == "" || confirmationDate == null) {
+                $('#ConfirmationDate').focus();
+                alert("Please select Confirmation Date");
+                valid = false;
+            } else if (City_Id == "" || City_Id == null) {
+                $('#City_Id').trigger('chosen:activate');
+                alert("Please select city");
+                valid = false;
+            }
+            else if (Pin_Id == "" || Pin_Id == null) {
+                $('#Pin_Id').trigger('chosen:activate');
+                alert("Please select pin code");
+                valid = false;
+            }
+
+            //else if (SelectedPlantId == "" || SelectedPlantId == null) {
+            //    $('#SelectedPlantId').trigger('chosen:activate');
+            //    alert("Please select plant");
+            //    valid = false;
+            //}
+
+            else if (selectedTitle == "" || selectedTitle == null) {
+                $("#ContactTitle").focus();
+                alert("Please select title");
+                valid = false;
+            }
+            //else if (SelectedRManagerId == "" || SelectedRManagerId == null) {
+            //    $('#SelectedRManagerId').trigger('chosen:activate');
+            //    alert("Please select reporting mgr");
+            //    valid = false;
+            //}
+
+
+
+            return valid;
+        }
+    </script>
+}

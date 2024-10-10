@@ -1,0 +1,13 @@
+Install-Package NuGet.Build -Version 2.8.6
+
+https://marketplace.visualstudio.com/items?itemName=EntityFrameworkTeam.EF5xDbContextGeneratorforC
+
+Install-Package AutoMapper -Version 4.1.1
+
+
+
+1- BuisnessManger/Entities/MangerFactory
+2- BuisinessManger/Interface/IMangerFactory
+3- BuisinessManger/Interface/IRoleManager
+4- BuisinesssManger/Entities/base/RoleManger
+5- BuisinesssManger/Entities/Entities/RoleManger

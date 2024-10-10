@@ -1,0 +1,119 @@
+﻿@model LumaxDMS.Models.CaseTypeModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "ComplaintTypeMasterList";
+}
+
+@{Html.RenderPartial("CreateCaseType", Model);}
+
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">CASE TYPE LIST</div>
+    </div>
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12">
+                    <table id="casetypetbl" class="table table-striped table-bordered dt-responsive nowrap"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    Case Type Code
+                                </th>
+                                <th>
+                                    Case Type
+                                </th>
+                                <th>
+                                    Complaint Type
+                                </th>
+                                <th>
+                                    Case Type Description
+                                </th>
+                                <th>
+                                    Approval Days
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.CaseTypeMasterList)
+                            {
+                            <tr>
+                                <td>
+                                    @item.CASETYPECODE
+                                </td>
+                                <td>
+                                    @item.CASETYPENAME
+                                </td>
+                                <td>
+                                    @item.CTYPENAME
+                                </td>
+                                <td>
+                                    @item.CASEDESCRIPTION
+                                </td>
+                                <td>
+                                    @item.APPROVALDAYS
+                                </td>
+                                <td>
+                                    @Html.DisplayStatus(@item.ISACTIVE)
+                                </td>
+                                <td class="text_center">
+                                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                    {
+                                        <a href="##" title="Edit Case Type" onclick="return EditCaseType(@item.CASETYPEID)">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    }
+                                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                    {
+                                        <a href="##" onclick="return DeleteCaseType(@item.CASETYPEID)" title="InActive Case Type">
+                                            <i class="fa fa-trash bg_red"></i>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("DeleteCaseType", "Complaint", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.CASETYPEID, new { @Id = "Del_CASETYPE" });
+}
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#casetypetbl').DataTable();
+        });
+
+        function DeleteCaseType(id) {
+            $('.modal-title').html("DELETE CASE TYPE");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_CASETYPE').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+    </script>
+}
+

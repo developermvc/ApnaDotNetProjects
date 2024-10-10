@@ -1,0 +1,243 @@
+﻿@model LumaxDMS.Models.UserAreaModel
+@using LumaxDMS.AppCode
+@{
+    int i = 0;
+}
+
+@using (Html.BeginForm("UserArea", "Admin", FormMethod.Post, new { @Id = "FMUserArea" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.User_Id, new { @Id = "selectedUserId" })
+    { Html.RenderPartial("_WaitModal"); }
+    <div class="card card_ps">
+        <div class="panel panel-default panel_pt">
+            <div class="header_ps">
+                <span>USER AREA LIST</span>
+            </div>
+            <div class="container custom-datable">
+                <div class="card-body">
+                    <div class="panel panel-default">
+                        @{Html.RenderPartial("AddPartyFilter", Model);}
+                        <input type="hidden" name="loopcount" id="loopcount" />
+                        <br />
+                        <hr />
+                        <div class="col-sm-12 col-md-12">
+                            <input type="hidden" name="CITYID[]" id="CITYIDARR">
+                            <table id="UserAreatbl" class="table table-striped table-bordered dt-responsive nowrap"
+                                   style="width: 100%">
+                                <thead class="thead-lights">
+                                    <tr>
+                                        <th>
+                                            <input name="select_all" value="1" id="cbselectall" type="checkbox" />
+                                            <a href="##" id="removecheckedrows" title="Remove Checked Rows"><i class="fa fa-trash bg_red"></i></a>
+                                        </th>
+                                        <th>
+                                            City
+                                        </th>
+                                        <th>
+                                            District
+                                        </th>
+
+                                        <th>
+                                            State
+                                        </th>
+
+                                        <th>
+                                            Country
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.UserAreaList.Count() != 0)
+                                    {
+                                        foreach (var item in Model.UserAreaList)
+                                        {
+                                            { i = i + 1; }
+                                            <tr id="Row_@i">
+
+
+                                                <td>
+                                                    <input type='checkbox' id="cb_@i" name="cbid[]" />
+
+                                                </td>
+                                                <td>
+                                                    @item.CityName
+                                                    @Html.HiddenFor(m => item.CITY_ID, new { @Id = "CITYID_" + i })
+                                                </td>
+                                                <td>
+                                                    @item.DistrictName
+                                                </td>
+                                                <td>
+                                                    @item.StateName
+                                                </td>
+
+
+                                                <td>
+                                                    @item.CountryName
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else { }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+
+                            <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn-primary"
+                                   onclick="return CheckValidation();" />
+
+                            <input type="button" class="btn btn-primary" name="btntype" value="Clear" id="btnClear"
+                                   onclick="return Clear();" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section JS {
+    <script src="~/Scripts/ProjectJS/C_AreaJS.js"></script>
+    <script type="text/javascript">
+
+        var t = $('#UserAreatbl').DataTable(
+            {
+            });
+
+        $(document).ready(function () {
+            HideWaitingSymbol();
+            $('#loopcount').val('@i');
+
+            var checkUrl = '@Url.Action("getAllArea", "Admin")';
+
+            GetAllAreaById(checkUrl, 2);
+
+            GetAllAreaById(checkUrl, 3);
+
+            GetAllAreaById(checkUrl, 4);
+
+            GetAllAreaById(checkUrl, 5);
+
+            GetAllAreaById(checkUrl, 6);
+
+        });
+        function Clear() {
+            var userid = $('#User_Id').val();
+            window.location.href = "/Admin/UserArea?UserId=" + userid + "@Constants.HASH_ADMIN";
+        }
+
+       var len = 0;
+        function AddParty() {
+            if (len == 0) {
+                len = parseInt('@i');
+            }
+            var selectedareaid = $('#C_SelectedAreaType').val();
+            var tbody = $('#UserAreatbl tbody');
+            var selectedUserId = $('#selectedUserId').val();
+            $.ajax({
+                url: '@Url.Action("GetAllUserAreaByFilterId", "Admin")',
+                type: "GET",
+                dataType: "JSON",
+                data: { UserAreaTypeId: selectedareaid, DataFor: "USER_AREA", AreaId: $('#hdnSelectedUserArea').val(), UserId: selectedUserId },
+                async: false,
+                success: AddRowSucceeded,
+                error: AddRowFailed
+            });
+        }
+
+        function AddRowSucceeded(result) {
+            debugger;
+            ShowWaitingSymbol();
+            var cityids = [];
+            t.$('input[type="hidden"]').each(function () {
+                cityids.push(parseInt(this.value));
+            });
+            $.each(result, function (i, obj) {
+                if (jQuery.inArray(obj.CITY_ID, cityids) == -1) {
+
+                    var cureenid = parseInt($('#loopcount').val()) + 1;
+                    t.row.add([
+                        '<input type="checkbox" id="cb_' + cureenid + '" name="cbid[]" >',
+                        obj.CityName + '<input type="hidden" id="CITYID_' + cureenid + '" value="' + obj.CITY_ID + '" >',
+                        obj.DistrictName,
+                        obj.StateName,
+                        obj.CountryName
+                    ]).node().id = 'Row_' + cureenid;
+
+                    $('#loopcount').val(cureenid);
+                }
+
+            });
+            t.draw();
+            HideWaitingSymbol();
+        }
+
+    function AddRowFailed(result) {
+
+        }
+
+        // Handle click on "Select all" control
+        $('#cbselectall').on('click', function () {
+
+            // Check/uncheck all checkboxes in the table
+            var rows = t.rows({ 'search': 'applied' }).nodes();
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+            $('input[type="checkbox"]', rows).parent().parent().addClass('row_selected');
+        });
+        // Handle click on checkbox to set state of "Select all" control
+        $('#UserAreatbl tbody').on('change', 'input[type="checkbox"]', function () {
+            debugger;
+            var rowno = this.id.split('_')[1];
+            // If checkbox is not checked
+            if (!this.checked) {
+                var el = $('#cbselectall').get(0);
+                // If "Select all" control is checked and has 'indeterminate' property
+                if (el && el.checked && ('indeterminate' in el)) {
+                    // Set visual state of "Select all" control
+                    // as 'indeterminate'
+                    el.indeterminate = true;
+                }
+                $('#Row_' + rowno).removeClass('row_selected');
+            }
+            else {
+                $('#Row_' + rowno).addClass('row_selected');
+            }
+        });
+
+        $('#removecheckedrows').click(function () {
+            debugger;
+            t.rows('.row_selected').remove().draw();
+            $('#cbselectall').prop("checked", false);
+        });
+
+        function CheckValidation() {
+            debugger;
+            var valid = false;
+            var totalrows = t.rows().count();
+            var cityids = "";
+            if (totalrows > 0) {
+                //get column 1 because we are hahnig hidden value
+                t.$('input[type="hidden"]').each(function () {
+                    cityids = cityids == "" ? this.value : cityids + "," + this.value;
+
+                });
+                $('#CITYIDARR').val(cityids);
+                valid = true;
+
+            }
+            else {
+                alert("Please select at least one city");
+            }
+
+            return valid;
+        }
+
+    </script>
+
+}

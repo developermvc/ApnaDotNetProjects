@@ -1,0 +1,35 @@
+﻿@model LumaxDMS.Models.Common_UserAreaModel
+
+@Html.Hidden("hdnSelectedItemGroup")
+<div class="row  row_pt">
+    <div class="col-lg-2 col-xs-12">
+        @Html.DropDownListFor(m => m.C_SelectedItemType, new SelectList(Model.C_ItemGroupTypeList, "Value", "Text"), new { @class = "form-control po_hdr", @onchange = "return OnChangeItemType();" })
+        @Html.ValidationMessageFor(model => model.C_SelectedItemType)
+    </div>
+    <div class="col-lg-10 col-xs-12 forSecondary">
+        <div id="dv_lbItem_1" class="dvitem_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_SegmentList, "AREAID", "AREANAME"), new { @Id = "lbItem_1", @Name = "sbSegment", @Class = "avaiable_mcode itemchosen-select" })
+        </div>
+        <div id="dv_lbItem_2" class="dvitem_choosen" style="display:none">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_ProductCategoryList, "AREAID", "AREANAME"), new { @Id = "lbItem_2", @Name = "sbProductCateory", @Class = "itemchosen-select" })
+        </div>
+        <div id="dv_lbItem_3" class="dvitem_choosen" style="display:none">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_SubCategoryList, "AREAID", "AREANAME"), new { @Id = "lbItem_3", @Name = "sbSubCategory", @Class = "itemchosen-select" })
+        </div>
+        <div id="dv_lbItem_4" class="dvitem_choosen" style="display:none">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_PartFamilyList, "AREAID", "AREANAME"), new { @Id = "lbItem_4", @Name = "sbPartFamily", @Class = "itemchosen-select" })
+        </div>
+        <div id="dv_lbItem_5" class="dvitem_choosen" style="display:none">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_PartList, "AREAID", "AREANAME"), new { @Id = "lbItem_5", @Name = "sbPart", @Class = "itemchosen-select" })
+        </div>
+        <div id="dv_lbItem_6" class="dvitem_choosen" style="display:none">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_ExistingItemGroupList, "AREAID", "AREANAME"), new { @Id = "lbItem_6", @Name = "sbItemGroup", @Class = "itemchosen-select" })
+        </div>
+        <div id="dv_lbItem_7" class="dvitem_choosen" style="display:none">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_MainSegmentList, "AREAID", "AREANAME"), new { @Id = "lbItem_7", @Name = "sbMainSegment", @Class = "itemchosen-select" })
+        </div>
+    </div>
+</div>
+<div class="clearfix clearfix2">
+    <input type="button" name="btntype" value="Add Row" id="btnadd" onclick="return AddItem();" class="btn btn-primary"  style="margin-bottom:15px;"/>
+</div>

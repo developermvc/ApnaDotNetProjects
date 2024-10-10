@@ -1,0 +1,340 @@
+﻿@model LumaxDMS.Models.ClaimModel
+@using LumaxDMS.AppCode
+@{
+    int i = 0;
+}
+@section CSS{
+    <link href="/Content/AutoCompleteCSS/chosen.css" rel="stylesheet" type="text/css" />
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+}
+
+@using (Html.BeginForm("CreateClaimReason", "Claim", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.User_Id, new { @Id = "selectedUserId" })
+    @Html.HiddenFor(m => m.CLAIMREASONID, new { @Id = "selectedCLAIMREASONID" })
+    <input type="hidden" name="itemloopcount" id="itemloopcount" />
+    <div>
+        @Html.Partial("_WaitModal")
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                
+                        <span id="pagetitle">CREATE SALE RETURN REASON</span>
+                  
+                </div>
+                <div class="card-body">
+                    <div class="createonlydv">
+                        <div class="row">
+                            <div class="col-lg-2 col-xs-12">
+                                <label>CLAIM REASON CODE :</label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.CLAIMCODE, new { @class = "form-control", @Name = "CLAIMCODE", @readonly = "true" })
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label class="redlabel">CLAIM REASON NAME :</label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.CLAIMREASONNAME, new { @class = "form-control", onblur = "return CheckValidName();" })
+                                @Html.ValidationMessageFor(m => m.CLAIMREASONNAME)
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                <label class="redlabel">DESCRIPTION :</label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.TextBoxFor(m => m.DESCRIPTION, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.DESCRIPTION)
+                            </div>
+                        </div>
+                        <div class="row row_pt">
+                            <div class="col-lg-2 col-xs-12">
+                                <label for="pwd" class="redlabel">
+                                    Status:
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.CheckBoxFor(model => model.ISACTIVE)
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div class="createonly">
+                        @{Html.RenderPartial("AddItemFilter", Model);}
+
+                        <hr />
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <input type="hidden" name="ITEMID[]" id="ITEMIDARR">
+
+                        <table id="itemTbl" class=" table table-striped table-bordered nowrap dataTable no-footer dtr-inline">
+                            @* dt-responsive *@
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th class="createonly">
+                                        <input name="cballItem" value="1" id="cballItem" type="checkbox" />
+                                        <a href="##" id="removeallItem" title="Remove Checked Rows"><i class="fa fa-trash bg_red"></i></a>
+                                    </th>
+                                    <th>
+                                        SUBCATEGORY CODE
+                                    </th>
+                                    <th>
+                                        SUBCATEGORY NAME
+                                    </th>
+                                    <th>
+                                        CATEGORY NAME
+                                    </th>
+                                    <th>
+                                        SEGMENT NAME
+                                    </th>
+                                </tr>
+                            </thead>
+                            @if (Model.subCategoryMasterList != null)
+                            {
+                                <tbody id="ctblbody">
+
+                                    @foreach (var item in Model.subCategoryMasterList)
+                                    {
+                                        { i = i + 1; }
+                                        <tr id="ItemRow_@i">
+                                            <td class="createonly">
+                                                <input type='checkbox' id="Itemcb_@i" name="Itemcb_[]" />
+                                            </td>
+                                            <td>
+                                                @item.SUBCATEGORYCODE
+
+                                                @Html.HiddenFor(m => item.SUBCATEGORY_ID, new { @Id = "SUBCATEGORY_ID_" + i })
+                                            </td>
+                                            <td>
+                                                @item.SUBCATEGORYNAME
+                                            </td>
+                                            <td>
+                                                @item.CATEGORYNAME
+                                            </td>
+                                            <td>
+                                                @item.SEGMENTNAME
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                    <div class="card-footer">
+                        <div class="clearfix">
+                            <div class="float-right createonly">
+                                @if (Model.ActionName == Constants.BTN_CREATE)
+                                {
+                                    <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn-primary" onclick="return CheckValidation();" />
+                                }
+                                else if (Model.ActionName == Constants.BTN_EDIT)
+                                {
+                                    <input type="submit" class="btn btn-primary" name="btntype" value="Update" id="btnupdate" onclick="return CheckValidation();" />
+                                }
+                                <input type="button" class="btn btn-primary" name="btntype" value="Clear" onclick="return Clear();" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@section JS
+{
+    <script src="~/Scripts/ProjectJS/C_ItemJS.js"></script>
+    <script type="text/javascript">
+    var titem = $('#itemTbl').DataTable();
+
+    $(document).ready(function () {
+    	HideWaitingSymbol();
+
+    	$('#itemloopcount').val('@i');
+
+    	var checkUrl = '@Url.Action("getAllItem", "Scheme")';
+
+    	GetAllItemById(checkUrl, 2);
+
+    	GetAllItemById(checkUrl, 3);
+
+    	GetAllItemById(checkUrl, 4);
+
+    	GetAllItemById(checkUrl, 5);
+
+    	GetAllItemById(checkUrl, 6);
+        InializeComponent();
+    });
+
+    function IsItemGrpExist() {
+    	var url = '@Url.Action("IsItemGrpExist", "Scheme")';
+    	IsItemGrpExistData(url)
+    }
+
+
+    function AddItem() {
+        debugger;
+    	var lennumber = '@i';
+    	var url = '@Url.Action("GetAllSubCategoryByFilterId", "Claim")';
+    	AddSubCategoryData(lennumber, url)
+    }
+
+
+    function Clear() {
+        window.location.href = "/Claim/CreateClaimReason?ActionName=create"+ "@Constants.HASH_RETURN";
+    }
+
+
+function AddSubCategoryData(lennumber, url) {
+    var selectedareaid = $('#C_SelectedItemType').val();
+    var selectedUserId = $('#selectedUserId').val();
+    $.ajax({
+        url: url,
+        type: "GET",
+        dataType: "JSON",
+        data: { UserAreaTypeId: selectedareaid, DataFor: "SUBCATEGORY", AreaId: $('#hdnSelectedItemGroup').val(), UserId: selectedUserId },
+        async: false,
+        success: AddSubCategoryDataSucceeded,
+        error: AddSubCategoryDataFailed
+    });
+}
+
+function AddSubCategoryDataSucceeded(result) {
+    debugger;
+    ShowWaitingSymbol();
+    var dealerids = [];
+    titem.$('input[type="hidden"]').each(function () {
+        dealerids.push(parseInt(this.value));
+    });
+    $.each(result, function (i, obj) {
+        debugger;
+        if (jQuery.inArray(obj.SUBCATEGORY_ID, dealerids) == -1) {
+
+            var cureenid = parseInt($('#itemloopcount').val()) + 1;
+            titem.row.add([
+                '<input type="checkbox" id="Itemcb_' + cureenid + '" name="Itemcb[]" >',
+                obj.SUBCATEGORYCODE + '<input type="hidden" id="SUBCATEGORY_ID_' + cureenid + '" value="' + obj.SUBCATEGORY_ID + '" >',
+                obj.SUBCATEGORYNAME,
+                obj.CATEGORYNAME,
+                obj.SEGMENTNAME
+            ]).node().id = 'ItemRow_' + cureenid;
+
+            $('#itemloopcount').val(cureenid);
+        }
+
+    });
+    titem.draw();
+    HideWaitingSymbol();
+}
+
+function AddSubCategoryDataFailed(result) {
+
+}
+function CheckItemValidationForSubcategory() {
+    debugger;
+    var valid = false;
+    var totalrows = titem.rows().count();
+    var itemids = "";
+    if (totalrows > 0) {
+        //get column 1 because we are hahnig hidden value
+        titem.$('input[type="hidden"]').each(function () {
+            itemids = itemids == "" ? this.value : itemids + "," + this.value;
+
+        });
+
+        $('#ITEMIDARR').val(itemids);
+        valid = true;
+
+    }
+    else {
+        alert("Please select at least one SubCategory");
+    }
+
+    return valid;
+    }
+
+
+    // Handle click on "Select all" control
+    $('#cballItem').on('click', function () {
+
+        // Check/uncheck all checkboxes in the table
+        var rows = titem.rows({ 'search': 'applied' }).nodes();
+        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        $('input[type="checkbox"]', rows).parent().parent().addClass('row_selected');
+    });
+    // Handle click on checkbox to set state of "Select all" control
+    $('#itemTbl tbody').on('change', 'input[type="checkbox"]', function () {
+        debugger;
+        var rowno = this.id.split('_')[1];
+        // If checkbox is not checked
+        if (!this.checked) {
+            var el = $('#cballItem').get(0);
+            // If "Select all" control is checked and has 'indeterminate' property
+            if (el && el.checked && ('indeterminate' in el)) {
+                // Set visual state of "Select all" control
+                // as 'indeterminate'
+                el.indeterminate = true;
+            }
+            $('#ItemRow_' + rowno).removeClass('row_selected');
+        }
+        else {
+            $('#ItemRow_' + rowno).addClass('row_selected');
+        }
+    });
+
+    $('#removeallItem').click(function () {
+        debugger;
+        titem.rows('.row_selected').remove().draw();
+        $('#cballItem').prop("checked", false);
+    });
+
+
+        function CheckValidation() {
+            
+            var valid = true;
+
+            var valid = CheckItemValidationForSubcategory();
+            
+            return valid;
+        }
+
+
+        function CheckValidName() {
+        debugger;
+        var checkUrl = '@Url.Action("CheckValidClaimReasonNumber", "Claim")';
+            var ClaimId = $('#selectedCLAIMREASONID').val();
+            var ClaimNumber = $('#CLAIMREASONNAME').val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ ClaimReasonId: ClaimId, ClaimReasonNumber: ClaimNumber }),
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    alert("Name already exists");
+                    $('#CLAIMREASONNAME').val('');
+                    $('#CLAIMREASONNAME').focus();
+                }
+            },
+            error: function (data) {
+
+            }
+        });
+
+        }
+
+        function InializeComponent() {
+            debugger;
+            if ('@Model.ActionName' == 'view') {
+                $('.createonly').hide();
+                $('.createonlydv input,select').attr("disabled", true);
+            } else if ('@Model.ActionName' == 'edit') {
+                $('#pagetitle').text('UPDATE SALE RETURN REASON');
+            }
+        }
+    </script>
+}

@@ -1,0 +1,126 @@
+﻿@model LumaxDMS.Models.CityModel
+@using LumaxDMS.AppCode
+@{
+    /**/
+
+    ViewBag.Title = "CreateCity";
+
+}
+@{Html.RenderPartial("_WaitModal");}
+@{ Html.RenderPartial("CreateCity", @Model); }
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">CITY LIST</div>
+    </div>
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+                <div class="col-sm-12 col-md-12">
+                    <table id="citytbl" class="table table-striped table-bordered dt-responsive nowrap" style="width: 100%">
+                        <thead class="">
+                            <tr>
+                                <th>
+                                    City Code
+                                </th>
+                                <th>
+                                    City Name
+                                </th>
+
+                                <th>
+                                    City Desc
+                                </th>
+                                <th>
+                                    District Name
+                                </th>
+                                <th>
+                                    State Name
+                                </th>
+                                <th>
+                                    Country Name
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.cityMasterList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.CITYCODE
+                                    </td>
+                                    <td>
+                                        @item.CITYNAME
+                                    </td>
+                                    <td>
+                                        @item.CITYDESC
+                                    </td>
+                                    <td>
+                                        @item.DistrictName
+                                    </td>
+                                    <td>
+                                        @item.StateName
+                                    </td>
+                                    <td>
+                                        @item.CountryName
+                                    </td>
+                                    <td>
+                                        @Html.DisplayStatus(@item.ISACTIVE)
+                                    </td>
+                                    <td class="text_center">
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                        {
+                                            <a href="#" title="edit city" onclick="return EditCity(@item.CITY_ID)">
+                                                <i class="fa fa-pencil">
+                                                </i>
+                                            </a>
+                                        }
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                        {
+                                            <a href="##" onclick="return DeleteCity(@item.CITY_ID)" title="delete city">
+                                                <i class="fa fa-trash bg_red"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("DeleteCity", "ManageMaster", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.City_Id, new { @Id = "Del_CityId" });
+}
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#citytbl').DataTable();
+            HideWaitingSymbol();
+        });
+
+
+        function DeleteCity(id) {
+            $('.modal-title').html("DELETE CITY");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_CityId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+
+    </script>
+}

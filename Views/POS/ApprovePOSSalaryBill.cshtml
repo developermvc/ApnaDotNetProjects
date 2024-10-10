@@ -1,0 +1,336 @@
+﻿@model LumaxDMS.Models.POSBILLModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "Salary Bill Approval";
+    int i = 1;
+}
+
+@using (Html.BeginForm("ApprovePOSSalaryBill", "POS", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.POSBILLHDRID, new { @Id = "POSBILLHDRID", @Name = "POSBILLHDRID" })
+    @Html.Hidden("LoopCount", Model.POS_ApprovalList.Count);
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    <span>PART OF SALARY BILLS DETAILS</span>
+                </div>
+                <div class="card-body custom_responsive2">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Ref No.:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.RefNo, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Ref Date:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="input-group date" id="todatepicker1">
+                                @Html.TextBoxFor(model => model.DisplayRefDate, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Employee Name:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(model => model.EmployeeId, new SelectList(Model.EmployeeList, "EMP_ID", "DISPLAYEMPNAME", Model.EmployeeId), "--Select--", new { @Class = "partychosen-select", @disabled = "disabled" })
+                            @Html.ValidationMessageFor(model => model.EmployeeId)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Hd Qtr:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.HdQtr, new { @class = "form-control", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.HdQtr)
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Designation:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.DesignationName, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                DOJ:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.DisplayJoiningDate, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                DOL:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.DisplayLeavingDate, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Financial Year:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(model => model.FINACIALID, new SelectList(Model.FinancialYearList, "FINACIALID", "FINACIALYEAR", Model.FINACIALID), "--Select--", new { @Class = "form-control", @disabled = "disabled" })
+                            @Html.ValidationMessageFor(model => model.FINACIALID)
+                        </div>
+                        <div class="col-lg-1 col-xs-12">
+                            <label for="pwd">
+                                Download Attachments:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            <a href="##" class="btn btn-primary" onclick="return DownloadDocumentFile('@Model.Attachment');"><i class="fa fa-download" style="padding: 4px 0px;"></i></a>
+                        </div>
+
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Remarks:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.RemarksHdr, new { @class = "form-control", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.RemarksHdr)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="card-body">
+                            <table id="POSSalarybilltbl" class="table table-striped table-bordered dt-responsive nowrap"
+                                   style="width: 100%">
+                                <thead class="thead-lights">
+                                    <tr>
+                                        <th>
+                                            <label>    <input type="checkbox" id="chkSelectAllScheme" class="pull-left" checked="checked" /></label>
+                                        </th>
+                                        <th>
+                                            Account
+                                        </th>
+                                        <th>
+                                            Yearly Alwd
+                                        </th>
+                                        <th>
+                                            YTD Alwd
+                                        </th>
+                                        <th>
+                                            YTD Paid
+                                        </th>
+                                        <th>
+                                            YTD Bal
+                                        </th>
+                                        <th>
+                                            Expense Amount
+                                        </th>
+                                        <th>
+                                            Now Paid
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.POS_ApprovalList != null)
+                                {
+                                    <tbody>
+                                        @foreach (var item in Model.POS_ApprovalList)
+                                        {
+                                            <tr id="colnDtlRow_@i">
+                                                <td>
+                                                    @Html.CheckBoxFor(m => m.IsChecked, new { @Id = "IsChecked_" + i, @Name = "IsChecked_" + i, @onclick = "return onCBCheck()", @Checked = "checked" })
+                                                    @Html.HiddenFor(m => item.ACCOUNTID, new { @Id = "SelectedAccountId_" + i, @Name = "SelectedAccountId_" + i })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.ACCOUNTID, new SelectList(Model.AccountList, "ACCOUNTID", "ACCOUNTNAME", item.ACCOUNTID), "--select--", new { @class = "form-control", @Id = "AccountId_" + i, @Name = "AccountId_" + i, @disabled = "disabled" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.YearlyAlwd, new { @class = "form-control decimal", @Id = "YearlyAlwd_" + i, @Name = "YearlyAlwd_" + i, @readonly = "readonly" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.YTDAlwd, new { @class = "form-control", @Id = "MonthlyAlwd_" + i, @Name = "MonthlyAlwd_" + i, @readonly = "readonly" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.YTDPaid, new { @class = "form-control decimal", @Id = "YTDPaid_" + i, @Name = "YTDPaid_" + i, @readonly = "readonly" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.YTDBal, new { @class = "form-control", @Id = "YTDBal_" + i, @Name = "YTDBal_" + i, @readonly = "readonly" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.ExpenseAmount, new { @class = "form-control", @Id = "ExpenseAmount_" + i, @Name = "ExpenseAmount_" + i, @readonly = "readonly" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.APPROVEDAMOUNT, new { @class = "form-control", @Id = "APPROVEDAMOUNT_" + i, @Name = "APPROVEDAMOUNT_" + i, @onkeyup = "return  EnabledisableRow('false')" })
+                                                </td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                }
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="2" class="redlabel">
+                                            App. Remarks
+                                        </td>
+                                        <td colspan="4">
+
+                                            @Html.TextBoxFor(m => Model.ApprovalRemarks, new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(m=>m.ApprovalRemarks)
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => Model.TotalExpense, new { @class = "form-control", @readonly = "readonly" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBoxFor(m => Model.TotalPaid, new { @class = "form-control", @readonly = "readonly" })
+                                        </td>
+                                    </tr>
+
+                                </tfoot>
+
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+
+                            <input type="submit" name="btntype" value="Approve" onclick="return CheckValidate();" id="btnadd" class="btn btn-primary" />
+                            <input type="submit" name="btntype" value="View Bill" onclick="location.href='@Url.Action("CreatePOSSalaryBill", "POS")?ActionName=view&POSBillID=' + document.getElementById('POSBILLHDRID').value" id="btnadd" class="btn btn-primary" />
+                            <input type="reset" class="btn btn-primary" name="btntype" value="Clear" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+{
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.partychosen-select').chosen();
+            EnabledisableRow('true');
+        });
+        function onCBCheck() {
+            EnabledisableRow('false');
+        }
+        function EnabledisableRow(isready) {
+            debugger;
+            var paidamt = 0;
+            var expamt = 0;
+            var table = document.getElementById("POSSalarybilltbl");
+            if (table != null) {
+                var numrows = table.rows.length;
+                for (var i = 1; i <= numrows; i++) {
+                    if (isready == "true") {
+                        $('#IsChecked_' + i).prop("checked", "checked");
+                    }
+                    var ischecked = $('#IsChecked_' + i).is(":checked");
+                    if (ischecked) {
+                        $('#APPROVEDAMOUNT_' + i).attr('readonly', false);
+                        paidamt = paidamt + parseFloat($("#APPROVEDAMOUNT_" + i).val());
+                        expamt = expamt + parseFloat($("#ExpenseAmount_" + i).val());
+
+                    } else {
+                        $('#APPROVEDAMOUNT_' + i).attr('readonly', true);
+
+                    }
+
+                }
+                $("#TotalPaid").val(paidamt.toFixed(2));
+                $("#TotalExpense").val(expamt.toFixed(2));
+            }
+        }
+
+        function DownloadDocumentFile(FileType) {
+            var checkUrl = '@Url.Action("CheckForFiles", "POS")';
+
+                $.ajax({
+                    type: "POST",
+                    url: checkUrl,
+                    data: { FileType: FileType },
+                    dataType: "JSON",
+                    success: function (result) {
+                        if (result && result.length > 0) {
+                            var myurl = '@Url.Action("DownloadFile", "POS")';
+                            var postarray = JSON.stringify(result);
+                            window.location.href = myurl + "?path=" + postarray + "@Constants.HASH_POS";
+                        }
+                        else {
+                            alert("File not exist");
+                        }
+                    },
+                    error: function (result) {
+                        console.log(result);
+                    }
+                });
+
+        }
+
+        function CheckValidate() {
+            debugger;
+            var valid = true;
+            var checkedcount = 0;
+            var table = document.getElementById("POSSalarybilltbl");
+            if (table != null) {
+                var numrows = table.rows.length;
+                for (var i = 1; i <= numrows; i++) {
+                    var ischecked = $('#IsChecked_' + i).is(":checked");
+                    if (ischecked) {
+                        checkedcount = 1;
+                        var amt = parseFloat($("#APPROVEDAMOUNT_" + i).val());
+                        var expamt = parseFloat($("#ExpenseAmount_" + i).val());
+                        var ytdbal = parseFloat($("#YTDBal_" + i).val());
+                        if (amt < 1) {
+                            alert("Please eneter amount.");
+                            valid = false;
+                            $("#APPROVEDAMOUNT_" + i).focus();
+                            break;
+                        } else if (amt > expamt) {
+                            alert("Paid amount should be less than expense amount.");
+                            valid = false;
+                            $("#APPROVEDAMOUNT_" + i).focus();
+                            break;
+                        } else if (amt > ytdbal) {
+                            alert("Paid amount should be less than balance.");
+                            valid = false;
+                            $("#APPROVEDAMOUNT_" + i).focus();
+                            break;
+                        }
+
+                    }
+
+                }
+                if (checkedcount == 0) {
+                    alert("Please select atleast one bill");
+                    valid = false;
+                }
+            }
+            if (valid) {
+               valid= confirm("You are about to approve. \n Do you want to continue?")
+            }
+            return valid;
+        }
+    </script>
+
+}

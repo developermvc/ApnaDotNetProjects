@@ -1,0 +1,448 @@
+﻿@model LumaxDMS.Models.ComplaintModel
+@using LumaxDMS.AppCode
+@using BusinessObject;
+@using BusinessManager.Entities
+@{
+    var counter = 0;
+    UserMaster currentUser = (UserMaster)Session[Constants.Session.USER];
+    ItemGroupManager objItemGroupManager = new ItemGroupManager();
+
+}
+<script>
+    $(document).ready(function () {
+        $(".invoicechosen-select").chosen();
+
+    });
+</script>
+@Html.DropDownList("HiddenPartIds", Enumerable.Empty<SelectListItem>(), "--Select Part--", new { @class = "form-control", @Id = "HiddenPartIds", @Name = "HiddenPartIds", @Style = "display:none" })
+@if (Model.COMPLAINTID > 0)
+{
+    @Html.DropDownList("HiddenINVOICEID", new SelectList(Model.InvoiceList, "INVOICE_ID", "INVOICENUMBER"), "-- Select Invoice--", new { @class = "form-control", @id = "HiddenINVOICEID", @name = "HiddenINVOICEID", @style = "display:none" })
+}
+else
+{
+    @Html.DropDownList("HiddenINVOICEID", Enumerable.Empty<SelectListItem>(), "--Select Invoice--", new { @class = "form-control", @id = "HiddenINVOICEID", @name = "HiddenINVOICEID", @style = "display:none" })
+}
+
+
+@Html.DropDownList("HiddenPartId", new SelectList(Model.PartList, "PART_ID", "PARTFULLNAME"), "--Select Part--", new { @class = "form-control", @Id = "HiddenPartId", @Name = "HiddenPartId", @Style = "display:none" })
+<div id="Complaint">
+    @*<div class="header_ps">
+            <span id=divhdr>Complaint</span>
+        </div>*@
+    @*<div style="width:100%; overflow:scroll;">*@
+    <div style="width:100%; overflow:auto;" class="my-custom-scrollbar">
+        <input type="hidden" name="counter" id="counter" value="@counter" />
+        <table id="complainttbl" class=" table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline">
+            <thead class="thead-lights">
+                <tr>
+                    <th width="5%">
+                        <input type="checkbox" id="chkSelectAllRow" onclick="return checkAllchekBoxs(this);" class="pull-left" />
+                        <a href="#" onclick="return removeCheckedrow();" id="dlbutton" title="Remove Checked Rows"><i style="font-size: large !important;" class="fa fa-trash bg_red"></i></a>
+
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        INV.
+                    </th>
+                    <th width="15%">
+                        ITEM PART CODE
+                    </th>
+                    <th class="feedbackonlydata" width="10%">
+                        PRICE RATING<br />
+                        <small>1 for worst and 5 for best</small>
+                    </th>
+                    <th class="feedbackonlydata" width="10%">
+                        QUALITY RATING<br />
+                        <small>1 for worst and 5 for best</small>
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        INV QTY
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        INV RATE
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        CLAIM QTY
+                    </th>
+                    <th class="complaintonlydata" width="10%">
+                        CLAIM VALUE
+                    </th>
+                    <th class="complaintonlydata" width="5%">
+                        RECEIPT DATE
+                    </th>
+                    <th width="15%">
+                        ITEM REMARKS
+                    </th>
+
+                    <th width="20%" colspan="2">
+                        ITEM ATTCHMENT
+                    </th>
+                </tr>
+            </thead>
+            @if (Model.ComplaintDTLList != null)
+            {
+                <tbody>
+                    @Html.Hidden("ComplaintDTLCount", Model.ComplaintDTLList.Count, new { @Name = "ComplaintDTLCount" })
+                    @foreach (var item in Model.ComplaintDTLList)
+                    {
+                        if (Model.COMPLAINTID > 0)
+                        {
+                            if (item.INVOICEID != null && item.INVOICEID != 0)
+                            {
+                                Model.PartList = objItemGroupManager.GetAllPartByInvoiceid(item.INVOICEID.ToString(), (int)Model.DEALER_ID, (int)Model.CTYPEID, currentUser.USER_ID);
+                            }
+                            else
+                            {
+                                Model.PartList = objItemGroupManager.GetAllPartByInvoiceid(String.Empty, (int)Model.DEALER_ID, (int)Model.CTYPEID, currentUser.USER_ID);
+                            }
+                        }
+                        counter++;
+                        <tr id="Complaint_@counter">
+                            <td>
+                                <input type="checkbox" />&nbsp;
+                                @Html.HiddenFor(m => item.COMPLAINTID, new { @id = "ComplaintId_" + counter, @Name = "ComplaintId_" + counter })
+                            </td>
+                            <td class="complaintonlydata">
+
+                                @Html.DropDownListFor(m => item.INVOICEID, new SelectList(Model.InvoiceList, "INVOICE_ID", "INVOICENUMBER", item.INVOICEID), "-- Select Invoice", new { @class = "form-control partchosen-select", @id = "INVOICEID_" + counter, @Name = "INVOICEID_" + counter, @onchange = "return GetPartByInvoiceId(this);" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(m => item.PARTID, new SelectList(Model.PartList, "PART_ID", "PARTFULLNAME", item.PARTID), "-- Select--", new { @class = "form-control partchosen-select", @id = "PARTID_" + counter, @Name = "PARTID_" + counter, @onchange = "return CheckDuplicatePart(this);" })
+                            </td>
+                            <td class="feedbackonlydata">
+                                @Html.DropDownListFor(m => item.RATING, new SelectList(Model.RatingList, "Value", "Text", item.RATING), "-- Select--", new { @class = "form-control", @id = "Rating_" + counter, @Name = "Rating_" + counter })
+                            </td>
+                            <td class="feedbackonlydata">
+                                @Html.DropDownListFor(m => item.QUALITYRATING, new SelectList(Model.RatingList, "Value", "Text", item.QUALITYRATING), "-- Select--", new { @class = "form-control", @id = "QRating_" + counter, @Name = "QRating_" + counter })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.INV_QTY, new { @class = "form-control", @id = "invQty_" + counter, @Name = "invQty_" + counter, @readonly = "readonly" })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.INV_RATE, new { @class = "form-control", @id = "invRate_" + counter, @Name = "invRate_" + counter, @readonly = "readonly" })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.CLAIM_QTY, new { @class = "form-control decimalinput", @id = "claimQty_" + counter, @Name = "claimQty_" + counter, @onblur = "calculation(this);" })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.CLAIM_VALUE, new { @class = "form-control", @id = "claimValue_" + counter, @Name = "claimValue_" + counter })
+                            </td>
+                            <td class="complaintonlydata">
+                                @Html.TextBoxFor(m => item.RECEIPT_DATE, "{0:dd/MMM/yyyy}", new { @class = "form-control datepicker", @readonly = "readonly", @id = "ReceiptDate_" + counter, @Name = "ReceiptDate_" + counter })
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(m => item.REMARKS, new { @class = "form-control", @id = "Remarks_" + counter, @Name = "Remarks_" + counter })
+                            </td>
+
+                            <td>
+
+                                @Html.TextBoxFor(m => item.IMAGENAME, new { type = "file", @id = "partIMG_" + counter, @Name = "partIMG_" + counter, @multiple = "multiple", @class = "fileInputProspect btn btn-primary", @style = "padding: 7px 5px; width: 108px;float:right;", @onchange = "return ValidateFileType(this,'" + Model.ActionName.ToUpper() + "');" })
+                            </td>
+                            <td>
+                                <a href="##" id="downLoadImgBtn_@item.PARTID" class="btn btn-primary" style="margin: 0 2px 0 2px;float:right;" onclick="return DownloadImageFile('@item.IMAGEPATH');"><i class="fa fa-download" style="padding: 4px 1px;"></i></a>
+
+                                @if (Model.ActionName == "EDIT" && item.EXISTINGFILESCOUNT > 0 && item.IMAGEPATH != "")
+                                {
+                                    var imagepath = item.IMAGEPATH.Split(',');
+                                    var imageName = imagepath[0].Substring(44);
+                                    <a id="deleteBtn_@item.PARTID" href="##" class="btn btn-primary deleteBtnClass" style="margin: 0 2px 0 2px;float:left;" title="@imageName" onclick="return DeleteImageFile('@item.PARTID','@imagepath[0]',this);"><i class="fa fa-trash" style="padding: 4px 1px;"></i></a>
+                                }
+                                @if (Model.ActionName == "EDIT" && item.EXISTINGFILESCOUNT == 2 && item.IMAGEPATH != "")
+                                {
+                                    var imagepath = item.IMAGEPATH.Split(',');
+                                    var imageName = imagepath[1].Substring(44);
+
+                                    <a id="deleteBtn_2_@item.PARTID" href="##" class="btn btn-primary deleteBtnClass" style="margin: 0 2px 0 2px; float:left;" title="@imageName" onclick="return DeleteImageFile('@item.PARTID', '@imagepath[1]',this);"><i class="fa fa-trash" style="padding: 4px 1px;"></i></a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            }
+        </table>
+        <br />
+
+    </div>
+    <br />
+    @if (Model.ActionName != (Constants.PermissionName.VIEW).ToUpper())
+    {
+        <div class="clearfix">
+            <input type="button" name="btntype" value="Add Row" id="btnaddrow" class="btn btn-primary" />
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    var numrows = Number('@counter');
+    var serialnumber = 1;
+    var rowsarray = ["0", "0"];
+
+    $(document).ready(function () {
+        $('.partchosen-select').chosen();
+
+        $('#complainttbl tbody tr:first').find(':checkbox').remove();
+    });
+
+    $('#btnaddrow').on('click', function () {
+        var validate = CheckAggregate();
+        if (validate) {
+            if ($('#complainttbl tbody tr').length > 20) {
+                alert("Only 20 parts can add in one invoice");
+            }
+            else {
+                numrows = numrows + 1;
+                serialnumber = serialnumber + 1;
+                rowsarray[numrows] = "0";
+                var table = document.getElementById("complainttbl");
+                var rowCount = table.rows.length;
+                var row = table.insertRow(rowCount);
+                row.id = "Complaint_" + numrows;
+
+                var cell1 = row.insertCell(0);
+                var element0 = document.createElement("input");
+                element0.type = "checkbox";
+                var element1 = document.createElement("input");
+                element1.type = "hidden";
+                //element2.className = "form-control number";
+                element1.name = "ComplaintId_" + numrows;
+                element1.id = "ComplaintId_" + numrows;
+                cell1.appendChild(element0);
+                $(element0).append(element1);
+                cell1.align = "center";
+
+
+               // var invddl = $('#INVOICEID_1').clone(true);
+                var invddl = $('#HiddenINVOICEID').clone(true);
+                var celldvv = row.insertCell(1);
+                invddl[0].id = "INVOICEID_" + numrows;
+                invddl[0].name = "INVOICEID_" + numrows;
+                invddl[0].value = "";
+                invddl[0].className = "form-control partchosen-select";
+                invddl[0].setAttribute("onchange", "return GetPartByInvoiceId(this)");
+                invddl[0].style="display:block;"
+                celldvv.append(invddl[0]);
+                celldvv.className = "complaintonlydata";
+
+
+                $("#INVOICEID_" + numrows).trigger("chosen:updated")
+
+                var ctypename = $("#CTYPEID :selected").text().trim().toUpperCase();
+                if (ctypename == "COMPLAINT") {
+                    var ddl = $('#HiddenPartIds').clone(true);
+                    var celldv = row.insertCell(2);
+                    ddl[0].id = "PARTID_" + numrows;
+                    ddl[0].name = "PARTID_" + numrows;
+                    ddl[0].value = "";
+                    ddl[0].className = "form-control partchosen-select";
+                    ddl[0].setAttribute("onchange", "return CheckDuplicatePart(this)");
+                    celldv.append(ddl[0]);
+                    $("#PARTID_" + numrows).trigger("chosen:updated")
+                }
+                else {
+                    var ddl = $('#HiddenPartId').clone(true);
+                    var celldv = row.insertCell(2);
+                    ddl[0].id = "PARTID_" + numrows;
+                    ddl[0].name = "PARTID_" + numrows;
+                    ddl[0].value = "";
+                    ddl[0].className = "form-control partchosen-select";
+                    ddl[0].setAttribute("onchange", "return CheckDuplicatePart(this)");
+                    celldv.append(ddl[0]);
+                    $("#PARTID_" + numrows).trigger("chosen:updated")
+                }
+
+                var Rating = $('#Rating_1').clone(true);
+
+                var ratingdv = row.insertCell(3);
+                Rating[0].id = "Rating_" + numrows;
+                Rating[0].name = "Rating_" + numrows;
+                Rating[0].value = "";
+
+                ratingdv.append(Rating[0]);
+                ratingdv.className = "feedbackonlydata";
+                var QRating = $('#QRating_1').clone(true);
+                var qratingdv = row.insertCell(4);
+                QRating[0].id = "QRating_" + numrows;
+                QRating[0].name = "QRating_" + numrows;
+                QRating[0].value = "";
+
+                qratingdv.append(QRating[0]);
+                qratingdv.className = "feedbackonlydata";
+
+
+                var cell3 = row.insertCell(5);
+                var element3 = document.createElement("input");
+                element3.type = "text";
+                element3.className = "form-control";
+                element3.name = "invQty_" + numrows;
+                element3.id = "invQty_" + numrows;
+                element3.setAttribute("readonly",true);
+                cell3.append(element3);
+                cell3.className ="complaintonlydata";
+
+                var cell4 = row.insertCell(6);
+                var element4 = document.createElement("input");
+                element4.type = "text";
+                element4.className = "form-control";
+                element4.name = "invRate_" + numrows;
+                element4.id = "invRate_" + numrows;
+                element4.setAttribute("readonly", true);
+                cell4.append(element4);
+                cell4.className = "complaintonlydata";
+
+                var cell5 = row.insertCell(7);
+                var element5 = document.createElement("input");
+                element5.type = "text";
+                element5.className = "form-control decimalinput";
+                element5.name = "claimQty_" + numrows;
+                element5.id = "claimQty_" + numrows;
+                element5.setAttribute("onblur", "calculation(this);")
+                cell5.append(element5);
+                cell5.className = "complaintonlydata";
+
+                var cell6 = row.insertCell(8);
+                var element6 = document.createElement("input");
+                element6.type = "text";
+                element6.className = "form-control";
+                element6.name = "claimValue_" + numrows;
+                element6.id = "claimValue_" + numrows;
+               // element6.setAttribute("readonly", true);
+                cell6.append(element6);
+                cell6.className = "complaintonlydata";
+
+
+                var cell7 = row.insertCell(9);
+
+                var element7 = document.createElement("input");
+                element7.type = "text";
+                element7.className = "form-control datepicker";
+                element7.name = "ReceiptDate_" + numrows;
+                element7.id = "ReceiptDate_" + numrows;
+                element7.setAttribute("readonly", true);
+                cell7.append(element7);
+                cell7.className = "complaintonlydata";
+
+                var cell8 = row.insertCell(10);
+
+                var element8 = document.createElement("textarea");
+                element8.type = "text";
+                element8.className = "form-control";
+                element8.name = "Remarks_" + numrows;
+                element8.id = "Remarks_" + numrows;
+                cell8.append(element8);
+
+
+
+                var partdv = row.insertCell(11);
+                var partfile = $('#partIMG_1').clone(true);
+
+                //var partdv = row.insertCell(3);
+                partfile[0].id = "partIMG_" + numrows;
+                partfile[0].name = "partIMG_" + numrows;
+                partfile[0].value = "";
+                partfile[0].setAttribute("onchange", "return ValidateFileType(this,'@Model.ActionName.ToUpper()')");
+                partdv.append(partfile[0]);
+                debugger;
+                numrows++;
+
+                $(".partchosen-select").chosen();
+                $('#SelectedPart_Id_' + numrows + '_chosen').attr("style", "width: 230px !important");
+
+
+
+
+                document.getElementById("ComplaintDTLCount").value = numrows;
+                $('.datepicker').datepicker({
+                    format: 'dd/M/yyyy',
+                    pickerPosition: 'bottom-left'
+                });
+
+                var ctypename = $("#CTYPEID :selected").text().trim().toUpperCase();
+                if (ctypename != "FEEDBACK") {
+                    $('.feedbackonlydata').hide();
+                }
+                if (ctypename != "COMPLAINT") {
+                    $('.complaintonlydata').hide();
+                }
+            }
+        }
+        else {
+            // CheckAggregate();
+        }
+
+    });
+
+    function CheckAggregate() {
+        debugger;
+        valid = true;
+
+        var mtable = document.getElementById("complainttbl");
+        var mrowCount = document.getElementById("ComplaintDTLCount").value;
+        var currentpartvalue = "";
+
+        for (var i = 1; i <= mrowCount; i++) {
+            var ddltd = document.getElementById("PARTID_" + i);
+            var ddlRating = document.getElementById("Rating_" + i);
+            var remarks = document.getElementById("Remarks_" + i);
+
+            if (ddltd != undefined) {
+
+                if (ddltd.value == "") {
+                    if (i >= 1) {
+                        alert('please select part');
+                        $('#PARTID_' + i).focus();
+                        valid = false;
+                        return false;
+                    }
+
+
+                }
+                else {
+                    currentpartvalue = $(ddltd).val();
+                    $(mtable).find('tbody tr').each(function () {
+                        if ($(this).find('#PARTID_' + i).val() == currentpartvalue && $(this).find('#PARTID_' + i).attr('id') != $(ddltd).attr('id')) {
+                            alert('Part already selected');
+                            $(ddltd).val('').trigger("chosen:updated");
+                            $(ddltd).focus();
+                            valid = false;
+                            return false;
+                        }
+                    });
+                }
+            }
+
+            if (ddlRating != undefined) {
+                debugger;
+                if (ddlRating.value == "" && $('Rating_'+ i).is(':visible')) {
+                    if (i >= 1) {
+                        alert('please select rating');
+                        $('#Rating_' + i).focus();
+                        valid = false;
+                        return false;
+                    }
+                }
+            }
+
+            if (remarks != undefined && remarks.value == "") {
+                if (i >= 1) {
+                    alert('please enter remarks');
+                    $('#Remarks_' + i).focus();
+                    valid = false;
+                }
+
+            }
+
+        }
+
+        return valid;
+
+    }
+    function setCounterValue() {
+        debugger;
+        $("#counter").val(numrows);
+        var valid = checkAndValidate();
+        if (!valid) {
+            return false;
+        }
+    }
+
+</script>

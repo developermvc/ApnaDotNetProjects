@@ -1,0 +1,76 @@
+2019-11-05 11:47:28,959 DEBUG DebugLogger - Insert PO end for po number WOTL1907010002
+2019-11-05 11:47:54,188 DEBUG DebugLogger - Insert PO end for po number WOTL1911050001
+2019-11-05 11:48:03,175 DEBUG DebugLogger - Insert PO end for po number WOTL1911050001
+2019-11-05 11:49:54,769 DEBUG DebugLogger - Insert PO end for po number WOTL1911050001
+2019-11-05 12:32:18,806 DEBUG DebugLogger - Insert PO end for po number WOTL1911050002
+2019-11-05 12:32:38,223 DEBUG DebugLogger - Insert PO end for po number WSHR1906140001
+2019-11-05 12:33:06,485 DEBUG DebugLogger - Insert PO end for po number WOTL1910250011
+2019-11-05 12:33:35,672 DEBUG DebugLogger - Insert PO end for po number WOTL1910250010
+2019-11-05 12:33:52,426 DEBUG DebugLogger - Insert PO end for po number WOBR1909240002
+2019-11-05 12:34:17,689 DEBUG DebugLogger - Insert PO end for po number WOBR1911050003
+2019-11-05 12:34:23,983 DEBUG DebugLogger - Insert PO end for po number WOBR1911050003
+2019-11-05 12:35:20,787 DEBUG DebugLogger - Insert PO end for po number WOBR1911050003
+2019-11-05 12:35:38,359 DEBUG DebugLogger - Insert PO end for po number WOTL1911050004
+2019-11-05 12:35:49,578 DEBUG DebugLogger - Insert PO end for po number WOTL1911050004
+2019-11-05 12:35:56,308 DEBUG DebugLogger - Insert PO end for po number WOTL1911050004
+2019-11-05 12:36:21,295 DEBUG DebugLogger - Insert PO end for po number WOTL1911050005
+2019-11-05 12:36:30,819 DEBUG DebugLogger - Insert PO end for po number WOTL1911050005
+2019-11-05 12:36:59,482 DEBUG DebugLogger - Insert PO end for po number WSHR1909180001
+2019-11-05 12:37:23,185 DEBUG DebugLogger - Insert PO end for po number WSRJ1911050001
+2019-11-05 12:37:30,503 DEBUG DebugLogger - Insert PO end for po number WSRJ1911050001
+2019-11-05 12:37:56,491 DEBUG DebugLogger - Insert PO end for po number WSTN1909180004
+2019-11-05 12:38:23,528 DEBUG DebugLogger - Insert PO end for po number WSRJ1911050006
+2019-11-05 15:16:53,318 DEBUG DebugLogger - Insert PO end for po number WOUP1911050022
+2019-11-05 15:23:37,867 DEBUG DebugLogger - Insert PO end for po number WOUP1911050022
+2019-11-05 15:30:58,765 DEBUG DebugLogger - Insert PO end for po number WOUP1911050023
+2019-11-05 15:32:12,805 DEBUG DebugLogger - Insert PO end for po number WOUP1911050023
+2019-11-05 16:56:29,034 DEBUG DebugLogger - Insert PO end for po number WSHR1910010012
+2019-11-05 16:56:48,086 DEBUG DebugLogger - Insert PO end for po number WSHR1911050031
+2019-11-05 16:56:54,831 DEBUG DebugLogger - Insert PO end for po number WSHR1911050031
+2019-11-05 16:57:54,404 DEBUG DebugLogger - Insert PO end for po number WSHR1911050031
+2019-11-05 17:02:52,786 DEBUG DebugLogger - Insert PO end for po number WSHR1911050032
+2019-11-05 17:04:24,162 DEBUG DebugLogger - Insert PO end for po number WSHR1911050032
+2019-11-05 17:04:24,609 DEBUG DebugLogger - InterimReportController.cs System.Data.Entity.Infrastructure.DbUpdateException: An error occurred while updating the entries. See the inner exception for details. ---> System.Data.Entity.Core.UpdateException: An error occurred while updating the entries. See the inner exception for details. ---> System.Data.SqlClient.SqlException: Error converting data type varchar to numeric.
+   at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.<NonQuery>b__0(DbCommand t, DbCommandInterceptionContext`1 c)
+   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.NonQuery(DbCommand command, DbCommandInterceptionContext interceptionContext)
+   at System.Data.Entity.Internal.InterceptableDbCommand.ExecuteNonQuery()
+   at System.Data.Entity.Core.Mapping.Update.Internal.DynamicUpdateCommand.Execute(Dictionary`2 identifierValues, List`1 generatedValues)
+   at System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   --- End of inner exception stack trace ---
+   at System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   at System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.<Update>b__2(UpdateTranslator ut)
+   at System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update[T](T noChangesResult, Func`2 updateFunction)
+   at System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update()
+   at System.Data.Entity.Core.Objects.ObjectContext.<SaveChangesToStore>b__35()
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   at System.Data.Entity.Core.Objects.ObjectContext.SaveChangesToStore(SaveOptions options, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction)
+   at System.Data.Entity.Core.Objects.ObjectContext.<>c__DisplayClass2a.<SaveChangesInternal>b__27()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectContext.SaveChangesInternal(SaveOptions options, Boolean executeInExistingTransaction)
+   at System.Data.Entity.Core.Objects.ObjectContext.SaveChanges(SaveOptions options)
+   at System.Data.Entity.Internal.InternalContext.SaveChanges()
+   --- End of inner exception stack trace ---
+   at System.Data.Entity.Internal.InternalContext.SaveChanges()
+   at System.Data.Entity.Internal.LazyInternalContext.SaveChanges()
+   at System.Data.Entity.DbContext.SaveChanges()
+   at DataAccess.Entities.UnitOfWork.Save() in D:\Projects\LumaxNew_UAT\DataAccess\Generic\UnitOfWork.cs:line 39
+   at DataAccess.Entities.SalesOrderDB.UpdatePoAttachmentPath(String poNumber, String path) in D:\Projects\LumaxNew_UAT\DataAccess\Entities\SalesOrderDB.cs:line 275
+   at BusinessManager.Entities.SalesOrderManager.UpdatePoAttachmentPath(String poNumber, String path) in D:\Projects\LumaxNew_UAT\BusinessManager\Entities\SalesOrderManager.cs:line 69
+   at LumaxDMS.Controllers.SalesOrderController.SavePoAttachmentFile(String poNumber) in D:\Projects\LumaxNew_UAT\LumaxDMS\Controllers\SalesOrderController.cs:line 1064
+2019-11-05 17:08:34,792 DEBUG DebugLogger - Insert PO end for po number WSHR1911050033
+2019-11-05 17:08:58,406 DEBUG DebugLogger - Insert PO end for po number WSHR1911050034
+2019-11-05 17:12:08,204 DEBUG DebugLogger - Insert PO end for po number WOUP1911050035
+2019-11-05 17:12:20,041 DEBUG DebugLogger - Insert PO end for po number WSTN1911050036
+2019-11-05 17:12:26,312 DEBUG DebugLogger - Insert PO end for po number WSTN1911050036
+2019-11-05 17:12:50,546 DEBUG DebugLogger - Insert PO end for po number WOUP1911050035
+2019-11-05 18:14:18,146 DEBUG DebugLogger - Insert PO end for po number WSHR1911050034

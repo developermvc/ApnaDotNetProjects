@@ -1,0 +1,630 @@
+﻿@{
+    ViewBag.Title = "CreateVisitOrder";
+   
+}
+
+
+
+@*<div class="card card_ps">
+<div class="header_ps">
+<span>CREATE ORDER</span>
+</div>
+    <div class="panel panel-default panel_pt">
+       
+            <div class="card-body">
+               <div class="table-responsive">
+                 <table class="table table-bordered" style="display: inline-table;">
+                   <thead class="thead-lights">
+                        <tr> 
+                         <th style="text-align: center">
+                                <input type="checkbox" id="bills"/>
+                            </th>
+                        <th style="text-align: center">
+                               S.No
+                            </th>
+                           
+                            <th style="text-align: center">
+                               Dealer Name
+                            </th>
+                            <th style="text-align: center">
+                                Item Code 
+                            </th>
+                            <th style="text-align: center">
+                             Ordered Quantity
+                            </th>
+                            <th style="text-align: center">
+                                V. Category 
+                            </th>
+                             <th style="text-align: center">
+                                MRP 
+                            </th>
+                             <th style="text-align: center">
+                                Item Remarks
+                            </th>
+                            
+                          
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td align="center">
+                                <input type="checkbox"/>
+                            </td>
+                            <td align="center">
+                                 1
+                            </td>
+                            <td align="center">
+                                    C:0000100339
+                            </td>
+                           <td align="center">
+                               001-BLA-NL
+                            </td>
+                           <td align="center">
+                                4
+                            </td>
+                            <td align="center">
+                                2WH
+                            </td>
+                              <td align="center">
+                               180
+                            </td>
+                              <td align="center">
+                              working
+                            </td>
+                          
+                        </tr>
+                    </tbody>
+                </table>
+				</div>
+               
+                    
+     <div class="row botton_tppp">
+<div class="col-lg-12">
+<button type="button" class="btn btn_font">Update</button>
+
+</div>
+</div>                  
+               
+               
+<div class="row botton_tppp">
+<div class="col-lg-12">
+<button type="button" class="btn btn_font">Add</button>
+<button type="button" class="btn btn_font" style="font-size:12px !important;">Delete</button>
+</div>
+</div>
+<hr />
+ <div class="row botton_tppp">
+<div class="col-lg-12 pull-right">
+<button type="button" class="btn btn_font">Submit</button>
+<button type="button" class="btn btn_font">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+</div>*@
+
+<div class="card card_ps">
+    <div class="header_ps">
+        <span>CREATE SALE ORDER </span>
+    </div>
+    <div class="card-body" style="padding-top: 20px;">
+        <div class="row">
+         <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Order Type:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <select class="form-control" id="sel1">
+                    <option>--select--</option>
+                    <option>Primary</option>
+                    <option>Secondary</option>
+                    
+                </select>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Channel Partner:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+               <select class="form-control" id="sel1">
+                    <option>--select--</option>
+                    <option>Anshu Dealer</option>
+                    <option>Amit Dealer</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Order For:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+            <input type="text" class="form-control form-control2 " placeholder="A ONE INDUSTRIES" id="pwd"/>
+            </div>
+            <hr />
+            <hr />
+             <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    PO Number:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+            <input type="text" class="form-control form-control2 " placeholder="P002" id="pwd"/>
+            </div>
+        
+         <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    PO Date:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+            <input type="text" class="form-control form-control2 " placeholder="04-12-2018" id="pwd"/>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Allow Dbl:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <input type="checkbox" />
+            </div>
+          
+
+            <br />
+            <br />
+
+             <div class="scroll_bt">
+                <table class="table table-responsive table-bordered">
+                    <thead class="thead-lights">
+                        <tr>
+                            <th style="text-align: center">
+                                <input type="checkbox" />
+                            </th>
+                            <th style="text-align: center">
+                                Product Category 
+                            </th>
+                            <th style="text-align: center">
+                                Part Number
+                            </th>
+                            <th style="text-align: center">
+                                MRP
+                            </th>
+                            <th style="text-align: center">
+                                Rate
+                            </th>
+                            <th style="text-align: center">
+                                Current Stock
+                            </th>
+                            <th style="text-align: center">
+                               Pending Qty
+                            </th>
+                            <th style="text-align: center">
+                                Discount
+                            </th>
+                            <th style="text-align: center">
+                               Total
+                            </th>
+                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td align="center">
+                                <input type="checkbox" />
+                            </td>
+                            <td align="center">
+                                <select class="form-control" style="width: 100px !important;">
+                                    <option>--select--</option>
+                                    <option>2WH</option>
+                                    <option>4WH</option>
+                                </select>
+                            </td>
+                            <td align="center">
+                                <select class="form-control" style="width: 100px !important;">
+                                    <option>--select--</option>
+                                    <option>A001</option>
+                                    <option>A002</option>
+                                </select>
+                            </td>
+                            <td align="center">
+                                 <input type="text" class="form-control" readonly placeholder="180" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="40" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="40" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="4" id="pwd" />
+                            </td>
+                            <td align="center">
+                               <input type="text" class="form-control" readonly placeholder="5%" id="pwd" />
+                            </td>
+                            <td align="center">
+                               <input type="text" class="form-control" readonly placeholder="100" id="pwd" />
+                            </td>
+                           
+                            
+                        </tr>
+                         <tr>
+                            <td align="center">
+                                <input type="checkbox" />
+                            </td>
+                             <td align="center">
+                                <select class="form-control" style="width: 100px !important;">
+                                    <option>--select--</option>
+                                    <option>2WH</option>
+                                    <option>4WH</option>
+                                </select>
+                            </td>
+                            <td align="center">
+                                <select class="form-control" style="width: 100px !important;">
+                                    <option>--select--</option>
+                                    <option>A001</option>
+                                    <option>A002</option>
+                                </select>
+                            </td>
+                            <td align="center">
+                                 <input type="text" class="form-control" readonly placeholder="180" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="40" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="40" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="4" id="pwd" />
+                            </td>
+                            <td align="center">
+                               <input type="text" class="form-control" readonly placeholder="5%" id="pwd" />
+                            </td>
+                            <td align="center">
+                               <input type="text" class="form-control" readonly placeholder="100" id="pwd" />
+                            </td>
+                           
+                            
+                        </tr>
+                         <tr>
+                            <td align="center">
+                                <input type="checkbox" />
+                            </td>
+                             <td align="center">
+                                <select class="form-control" style="width: 100px !important;">
+                                    <option>--select--</option>
+                                    <option>2WH</option>
+                                    <option>4WH</option>
+                                </select>
+                            </td>
+                            <td align="center">
+                                <select class="form-control" style="width: 100px !important;">
+                                    <option>--select--</option>
+                                    <option>A001</option>
+                                    <option>A002</option>
+                                </select>
+                            </td>
+                            <td align="center">
+                                 <input type="text" class="form-control" readonly placeholder="180" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="40" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="40" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="4" id="pwd" />
+                            </td>
+                            <td align="center">
+                               <input type="text" class="form-control" readonly placeholder="5%" id="pwd" />
+                            </td>
+                            <td align="center">
+                               <input type="text" class="form-control" readonly placeholder="100" id="pwd" />
+                            </td>
+                           
+                            
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br />
+            @*<div class="row row-pt">
+             <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                     </label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+            <input type="file" class="form-control " id="pwd"/>
+            </div>
+            </div>*@
+@*
+            <div>
+            <div class="container-fluid">
+            <div class="custom-file" class="form-control">
+  <input type="file" class="custom-file-input" id="customFile">
+  <label class="custom-file-label" for="customFile">Choose file</label>
+</div>
+</div>
+</div>*@
+<hr />
+@*<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="fileupload">Upload</span>
+  </div>
+  <div class="custom-file">
+    <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="fileupload"/>
+    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+  </div>
+</div>*@
+
+<hr />
+
+<form id = "uploadbanner" method = "post" action = "#" class="col-lg-12 text-right margin_lf">
+      <input id = "fileupload" type = "file" />
+      <input type = "submit" value = "Upload" id = "submit" />
+</form>
+
+            
+        </div>
+        <hr />
+         <div class="row botton_tppp">
+                <div class="col-lg-12">
+                    <button type="button" class="btn btn_font">
+                        Add</button>
+                    <button type="button" class="btn btn_font">
+                        Delete</button>
+                         <button type="button" class="btn btn_font">
+                        Download Sample File</button>
+                        <button type="button" class="btn btn_font">
+                        View Scheme Detail</button>
+                </div>
+            </div>
+      
+      
+        
+    </div>
+
+    <br />
+      <div class="scroll_bt">
+                <table class="table table-responsive table-bordered">
+                    <thead class="thead-lights">
+                        <tr>
+                            
+                            <th style="text-align: center">
+                                Ord Qty
+                            </th>
+                            <th style="text-align: center">
+                                Free Qty
+                            </th>
+                            <th style="text-align: center">
+                                Total Qty
+                            </th>
+                            <th style="text-align: center">
+                                Total Item Value
+                            </th>
+                            <th style="text-align: center">
+                               Discount Val
+                            </th>
+                            <th style="text-align: center">
+                                No Of Items
+                            </th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                           
+                            <td align="center">
+                                 <input type="text" class="form-control" readonly placeholder="40" id="pwd" />
+                            </td>
+                            <td align="center">
+                               <input type="text" class="form-control" readonly placeholder="4" id="pwd" />
+                            </td>
+                            <td align="center">
+                               <input type="text" class="form-control" readonly placeholder="34" id="pwd" />
+                            </td>
+                            <td align="center">
+                                 <input type="text" class="form-control" readonly placeholder="23" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="12" id="pwd" />
+                            </td>
+                            <td align="center">
+                                <input type="text" class="form-control" readonly placeholder="32" id="pwd" />
+                            </td>
+                         
+                           
+                        </tr>
+                    </tbody>
+                </table>
+            </div>@*
+          <table class="table table-borderless">
+  <thead>
+    <tr>
+     
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+  
+      <td>Mark</td>
+      <td><input type="text" class="form-control " placeholder="10000" id="pwd"/></td>
+      <td><input type="text" class="form-control " placeholder="10000" id="pwd"/></td>
+      <td><input type="text" class="form-control " placeholder="10000" id="pwd"/></td>
+    </tr>
+    <tr>
+    <td>Mark</td>
+      <td><input type="text" class="form-control " placeholder="10000" id="pwd"/></td>
+      <td><input type="text" class="form-control " placeholder="10000" id="pwd"/></td>
+      <td><input type="text" class="form-control " placeholder="10000" id="pwd"/></td>
+    </tr>
+   
+  </tbody>
+</table>*@
+   <table  class="table table-borderless"  >
+  <tbody>
+  <tr style="width:50px">
+    <th ></th>
+    <th >Total</th>
+    <th >Utilized</th>
+    <th >Balance</th>
+    
+  </tr>
+  <tr style="width:50px">
+    <td>Credit Limit</td>
+    <td ><input type="text" class="form-control" readonly placeholder="10000" id="pwd"/></td>
+    <td><input type="text" class="form-control" readonly placeholder="3456" id="pwd"/></td>
+    <td><input type="text" class="form-control" readonly placeholder="6264" id="pwd"/></td>
+    
+  </tr>
+  <tr>
+    <td>Target</td>
+    <td><input type="text" class="form-control" readonly placeholder="20000" id="pwd"/></td>
+    <td><input type="text" class="form-control" readonly placeholder="5890" id="pwd"/></td>
+    <td><input type="text" class="form-control" readonly placeholder="13860" id="pwd"/></td>
+        
+  </tr>
+  
+ 
+ 
+</tbody></table>
+
+       @*
+          <div class="row">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                     Credit Limit:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <input type="text" class="form-control form-control2 "placeholder="10000" id="pwd"/>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                      Credit Limit:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                 <input type="text" class="form-control form-control2 " placeholder="4567" id="pwd">
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                     Credit Limit:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                 <input type="text" class="form-control form-control2 " placeholder="2345" id="pwd">
+            </div>
+        </div>
+          <div class="row row_pt">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Target :</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <input type="text" class="form-control form-control2 " placeholder="6990" id="pwd">
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                     Target :</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <input type="text" class="form-control form-control2 "placeholder="3456" id="pwd">
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                     Target:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+               <input type="text" class="form-control form-control2 "placeholder="2341" id="pwd">
+            </div>
+        </div>*@
+     
+         <div class="row row_pt">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                   Total Bill Discount :</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <input type="text" class="form-control form-control2 "placeholder="5%" id="pwd">
+            </div>
+            </div>
+            <div class="row row_pt">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Grand Total  :</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <input type="text" class="form-control form-control2 " placeholder="100000" id="pwd">
+            </div>
+            </div>
+            <div class="row row_pt">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Party PO Number:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+               <input type="text" class="form-control form-control2 "placeholder="A0012" id="pwd">
+            </div>
+        </div>
+         <div class="row row_pt">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                   Party PO Date:</label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <input type="text" class="form-control form-control2 " placeholder="04-12-2018" id="pwd">
+            </div>
+            </div>
+            
+
+         <br />
+         <div class="row botton_tppp">
+            <div class="col-lg-12 text-right margin_lf">
+                <button type="button" class="btn btn_font">
+                    Submit</button>
+                <button type="button" class="btn btn_font">
+                    Cancel</button>
+            </div>
+        </div>
+        <br />
+
+         @*<table class="table">
+    <thead>
+      <tr>
+        <th>Total</th>
+        <th>Utilized</th>
+        <th>Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="width:60px">Credit Limit</td>
+
+        <td><input type="text" class="form-control " placeholder="04-12-2018" id="pwd"></td>
+        <td style="width:117px"><input type="text" class="form-control " placeholder="04-12-2018" id="pwd"></td>
+        <td style="width:117px"><input type="text" class="form-control " placeholder="04-12-2018" id="pwd"></td>
+      </tr>
+      <tr>
+       <td style="width:60px">Target</td>
+
+       <td style="width:117px"><input type="text" class="form-control " placeholder="04-12-2018" id="pwd"></td>
+        <td style="width:117px"><input type="text" class="form-control " placeholder="04-12-2018" id="pwd"></td>
+        <td style="width:117px"><input type="text" class="form-control " placeholder="04-12-2018" id="pwd"></td>
+      </tr>
+      
+    </tbody>
+  </table>*@
+ 
+ 
+      
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#example2').DataTable({
+            responsive: true
+        });
+
+        new $.fn.dataTable.FixedHeader(table);
+    });
+</script>

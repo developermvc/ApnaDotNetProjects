@@ -1,0 +1,670 @@
+﻿@model LumaxDMS.Models.POSModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "Create Employee Expense Relation";
+    var counter = 0;
+}
+
+@using (Html.BeginForm("CreateEmployeeExpense", "POS", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.POSID, new { @Id = "POSID", @Name = "POSID" })
+    @Html.DropDownList("HiddenEmpId", new SelectList(Model.EmployeeList, "EMP_ID", "FullName"), "--Select--", new { @class = "form-control", @Id = "HiddenEmpId", @Name = "HiddenEmpId", @Style = "display:none" })
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName == Constants.BTN_CREATE)
+                    {
+                        <span>CREATE EMPLOYEE EXPENSE</span>
+                    }
+                    else
+                    {
+                        <span>UPDATE EMPLOYEE EXPENSE</span>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-1 col-xs-12">
+                            <label for="pwd">
+                                Employee:
+                            </label>
+                        </div>
+                        <div class="col-lg-5 col-xs-12">
+                            @Html.DropDownListFor(model => model.EmployeeId, new SelectList(Model.EmployeeList, "EMP_ID", "DISPLAYEMPNAME", Model.EmployeeId), "--Select--", new { @Class = "partychosen-select", @onchange = "return ValidateDuplicateEmployee();" })
+                            @Html.HiddenFor(model=>model.EmployeeId, new { @Id="hdnEmployeeId", @Name ="hdnEmployeeId"})
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Financial Year:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(model => model.FINACIALID, new SelectList(Model.FinancialYearList, "FINACIALID", "FINACIALYEAR"), "--Select--", new { @Class = "form-control", @onchange = "return ValidateDuplicateEmployee();" })
+                            @Html.ValidationMessageFor(model=>model.FINACIALID)
+                            @Html.HiddenFor(model=>model.FINACIALID, new { @Id="hdnFinancialId", @Name ="hdnFinancialId"})
+                        </div>
+                        <div class="col-lg-1 col-xs-12">
+                            <label for="pwd">
+                                IsActive:
+                            </label>
+                        </div>
+                        <div class="col-lg-1 col-xs-12">
+                            @Html.CheckBoxFor(model => model.IsActive)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="card-body">
+                            <table id="Employeeexpensetbl" class="table table-striped table-bordered dt-responsive nowrap"
+                                   style="width: 100%">
+                                <thead class="thead-lights">
+                                    <tr>
+                                        <th width="10%">
+                                            <input type="checkbox" id="chkSelectAllempexp" class="pull-left" />
+                                            <a href="#" onclick="return removeCheckedempexp();" title="Remove Checked Rows"><i class="fa fa-trash bg_red"></i></a>
+                                        </th>
+                                        <th width="40%">
+                                            Month
+                                        </th>
+                                        <th width="10%">
+                                            Account
+                                        </th>
+                                        <th  width="15%">
+                                            Amount
+                                        </th>
+                                        <th  width="25%">
+                                            Remark
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                @if (Model.POSDTLList != null)
+                                {
+                                    <tbody>
+                                        @Html.Hidden("POSDTLCount", Model.POSDTLList.Count(), new { @Name = "POSDTLCount" })
+                                        @foreach (var item in Model.POSDTLList)
+                                        {
+                                            counter++;
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" />&nbsp;
+                                                    @Html.HiddenFor(m => item.POSDTLID, new { @Id = "hdnPOSDTLID_" + counter, @Name = "hdnPOSDTLID_" + counter })
+                                                </td>
+                                                <td>
+                                                    @*@Html.DropDownListFor(m => item.MONTH, new SelectList(Model.MonthList, "Value", "Text", item.MONTH), "--select--", new { @class = "form-control margin_auto", @Id = "Month_" + counter, @Name = "Month_" + counter, @onchange = "return ValidateExpByMonth(this);" })*@
+                                                    @Html.ListBoxFor(m => item.SelectedMonthIds, new MultiSelectList(Model.MonthList, "Value", "Text", item.SelectedMonthIds), new { @Id = "Month_" + counter, @Name = "Month_" + counter, @onchange = "return ValidateExpByMonth("+ counter + ");" , @Class = "avaiable_mcode monthchosen-select", @placeholder = "Filter By..." })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.ACCOUNTID, new SelectList(Model.AccountList, "ACCOUNTID", "ACCOUNTNAME", item.ACCOUNTID), "--select--", new { @class = "form-control margin_auto", @Id = "AccountId_" + counter, @Name = "AccountId_" + counter, @onchange = "return ValidateExpByMonth("+ counter + ");" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.AMOUNT, new { @class = "form-control decimal custom_width", @Id = "Amount_" + counter, @Style = "text-align:right;", @maxlength = "11", @Name = "Amount_" + counter })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.REMARKS, new { @class = "form-control custom_width", @Id = "Remarks_" + counter, @Name = "Remarks_" + counter })
+                                                </td>
+
+                                            </tr>
+                                           
+                                        }
+                                    </tbody>
+                                }
+
+                            </table>
+                            <br />
+                            <div class="clearfix">
+                                <input type="button" name="btntype" value="Add Row" id="btnaddrow" class="btn btn-primary" />
+                               @*@using (Html.BeginForm("UploadPOSExpenseByExcel", "POS", FormMethod.Post, new { enctype = "multipart/form-data",id="abc" }))
+                                {*@
+                                    <span class="uploadexceldv">
+                                        <input type="file" name="file" id="fileField" class="btn btn-primary" style="padding: 0.200rem 0.80rem;" />
+                                        @*<a id ="btnTyp" name="btnTyp" value="UploadExcel" title="Upload Excel" class="btn btn-primary" onclick="return checkFileValidation('fileField');">
+                                            Upload Excel &nbsp; <i class="fa fa-upload"></i>
+                                        </a>*@
+                                        <a href="##" value="DownloadSampleExcel" class="btn btn-primary"
+                                           title="Download Sample Excel" id="dwn"
+                                           onClick="window.location.href='/Content/LumaxData/SampleFiles/SamplePOSExpense.xlsx'">
+                                            Download Sample Excel &nbsp; <i class="fa fa-download"></i>
+                                        </a>
+                                    </span>
+                                    @*<input type="submit" name="submit" id="btnUploadExcel" onclick="return checkFileValidation('fileField');"  />
+                                }*@
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+                            @if (Model.ActionName == Constants.BTN_CREATE)
+                            {
+                                <input type="submit" name="btntype" value="Create" onclick="return CheckValidate();" id="btnadd" class="btn btn-primary" />
+                            }
+                            else
+                            {
+                                <input type="submit" name="btntype" value="Update" onclick="return CheckValidate();" id="btnadd" class="btn btn-primary" />
+                            }
+                            <input type="reset" class="btn btn-primary" name="btntype" onclick="return Clear();" value="Clear" id="btnClear" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+{
+    <script type="text/javascript">
+        var valid = true;
+        var numrows = Number(@counter);
+        var serialnumber = 1;
+        var rowsarray = ["0", "0"];
+        var financialyear = "";
+        if (new Date().getMonth() + 1 < 4) {
+            financialyear = (new Date().getUTCFullYear() - 1) + "-" + (new Date().getUTCFullYear());
+        }
+        else {
+            financialyear = (new Date().getUTCFullYear()) + "-" + (new Date().getUTCFullYear() + 1)
+        }
+        $(document).ready(function () {
+            $('.partychosen-select').chosen();
+            if ($('#FINACIALID').val() > 0) {
+                $('#FINACIALID').prop('disabled', true);
+            }
+            else {
+                $("#FINACIALID option:contains(" + financialyear + ")").attr('selected', 'selected');
+                $("#FINACIALID").prop('disabled', true);
+                $('#hdnFinancialId').val($("#FINACIALID").val());
+            }
+            if ($('#EmployeeId').val() > 0) {
+                $('#EmployeeId').prop('disabled', true).trigger("chosen:updated");
+            }
+            //$("#FINACIALID option:contains(" + financialyear + ")").attr('selected', 'selected');
+            $('#Employeeexpensetbl tbody tr').each(function (i, data) {
+                if ($('#FINACIALID option:selected').text().trim() != financialyear && $('#FINACIALID option:selected').text().trim() != '--Select--') {
+                    $(this).find('td:first').find('checkbox').attr('disabled', true);
+                    $('#Month_' + (i + 1)).attr('disabled', 'disabled');
+                    $('#AccountId_' + (i + 1)).attr('disabled', 'disabled');
+                    $('#Amount_' + (i + 1)).attr('disabled', 'disabled');
+                    $('#Remarks_' + (i + 1)).attr('disabled', 'disabled');
+                    //$('#EmployeeId').prop('disabled', true).trigger("chosen:updated");
+                    $('#IsActive').attr('disabled', 'disabled');
+                    $('#btnaddrow').attr('disabled', 'disabled');
+                    $('#fileField').attr('disabled', 'disabled');
+                    $('#dwn').attr('disabled', 'disabled');
+                    $('#btnadd').hide();
+                    $('#btnClear').hide();
+                }
+                // Use (new Date($('#Month_' + (i + 1)).val() + '-1-01').getMonth() + 1) for converting string 'JAN' to number
+                //else if ($('#FINACIALID option:selected').text().trim() == financialyear && $('#FINACIALID option:selected').text().trim() != '--Select--' && Number($('#Month_' + (i + 1)).val()) != 0 && Number($('#Month_' + (i + 1)).val()) < (new Date().getMonth() + 1)) {
+                //    $(this).find('td:first').find('checkbox').attr('disabled', true);
+                //    $('#Month_' + (i + 1)).attr('disabled', 'disabled');
+                //    $('#AccountId_' + (i + 1)).attr('disabled', 'disabled');
+                //    $('#Amount_' + (i + 1)).attr('disabled', 'disabled');
+                //    $('#Remarks_' + (i + 1)).attr('disabled', 'disabled');
+                //}
+                else {
+                    $('#Month_' + (i + 1)).removeAttr('disabled');
+                    $('#AccountId_' + (i + 1)).removeAttr('disabled');
+                    $('#Amount_' + (i + 1)).removeAttr('disabled');
+                    $('#Remarks_' + (i + 1)).removeAttr('disabled');
+                    $(this).find('td:first').find('checkbox').removeAttr('disabled');
+                    //$('#EmployeeId').removeAttr('disabled');
+                    $('#IsActive').removeAttr('disabled');
+                    $('#btnaddrow').removeAttr('disabled');
+                    $('#fileField').removeAttr('disabled');
+                    $('#dwn').removeAttr('disabled');
+                    $('#btnadd').show();
+                    $('#btnClear').show();
+                }
+            });
+            CreateChoosen();
+        });
+
+        function checkFileValidation(fileid) {
+            debugger;
+            var file = $('#' + fileid).val();
+            var fileSize = 0;
+            if (file != "") {
+                fileSize = GetFileSize('fileField');
+                if (file == '' || file == null) {
+                    valMessage.innerHTML = "Please select excel file ";
+                    return false;
+                }
+                else if (!(/\.(xlsx|xls)$/i).test(file)) {
+                    $(file).val('');
+                    alert("Please select excel file only");
+                    return false;
+
+                }
+                else if (fileSize > 8.0) {
+                    alert("Please select excel file upto 8 mb only");
+                    return false;
+
+
+                }
+                else {
+                    @*if (window.FormData !== undefined) {
+
+                        var fileUpload = $("#fileField").get(0);
+                        var files = fileUpload.files;
+
+                        // Create FormData object  
+                        var fileData = new FormData();
+                        //fileData.append(files.name, files);
+                        fileData.append('file', files);
+                        var file = $("#fileField")[0].files;
+                        var filename = $("#fileField")[0].files[0].name;
+                        var name = $("#fileField").attr('id');
+                        fileData.append(name, file, filename);
+                        for (var key of fileData.entries()) {
+                            console.log(key[0] + ', ' + key[1]);
+                        }
+                        var xhr = new XMLHttpRequest;
+                        xhr.open('POST', '/echo/html/', true);
+                        xhr.send(fileData);
+                        //$('#btnUploadExcel').submit();
+                        //var formData = new FormData($('form').find('input[type="file"]'));
+                        var myurl = '@Url.Action("UploadPOSExpenseByExcel", "POS")';
+                        //var fd = new FormData();
+                        //fd.append('file', $('form').find('input[type="file"]'));
+                        //var model = new FormData();
+                        //model.append("File", $("#" + fileid)[0].files[0]);
+                        //model.append("Name", $("#" + fileid).attr('name'));
+                        //var formData = new FormData();
+                        //var formData = new FormData($('#' + fileid)[0]);
+                        //var fileName = document.getElementById(fileid).files[0];
+                        //formData.append("FileUpload", file);
+                        $.ajax({
+                            type: "POST",
+                            url: myurl,
+                            beforeSend: function () { },
+                            success: function (result) {
+                                console.log(result);
+                            },
+                            xhr: function () {  // Custom XMLHttpRequest
+                                var myXhr = $.ajaxSettings.xhr();
+                                if (myXhr.upload) { // Check if upload property exists
+                                    // Progress code if you want
+                                }
+                                return myXhr;
+                            },
+                            data: { fileField: $("#" + fileid).get(0).files[0] },
+                            cache: false,
+                            processData: false,
+                            contentType: false,
+
+                            error: function (result) {
+
+                            }
+                        });
+                    }*@
+                    //var data = new FormData();
+                    //data.append("name", jQuery("#" + fileid).val());
+                    //data.append("file", jQuery("#" + fileid).get(0).files[0]);
+                    @*window.location.href = myurl + "?file=" + $("#" + fileid).get(0).files[0] + "&POSID=" + $('#POSID').val() + "&@Constants.HASH_POS";*@
+                    //$.blockUI();
+                    return true;
+                }
+            }
+            else {
+                alert("Please select file");
+                return false;
+            }
+
+        }
+
+        function GetFileSize(fileField) {
+
+            try {
+                var fileSize = 0;
+                //for IE
+                if (navigator.userAgent.match(/msie/i)) {
+
+                    //before making an object of ActiveXObject, 
+                    //please make sure ActiveX is enabled in your IE browser
+                    //var objFSO = new ActiveXObject("Scripting.FileSystemObject"); 
+
+                    //var filePath = $("#"+fileField)[0].value;
+                    //var objFile = objFSO.getFile(filePath);
+                    //fileSize = objFile.size; 
+                    //size in kb
+                    //fileSize = fileSize / 1048576; 
+                    //size in mb
+                    fileSize = fileSize;
+                }
+                //for FF, Safari, Opeara and Others
+                else {
+                    fileSize = $("#" + fileField)[0].files[0].size //size in kb
+                    fileSize = fileSize / 1048576; //size in mb 
+                }
+                return fileSize;
+            }
+            catch (e) {
+                alert("Error is :" + e);
+            }
+        }
+        
+        
+        
+
+        $('#btnaddrow').on('click', function () {
+            debugger;
+            var validate = CheckAggregate();
+            if (validate) {
+                $(".monthchosen-select").chosen('destroy');
+                numrows = numrows + 1;
+                serialnumber = serialnumber + 1;
+                rowsarray[numrows] = "0";
+                var table = document.getElementById("Employeeexpensetbl");
+                var rowcount = table.rows.length;
+                var row = table.insertRow(rowcount);
+                row.id = "empexprelation_" + numrows;
+
+                var cell1 = row.insertCell(0);
+                var element0 = document.createElement("input");
+                element0.type = "checkbox";
+                element0.removeAttribute('disabled');
+                var element1 = document.createElement("input");
+                element1.type = "hidden";
+                element1.name = "hdnPOSDTLID_" + numrows;
+                element1.id = "hdnPOSDTLID_" + numrows;
+                cell1.appendChild(element0);
+                $(element0).append(element1);
+                cell1.align = "centre";
+
+                var ddl = $(table).find('tr:last').prev('tr').find('td').eq(1).find('select').clone(true);
+
+                var celldv = row.insertCell(1);
+                ddl[0].id = "Month_" + numrows;
+                ddl[0].name = "Month_" + numrows;
+                ddl[0].value = "";
+                ddl[0].setAttribute('onchange', 'return ValidateExpByMonth(' + numrows + ');');
+                ddl[0].className = "form-control margin_auto monthchosen-select";
+                celldv.append(ddl[0]);
+                //$('#Month_' + numrows).attr('style', 'display:block');
+
+                var ddlAccount = $(table).find('tr:last').prev('tr').find('td').eq(2).find('select').clone(true);
+                var celldvAccount = row.insertCell(2);
+                ddlAccount[0].id = "AccountId_" + numrows;
+                ddlAccount[0].name = "AccountId_" + numrows;
+                ddlAccount[0].value = "";
+                ddlAccount[0].setAttribute('onchange', 'return ValidateExpByMonth(' + numrows+');');
+                ddlAccount[0].className = "form-control margin_auto";
+                ddlAccount[0].removeAttribute('disabled');
+                //ddl[0].setAttribute("onchange", "return CheckDuplicateProductCategory(this);");
+                celldvAccount.append(ddlAccount[0]);
+
+                var cell2 = row.insertCell(3);
+                var element2 = document.createElement("input");
+                element2.type = "text";
+                element2.className = "form-control decimal custom_width";
+                element2.name = "Amount_" + numrows;
+                element2.id = "Amount_" + numrows;
+                element2.style = "text-align:right;";
+                element2.setAttribute("maxlength", "13");
+                element2.removeAttribute('disabled');
+                //element2.setAttribute("onchange", "return MapCulDiscount(this);");
+                cell2.append(element2);
+
+                var cell3 = row.insertCell(4);
+                var element3 = document.createElement("input");
+                element3.type = "text";
+                element3.className = "form-control custom_width";
+                element3.name = "Remarks_" + numrows;
+                element3.id = "Remarks_" + numrows;
+                element3.removeAttribute('disabled');
+                //element2.setAttribute("onchange", "return MapCulDiscount(this);");
+                cell3.append(element3);
+
+                
+
+                document.getElementById("POSDTLCount").value = numrows;
+                CreateChoosen();
+            }
+        });
+
+        function CheckAggregate() {
+
+            valid = true;
+
+            var mtable = document.getElementById("Employeeexpensetbl");
+            var mrowCount = document.getElementById("POSDTLCount").value;
+
+            for (var i = 1; i <= mrowCount; i++) {
+                var newcheckboxtd = document.getElementById("hdnPOSDTLID_" + i);
+                var Month = document.getElementById("Month_" + i);
+                var Amount = document.getElementById("Amount_" + i);
+                var Remarks = document.getElementById("Remarks_" + i);
+                var AccountId = document.getElementById("AccountId_" + i);
+
+                //if (Month != undefined) {
+
+                //    if (Month.value == "") {
+                //        if (i >= 1) {
+                //            alert('Please select month');
+                //            $('#Month_' + i).focus();
+                //            valid = false;
+                //        }
+                //    }
+                //}
+
+                if (Amount != undefined && Amount.value == "") {
+                    if (i >= 1) {
+                        alert('Please enter amount');
+                        $('#Amount_' + i).focus();
+                        valid = false;
+                    }
+                }
+
+                if (Remarks != undefined && Remarks.value == "") {
+                    if (i >= 1) {
+                        alert('Please enter remarks');
+                        $('#Remarks_' + i).focus();
+                        valid = false;
+                    }
+                }
+            }
+
+            if (AccountId != undefined) {
+
+                if (AccountId.value == "") {
+                    if (i >= 1) {
+                        alert('Please select account');
+                        $('#AccountId_' + i).focus();
+                        valid = false;
+                    }
+                }
+            }
+
+            return valid;
+
+        }
+
+        $('#chkSelectAllempexp').on('click', function () {
+            var checkedstatus = this.checked;
+            $('#Employeeexpensetbl tbody tr').find('td:first :checkbox').each(function () {
+                $(this).prop('checked', checkedstatus);
+            });
+        });
+
+        $('body').on('keyup paste', ".decimal", function () {
+            this.value = this.value.replace(/[^0-9\.]/g, '');
+        });
+
+        function ValidateExpByMonth(id) {
+            var valid = true;
+            var Month = $('#Month_' + id).val();
+            if (Month.length == 0) {
+                Month = FillAllMonth();
+            }
+            for (var l = 0; l <= Month.length; l++) {
+                var lastmonth = Month[l];
+                var AccountId = Number($('#AccountId_' + id).val());
+                $('#Employeeexpensetbl tbody tr').each(function (i, data) {
+                    var omonthid = $('#Month_' + (i + 1)).attr('id');
+                    if (omonthid != undefined) {
+                        if (omonthid.split('_')[1] != id) {
+                            var oarray = $('#' + omonthid).val();
+                            if (oarray.length == 0) {
+                                oarray = FillAllMonth();
+                            }
+                            var oaccountid = $('#AccountId_' + omonthid.split('_')[1]).val();
+                            if (jQuery.inArray(lastmonth, oarray) !== -1 && AccountId == oaccountid) {
+                                alert(GetMonthName(lastmonth) + " Is already selected");
+                                //$("#Month_" + id + " option[value='" + lastmonth + "']").remove();
+                                //$("#Month_" + id).trigger("chosen:updated");
+                                $('#AccountId_' + id).val("");
+                                valid = false;
+                                return false;
+                            }
+                        }
+                    }
+                    //if ($('#Month_' + (i + 1)).attr('id') != undefined && $(this).find('td').eq(1).find('select').attr('id') != $('#Month_' + id).attr('id')) {
+
+                    //    if ($(this).find('td').eq(1).find('select').val() == Month && $(this).find('td').eq(2).find('select').val() == AccountId) {
+                    //        alert("Month and account combination already selected");
+                    //        $('#AccountId_' + id).val("");
+                    //        valid = false;
+                    //    }
+                    //}
+                });
+            }
+            return valid;
+        }
+        function GetMonthName(monthNumber) {
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            return months[monthNumber - 1];
+        }
+
+        function FillAllMonth() {
+            var months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+            return months;
+        }
+
+        function Clear() {
+            $('#EmployeeId').val("").trigger("chosen:updated");
+            $('#fileField').val("");
+            $('#FINACIALID option').attr('selected', false);
+            $('#IsActive').attr('checked', false);
+            $('#Employeeexpensetbl tbody tr select option').attr('selected', false);
+            $('#Employeeexpensetbl tbody tr input').attr('value', '');
+            $('#Employeeexpensetbl tbody tr checkbox').attr('checked', false);
+        }
+
+        function ValidateDuplicateEmployee() {
+            valid = true;
+            var FinancialYear = $('#FINACIALID').val();
+            var checkUrl = '@Url.Action("ValidateDuplicateEmployee", "POS")';
+            $.ajax({
+                type: "POST",
+                url: checkUrl,
+                data: { EmployeeId: Number($('#EmployeeId').val()), FinancialYear: Number(FinancialYear), POSID: Number($('#POSID').val()) },
+                dataType: "JSON",
+                success: function (result) {
+                    if (result == true) {
+                        alert("Employee expense already mapped of this financial year");
+                        $('#EmployeeId').val("").trigger("chosen:updated");
+                        valid = false
+                    }
+                },
+                error: function (result) {
+
+                }
+            });
+            return valid;
+        }
+
+        function removeCheckedempexp() {
+            if ($('#Employeeexpensetbl tbody tr').length > 1 && $('#Employeeexpensetbl tbody tr').find('input[type="checkbox"]:checked').length != $('#Employeeexpensetbl tbody tr').length) {
+                $('#Employeeexpensetbl tbody tr').each(function () {
+                    if ($(this).find('td:first').find('input[type="checkbox"]').is(':checked')) {
+                        $(this).remove();
+                    }
+                });
+
+            }
+            else {
+                alert("Atleast one row is required");
+            }
+        }
+
+        function CheckValidate() {
+            var financialyear = "";
+            if (new Date().getMonth() + 1 < 4) {
+                financialyear = (new Date().getUTCFullYear() - 1) + "-" + (new Date().getUTCFullYear());
+            }
+            else {
+                financialyear = (new Date().getUTCFullYear()) + "-" + (new Date().getUTCFullYear() + 1)
+            }
+            if ($('#EmployeeId').val() == 0 || $('#EmployeeId').val() == "") {
+                alert("Please select employee");
+                valid = false;
+            }
+            else {
+                valid = true;
+            }
+            if ($('#FINACIALID option:selected').text().trim() != financialyear) {
+                alert("Please select current financial year");
+                $('#FINACIALID').val("");
+                $('#FINACIALID').focus();
+                valid = false;
+            }
+            else {
+                valid = true;
+            }
+
+            if ($('#fileField').val() == "" && $('#Employeeexpensetbl tbody tr').length == 1) {
+                $('#Employeeexpensetbl tbody tr').each(function (i, data) {
+                    if ($(this).find('td').eq(1).find('select').val() == "" && $(this).find('td').eq(2).find('select').val() == ""
+                        && ($(this).find('td').eq(3).find('input').val() == "" || $(this).find('td').eq(3).find('select').val() == 0.00)
+                        && $(this).find('td').eq(4).find('input').val() == "") {
+                        valid = true;
+                    }
+                });
+                if (valid) {
+                    alert("Please upload file");
+                    valid = false;
+                }
+                else {
+                    valid = CheckAggregate();
+                }
+            }
+            else if ($('#fileField').val() != "" && $('#Employeeexpensetbl tbody tr').length > 1) {
+                valid = CheckAggregate();
+            }
+            else {
+                if ($('#fileField').val() == "" && $('#Employeeexpensetbl tbody tr').length > 1) {
+                    valid = CheckAggregate();
+                }
+            }
+            
+            if (vaid) {
+                $('#Employeeexpensetbl tbody tr').each(function (i, data) {
+                    valid = ValidateExpByMonth((i + 1));
+                });
+            }
+
+            return valid;
+        }
+
+    </script>
+    <script type="text/javascript">
+        function CreateChoosen() {
+            var config = {
+                '.monthchosen-select': { default_multiple_text: 'ALL' },
+                '.monthchosen-select-deselect': { allow_single_deselect: true },
+                '.monthchosen-select-no-single': { disable_search_threshold: 10 },
+                '.monthchosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.monthchosen-select-width': { width: "100%" }
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+        }
+    </script>
+}

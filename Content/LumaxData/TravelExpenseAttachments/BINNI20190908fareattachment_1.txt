@@ -1,0 +1,4 @@
+select * from po_hdr where po_hdr_id=21347
+select * from po_hdr where BASE_PO_NO='WOUP1908200015'
+select * from po_dtl where po_hdr_id=21347
+SELECT * FROM PO_APPLIEDSCHEME(NOLOCK) where poid in ( 21352,21353,21347)

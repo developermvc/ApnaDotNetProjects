@@ -1,0 +1,182 @@
+2019-09-27 11:20:39,936 DEBUG DebugLogger - export enter
+2019-09-27 11:20:39,940 DEBUG DebugLogger - got file path
+2019-09-27 11:20:39,945 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 11:20:40,064 DEBUG DebugLogger - excel workbook created 
+2019-09-27 11:20:40,307 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\a1960f17-1827-4973-ba45-c309377c5407_ExportData.xls
+2019-09-27 11:20:40,400 DEBUG DebugLogger - file export complete
+2019-09-27 11:20:40,400 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 11:21:22,105 DEBUG DebugLogger - export enter
+2019-09-27 11:21:22,105 DEBUG DebugLogger - got file path
+2019-09-27 11:21:22,106 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 11:21:22,106 DEBUG DebugLogger - excel workbook created 
+2019-09-27 11:21:22,110 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\0715d3be-a68c-4423-8dc3-ab51dc719236_ExportData.xls
+2019-09-27 11:21:22,112 DEBUG DebugLogger - file export complete
+2019-09-27 11:21:22,112 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:22:00,425 DEBUG DebugLogger - export enter
+2019-09-27 14:22:00,431 DEBUG DebugLogger - got file path
+2019-09-27 14:22:00,438 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:22:00,473 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:22:00,611 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\d9c9eeac-da3b-46d3-a3f1-c9c41948f1ef_ExportData.xls
+2019-09-27 14:22:00,703 DEBUG DebugLogger - file export complete
+2019-09-27 14:22:00,703 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:29:40,840 DEBUG DebugLogger - export enter
+2019-09-27 14:29:40,840 DEBUG DebugLogger - got file path
+2019-09-27 14:29:40,845 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:29:40,845 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:29:40,860 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\c8465aa8-be14-43ba-a64c-9e5f422cbfca_ExportData.xls
+2019-09-27 14:29:40,862 DEBUG DebugLogger - file export complete
+2019-09-27 14:29:40,862 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:36:39,553 DEBUG DebugLogger - export enter
+2019-09-27 14:36:39,558 DEBUG DebugLogger - got file path
+2019-09-27 14:36:39,563 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:36:39,595 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:36:39,723 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\dce0655d-fe08-423f-8577-58f5a9ee0f27_ExportData.xls
+2019-09-27 14:36:39,808 DEBUG DebugLogger - file export complete
+2019-09-27 14:36:39,808 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:37:15,645 DEBUG DebugLogger - InterimReportController.cs System.InvalidOperationException: The source contains no DataRows.
+   at System.Data.DataTableExtensions.LoadTableFromEnumerable[T](IEnumerable`1 source, DataTable table, Nullable`1 options, FillErrorEventHandler errorHandler)
+   at System.Data.DataTableExtensions.CopyToDataTable[T](IEnumerable`1 source)
+   at LumaxDMS.Controllers.ReportController.RecivedRejectedWiseClaimSummary(claimReportModel model, FormCollection collection) in D:\Projects\LumaxNew_UAT\LumaxDMS\Controllers\ReportController.cs:line 2571
+2019-09-27 14:38:05,063 DEBUG DebugLogger - InterimReportController.cs System.InvalidOperationException: The source contains no DataRows.
+   at System.Data.DataTableExtensions.LoadTableFromEnumerable[T](IEnumerable`1 source, DataTable table, Nullable`1 options, FillErrorEventHandler errorHandler)
+   at System.Data.DataTableExtensions.CopyToDataTable[T](IEnumerable`1 source)
+   at LumaxDMS.Controllers.ReportController.RecivedRejectedWiseClaimSummary(claimReportModel model, FormCollection collection) in D:\Projects\LumaxNew_UAT\LumaxDMS\Controllers\ReportController.cs:line 2571
+2019-09-27 14:38:35,816 DEBUG DebugLogger - export enter
+2019-09-27 14:38:35,816 DEBUG DebugLogger - got file path
+2019-09-27 14:38:35,816 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:38:35,816 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:38:35,817 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\cac531c9-309a-4ef8-83fd-2bba0c47ca8e_ExportData.xls
+2019-09-27 14:38:35,819 DEBUG DebugLogger - file export complete
+2019-09-27 14:38:35,819 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:38:49,412 DEBUG DebugLogger - InterimReportController.cs System.InvalidOperationException: The source contains no DataRows.
+   at System.Data.DataTableExtensions.LoadTableFromEnumerable[T](IEnumerable`1 source, DataTable table, Nullable`1 options, FillErrorEventHandler errorHandler)
+   at System.Data.DataTableExtensions.CopyToDataTable[T](IEnumerable`1 source)
+   at LumaxDMS.Controllers.ReportController.RecivedRejectedWiseClaimSummary(claimReportModel model, FormCollection collection) in D:\Projects\LumaxNew_UAT\LumaxDMS\Controllers\ReportController.cs:line 2571
+2019-09-27 14:40:25,238 DEBUG DebugLogger - export enter
+2019-09-27 14:40:25,239 DEBUG DebugLogger - got file path
+2019-09-27 14:40:25,239 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:40:25,239 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:40:25,239 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\5c12c9db-184d-4f49-a84a-c92af40494ba_ExportData.xls
+2019-09-27 14:40:25,241 DEBUG DebugLogger - file export complete
+2019-09-27 14:40:25,241 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:44:46,807 DEBUG DebugLogger - export enter
+2019-09-27 14:44:46,807 DEBUG DebugLogger - got file path
+2019-09-27 14:44:46,811 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:44:46,812 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:44:46,823 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\2d1de74a-3b28-4c95-b3ae-966c614ab7de_ExportData.xls
+2019-09-27 14:44:46,827 DEBUG DebugLogger - file export complete
+2019-09-27 14:44:46,827 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:45:16,597 DEBUG DebugLogger - export enter
+2019-09-27 14:45:16,597 DEBUG DebugLogger - got file path
+2019-09-27 14:45:16,597 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:45:16,597 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:45:16,602 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\5d73db73-f706-4302-9c9b-060b8f920041_ExportData.xls
+2019-09-27 14:45:16,605 DEBUG DebugLogger - file export complete
+2019-09-27 14:45:16,605 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:45:29,878 DEBUG DebugLogger - export enter
+2019-09-27 14:45:29,878 DEBUG DebugLogger - got file path
+2019-09-27 14:45:29,878 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:45:29,878 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:45:29,879 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\3f0cd5ed-48e0-4ecb-b110-5d35284c44d5_ExportData.xls
+2019-09-27 14:45:29,881 DEBUG DebugLogger - file export complete
+2019-09-27 14:45:29,881 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:46:09,815 DEBUG DebugLogger - export enter
+2019-09-27 14:46:09,815 DEBUG DebugLogger - got file path
+2019-09-27 14:46:09,815 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:46:09,816 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:46:09,816 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\e9da459e-20a5-4f1f-9924-1f9454bfab97_ExportData.xls
+2019-09-27 14:46:09,818 DEBUG DebugLogger - file export complete
+2019-09-27 14:46:09,818 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:46:47,417 DEBUG DebugLogger - export enter
+2019-09-27 14:46:47,417 DEBUG DebugLogger - got file path
+2019-09-27 14:46:47,418 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:46:47,418 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:46:47,418 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\396b50f7-b5b9-47c2-a336-8fcaefa2a5de_ExportData.xls
+2019-09-27 14:46:47,420 DEBUG DebugLogger - file export complete
+2019-09-27 14:46:47,420 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:47:14,619 DEBUG DebugLogger - export enter
+2019-09-27 14:47:14,619 DEBUG DebugLogger - got file path
+2019-09-27 14:47:14,619 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:47:14,619 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:47:14,619 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\d7ff1cba-e8b7-4a38-be94-3ad9370fdb31_ExportData.xls
+2019-09-27 14:47:14,621 DEBUG DebugLogger - file export complete
+2019-09-27 14:47:14,621 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:48:18,776 DEBUG DebugLogger - export enter
+2019-09-27 14:48:18,776 DEBUG DebugLogger - got file path
+2019-09-27 14:48:18,776 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:48:18,776 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:48:18,777 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\d912f625-d0be-49e7-8556-28ee2b7aed79_ExportData.xls
+2019-09-27 14:48:18,779 DEBUG DebugLogger - file export complete
+2019-09-27 14:48:18,779 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:48:36,491 DEBUG DebugLogger - export enter
+2019-09-27 14:48:36,491 DEBUG DebugLogger - got file path
+2019-09-27 14:48:36,494 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:48:36,494 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:48:36,497 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. O2:R2
+2019-09-27 14:48:36,497 DEBUG DebugLogger - file export complete
+2019-09-27 14:48:52,057 DEBUG DebugLogger - export enter
+2019-09-27 14:49:57,997 DEBUG DebugLogger - export enter
+2019-09-27 14:50:16,756 DEBUG DebugLogger - export enter
+2019-09-27 14:50:16,756 DEBUG DebugLogger - got file path
+2019-09-27 14:50:16,756 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:50:16,756 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:50:16,757 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. O2:R2
+2019-09-27 14:50:16,757 DEBUG DebugLogger - file export complete
+2019-09-27 14:53:38,442 DEBUG DebugLogger - export enter
+2019-09-27 14:53:38,442 DEBUG DebugLogger - got file path
+2019-09-27 14:53:38,442 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:53:38,442 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:53:38,443 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\31663f60-a7bb-4e71-be4d-9760bd3c62d5_ExportData.xls
+2019-09-27 14:53:38,445 DEBUG DebugLogger - file export complete
+2019-09-27 14:53:38,445 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:53:58,219 DEBUG DebugLogger - InterimReportController.cs System.InvalidOperationException: The source contains no DataRows.
+   at System.Data.DataTableExtensions.LoadTableFromEnumerable[T](IEnumerable`1 source, DataTable table, Nullable`1 options, FillErrorEventHandler errorHandler)
+   at System.Data.DataTableExtensions.CopyToDataTable[T](IEnumerable`1 source)
+   at LumaxDMS.Controllers.ReportController.RecivedRejectedWiseClaimSummary(claimReportModel model, FormCollection collection) in D:\Projects\LumaxNew_UAT\LumaxDMS\Controllers\ReportController.cs:line 2571
+2019-09-27 14:54:42,032 DEBUG DebugLogger - export enter
+2019-09-27 14:54:42,032 DEBUG DebugLogger - got file path
+2019-09-27 14:54:42,032 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:54:42,032 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:54:42,033 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\d847f01e-7a48-4105-9c0b-8702ac18cce6_ExportData.xls
+2019-09-27 14:54:42,035 DEBUG DebugLogger - file export complete
+2019-09-27 14:54:42,035 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:56:50,618 DEBUG DebugLogger - export enter
+2019-09-27 14:56:50,618 DEBUG DebugLogger - got file path
+2019-09-27 14:56:50,619 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:56:50,619 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:56:50,619 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\983a0975-672d-4b38-9646-e5cd46820fc5_ExportData.xls
+2019-09-27 14:56:50,624 DEBUG DebugLogger - file export complete
+2019-09-27 14:56:50,624 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 14:59:26,340 DEBUG DebugLogger - export enter
+2019-09-27 14:59:26,340 DEBUG DebugLogger - got file path
+2019-09-27 14:59:26,340 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 14:59:26,340 DEBUG DebugLogger - excel workbook created 
+2019-09-27 14:59:26,344 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\a5c36af1-a7c9-4cbf-85cb-23f954c4a8fe_ExportData.xls
+2019-09-27 14:59:26,346 DEBUG DebugLogger - file export complete
+2019-09-27 14:59:26,346 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 15:07:25,382 DEBUG DebugLogger - export enter
+2019-09-27 15:07:25,382 DEBUG DebugLogger - got file path
+2019-09-27 15:07:25,382 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 15:07:25,382 DEBUG DebugLogger - excel workbook created 
+2019-09-27 15:07:25,385 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\09ec0041-feb7-480d-8296-383d7786afde_ExportData.xls
+2019-09-27 15:07:25,387 DEBUG DebugLogger - file export complete
+2019-09-27 15:07:25,387 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 15:08:45,318 DEBUG DebugLogger - export enter
+2019-09-27 15:08:45,319 DEBUG DebugLogger - got file path
+2019-09-27 15:08:45,319 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 15:08:45,319 DEBUG DebugLogger - excel workbook created 
+2019-09-27 15:08:45,322 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\1613c2c1-aa63-4819-a1b8-16c2ff578bc2_ExportData.xls
+2019-09-27 15:08:45,325 DEBUG DebugLogger - file export complete
+2019-09-27 15:08:45,325 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-27 15:48:04,205 DEBUG DebugLogger - export enter
+2019-09-27 15:48:04,211 DEBUG DebugLogger - got file path
+2019-09-27 15:48:04,217 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 15:48:04,250 DEBUG DebugLogger - excel workbook created 
+2019-09-27 15:48:04,384 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. O2:R2
+2019-09-27 15:48:04,384 DEBUG DebugLogger - file export complete
+2019-09-27 15:48:59,028 DEBUG DebugLogger - export enter
+2019-09-27 15:48:59,028 DEBUG DebugLogger - got file path
+2019-09-27 15:48:59,028 DEBUG DebugLogger - strat excel workbook created 
+2019-09-27 15:48:59,029 DEBUG DebugLogger - excel workbook created 
+2019-09-27 15:48:59,029 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. O2:R2
+2019-09-27 15:48:59,029 DEBUG DebugLogger - file export complete

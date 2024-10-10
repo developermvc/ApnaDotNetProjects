@@ -1,0 +1,69 @@
+﻿@model LumaxDMS.Models.SaleReportModel
+
+<table class="table table-bordered" id="tableItem">
+    <thead title="Part Wise Sale Report">
+        <tr>
+            <th>
+                Material No.
+            </th>
+            <th>
+                Customer Part No.
+            </th>
+            <th>
+                Item Description
+            </th>
+            <th>
+                ORDER QTY
+            </th>
+            <th>
+                Net Sale
+            </th>
+            <th>
+                Pending DA
+            </th>
+            <th>
+                Pending Order
+            </th>
+            <th>
+                Execution %
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.saleItemList != null)
+        {
+            foreach (var item in Model.saleItemList)
+            {
+                <tr>
+                    <td id="@item.PART_ID">
+                        @item.PARTNUMBER
+                    </td>
+                    <td>
+                        @*onclick="return onItemClick(this)" style="cursor: pointer !important;"*@
+                        <span>@item.SAP_PARTNUMBER</span> @*style="color: green"*@
+                    </td>
+                    <td>
+                        @item.PARTDESCRIPTION
+                    </td>
+                    <td>
+                        @item.NETORDER
+                    </td>
+                    <td>
+                        @item.NETSALE
+                    </td>
+                    <td>
+                        @item.PENDINGDA
+                    </td>
+                    <td>
+                        @item.PENDINGORDER
+                    </td>
+
+                    <td>
+                        @item.EXECUTION
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+

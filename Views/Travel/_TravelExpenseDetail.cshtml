@@ -1,0 +1,234 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+ 
+@if (Model.dSR_DTLMastersList.Count > 0)
+{
+    <div id="example-form" action="#" novalidate="novalidate">
+        @Html.HiddenFor(m => m.XmltiffinDetails)
+        @Html.HiddenFor(m => m.XmllodgingDetails)
+        @Html.HiddenFor(m => m.XmlotherDetails)
+        @Html.HiddenFor(m => m.XmltravelDetails)
+        @Html.HiddenFor(m => m.XmlfinalDetails)
+        @Html.HiddenFor(m => m.XmlFareDetails)
+        @Html.HiddenFor(m => m.travelExpHDRMaster.trvlExpId)
+        @Html.HiddenFor(m => m.travelExpHDRMaster.total_Amount)
+
+        <style>
+            .tabs {
+                max-width: 100%;
+                margin: 0 auto;
+                padding: 0 10px;
+            }
+
+            #tab-button {
+                display: table;
+                table-layout: fixed;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+
+                #tab-button li {
+                    display: table-cell;
+                    width: 20%;
+                }
+
+                    #tab-button li a {
+                        display: block;
+                        padding: .5em;
+                        background: #eee;
+                        border: 1px solid #ddd;
+                        text-align: center;
+                        color: #000;
+                        text-decoration: none;
+                    }
+
+                    #tab-button li:not(:first-child) a {
+                        border-left: none;
+                    }
+
+                    #tab-button li a:hover,
+                    #tab-button .is-active a {
+                        border-bottom-color: transparent;
+                        background: #fff;
+                    }
+
+            .tab-contents {
+                padding: .5em 1em 1em;
+                border: 1px solid #ddd;
+            }
+        </style>
+
+
+        <div class="tabs">
+            <div class="tab-button-outer">
+                <ul id="tab-button">
+                    <li><a href="#tab01"> Fare Expense</a></li>
+                    <li><a style="color:red !important" href="#tab02">Local Conveyance</a></li>
+
+                    <li><a href="#tab04">Lodging Expense</a></li>
+                    <li><a href="#tab03">Tiffin/FDA Expense</a></li>
+                    <li><a href="#tab05">Other Expense</a></li>
+                    <li><a href="#tab06" onclick="tab4open(this)">Expense Summary</a></li>
+                </ul>
+            </div>
+
+            <div id="tab01" class="tab-contents">
+                <div id="steps-uid-0-p-5" role="tabpanel" aria-labelledby="steps-uid-0-h-5" class="body">
+                    @{ Html.RenderPartial("_FareExpense", Model); }
+                </div>
+            </div>
+            <div id="tab02" class="tab-contents">
+                <div id="steps-uid-0-p-0" role="tabpanel" aria-labelledby="steps-uid-0-h-0" class="body current">
+                    @{ Html.RenderPartial("_Travelexpense", Model);}
+                </div>
+            </div>
+            <div id="tab03" class="tab-contents">
+                <div id="steps-uid-0-p-1" role="tabpanel" aria-labelledby="steps-uid-0-h-1" class="body">
+                    @{ Html.RenderPartial("_TiffinExpense", Model);}
+                </div>
+            </div>
+            <div id="tab04" class="tab-contents">
+                <div id="steps-uid-0-p-2" role="tabpanel" aria-labelledby="steps-uid-0-h-2" class="body">
+                    @{ Html.RenderPartial("_LodgingExpense", Model);}
+                </div>
+            </div>
+            <div id="tab05" class="tab-contents">
+                <div id="steps-uid-0-p-3" role="tabpanel" aria-labelledby="steps-uid-0-h-3" class="body">
+                    @{ Html.RenderPartial("_OtherExpense", Model); }
+                </div>
+            </div>
+
+            <div id="tab06" class="tab-contents">
+                <div id="steps-uid-0-p-4" role="tabpanel" aria-labelledby="steps-uid-0-h-4" class="body">
+                    @{ Html.RenderPartial("_FinalExpense", Model); }
+                </div>
+            </div>
+        </div>
+
+
+        <div role="application" class="wizard clearfix" id="steps-uid-0">
+            <div class="steps clearfix">
+                <!-- <ul id="mainul" role="tablist">
+
+                    <li role="tab" class="first current" aria-disabled="false" aria-selected="true">
+                        <a id="steps-uid-0-t-5" href="#steps-uid-0-h-5" onclick="tab5open(this)" aria-controls="steps-uid-0-p-5">
+                            <span class="number">1.</span> Fare Expense
+                        </a>
+                    </li>
+                    <li role="tab" class="first">
+                        <a id="steps-uid-0-t-0" href="#steps-uid-0-h-0" onclick="tab0open(this)" aria-controls="steps-uid-0-p-0">
+                            <span class="current-info audible"></span><span class="number">2.</span> Travel Expense:
+                            @*<br>
+                                <small>Nam egestas, leo eu gravida tincidunt</small>*@
+                        </a>
+                    </li>
+                    <li role="tab" class="first">
+                        <a id="steps-uid-0-t-1" href="#steps-uid-0-h-1" onclick="tab1open(this)" aria-controls="steps-uid-0-p-1">
+                            <span class="number">3.</span> Tiffin Expense
+                            @*<br>
+                                <small>Nam egestas, leo eu gravida tincidunt</small>*@
+                        </a>
+                    </li>
+                    <li role="tab" class="first">
+                        <a id="steps-uid-0-t-2" href="#steps-uid-0-h-2" onclick="tab2open(this)" aria-controls="steps-uid-0-p-2">
+                            <span class="number">4.</span> Lodeging Expense
+                            @*<br>
+                                <small>Nam egestas, leo eu gravida tincidunt</small>*@
+                        </a>
+                    </li>
+                    <li role="tab" class="first">
+                        <a id="steps-uid-0-t-3" href="#steps-uid-0-h-3" onclick="tab3open(this)" aria-controls="steps-uid-0-p-3">
+                            <span class="number">5.</span> Other Expense
+                            @*<br>
+                                <small>Nam egestas, leo eu gravida tincidunt</small>*@
+                        </a>
+                    </li>
+                    <li role="tab" class="first">
+                        <a id="steps-uid-0-t-4" href="#steps-uid-0-h-4" onclick="tab4open(this)" aria-controls="steps-uid-0-p-4">
+                            <span class="number">6.</span>Expense Summary
+                            @*<br>
+                                <small>Nam egestas, leo eu gravida tincidunt</small>*@
+                        </a>
+                    </li>
+                </ul>
+                   -->
+            </div><div class="content clearfix">
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+            <div class="actions clearfix">
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+            <div class="actions clearfix">
+
+                <ul role="menu" aria-label="Pagination">
+                    @*<li class="disabled" aria-disabled="true"><a href="#previous" role="menuitem">Previous</a></li>
+                        <li aria-hidden="false" aria-disabled="false"><a href="#next" role="menuitem">Next</a></li>*@
+                    <li><input type="submit" name="submit" style="display:none;" value="Submit" id="btnsaveupdate" /></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+}
+
+else
+{
+    <div>Records Not Founds</div>
+}
+
+<script>
+    $(function () {
+        var $tabButtonItem = $('#tab-button li'),
+            $tabSelect = $('#tab-select'),
+            $tabContents = $('.tab-contents'),
+            activeClass = 'is-active';
+
+        $tabButtonItem.first().addClass(activeClass);
+        $tabContents.not(':first').hide();
+
+        $tabButtonItem.find('a').on('click', function (e) {
+            var target = $(this).attr('href');
+
+            $tabButtonItem.removeClass(activeClass);
+            $(this).parent().addClass(activeClass);
+            $tabSelect.val(target);
+            $tabContents.hide();
+            $(target).show();
+            e.preventDefault();
+        });
+
+        $tabSelect.on('change', function () {
+            var target = $(this).val(),
+                targetSelectNum = $(this).prop('selectedIndex');
+
+            $tabButtonItem.removeClass(activeClass);
+            $tabButtonItem.eq(targetSelectNum).addClass(activeClass);
+            $tabContents.hide();
+            $(target).show();
+        });
+    });
+
+</script>

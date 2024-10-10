@@ -1,0 +1,243 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+
+@Html.DropDownList("HiddenTravelModeId", new SelectList(Model.TravelModeList.Where(m=>m.ModeType!="Fare"), "travelModeId", "travelModeName"), "--Select Mode--", new { @class = "form-control", @Id = "HiddenTravelModeId", @Name = "HiddenTravelModeId", @Style = "display:none" })
+<div class="card-body">
+    <div class="row" style="background-color:#000;">
+        <div class="col-lg-1">
+            <label style="color:#fff;">
+                <b>S.No :</b>
+            </label>
+        </div>
+
+        <div class="col-lg-3">
+            <label style="color:#fff;">
+                <b> DSR REF NO :</b>
+            </label>
+        </div>
+        <div class="col-lg-2">
+            <label style="color:#fff;">
+                <b> DSR DATE :</b>
+            </label>
+        </div>
+        <div class="col-lg-2">
+            <label style="color:#fff;">
+                <b> DSR CITY :</b>
+            </label>
+        </div>
+        <div class="col-lg-2">
+            <label style="color:#fff;">
+                <b> REMARK  :</b>
+            </label>
+        </div>
+        <div class="col-lg-2">
+            <label style="color:#fff;">
+                <b>Action :</b>
+            </label>
+        </div>
+    </div>
+
+    @if (Model.dSR_DTLMastersList != null)
+    {
+        int i = 1;
+        <input type="text" hidden="hidden" id="Noofcount" value="@Model.dSR_DTLMastersList.Count()" />
+        foreach (var item in Model.dSR_DTLMastersList)
+        {
+
+            string display = "block";
+            if (Model.travelExpHDRMaster.trvlExpId > 0) { display = "block"; }
+            string rw = "row";
+            string subrow = "subrow";
+            string tbl = "trvltbl";
+            var sdate = Model.dSR_DTLMastersList.OrderBy(m => m.DTLPLAN_ID).FirstOrDefault().Plandate.Value.ToString("dd/MMM/yyyy");
+            var enddate = Model.dSR_DTLMastersList.OrderByDescending(m => m.DTLPLAN_ID).FirstOrDefault().Plandate.Value.ToString("dd/MMM/yyyy");
+            <input type="text" hidden="hidden" id="sPlandate" value="@sdate" />
+            <input type="text" hidden="hidden" id="endPlandate" value="@enddate" />
+            rw = rw + i;
+            subrow = subrow + i;
+            tbl = tbl + i;
+            <br />
+            <div id="@rw" class="row" style="background:#ccc;">
+                <div class="col-lg-1">
+                    <label>
+                        @i
+                    </label>
+                </div>
+
+                <div class="col-lg-3">
+                    <label>
+                        @item.PlanCode
+                    </label>
+                </div>
+                <div class="col-lg-2">
+                    <label id="plandate_@i">
+                        @item.Plandate.Value.ToString("dd/MMM/yyyy")
+                    </label>
+                </div>
+                <div class="col-lg-2">
+                    <label>
+                        @item.cityName
+                    </label>
+                </div>
+                <div class="col-lg-2">
+                    <label>
+                        @item.REMARKS
+                    </label>
+                </div>
+                <div class="col-lg-2">
+                    @if (Model.ActionName != "display" && (Model.travelExpHDRMaster.status < 2 || Model.travelExpHDRMaster.status == null))
+                    {
+                        <a id="@i" data-plandate="@item.Plandate.Value.ToString("dd/MMM/yyyy")" class="btn btn-sm btn-secondary  pt-top" onclick="addrowdata(this)">
+                            <i class="fa fa-plus"></i>
+                        </a>
+
+                    }
+                    <a id="@i" data-plandate="@item.Plandate.Value.ToString("dd/MMM/yyyy")" data-plancode="@item.PlanCode" class="btn btn-sm btn-secondary  pt-top" onclick="viewDSRdata(this)">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </div>
+            </div>
+            <br />
+            <div id="@subrow" class="row" style="display:@display">
+                <table id="@tbl" class="table table-striped table-bordered" data-dsrdtlid="@item.DTLPLAN_ID" data-dsrid="@item.PLANID" style="width: 100%">
+                    <thead class="thead-lights">
+                        <tr>
+                            <th style="text-align: center">
+                                SNo.
+                            </th>
+                            <th style="text-align: center">
+                                Date.
+                            </th>
+                            <th style="text-align: center">
+                                Source.
+                            </th>
+                            <th style="text-align: center">
+                                Destination
+                            </th>
+                            <th style="text-align: center">
+                                Distance(Kms)
+                            </th>
+                            <th style="text-align: center">
+                                Travel Mode
+                            </th>
+                            <th style="text-align: center">
+                                Charges
+                            </th>
+                            <th style="text-align: center">
+                                Remarks
+                            </th>
+                            <th style="text-align: center">
+                                Attachment
+                            </th>
+                            <th style="text-align: center">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.travelExpDetailList.Count > 0)
+                        {
+                            int p = 1;
+                            var list = Model.travelExpDetailList.Where(m => m.DSRDTLID == @item.DTLPLAN_ID);
+                            if (list != null)
+                            {
+                                foreach (var trvlexpitem in list)
+                                {
+                        <tr id="@tbl@p">
+                            <td align="center"> @p</td>
+                            <td align="center"><input type="text" id="localconvdate_@p" name="localconvdate_@p" class="form-control" onchange="TravelDateValidatin(this)" value="@trvlexpitem.DATE.Value.ToString("dd/MMM/yyyy")" readonly="readonly" /></td>
+                            <td align="center"><input type="text" style="border-color:red !important;" id="fromSource_@p" name="fromSource_@p" value="@trvlexpitem.SOURCE" class="form-control" /></td>
+                            <td align="center"><input type="text" style="border-color:red !important;" id="toDestination_@p" name="toDestination_@p" value="@trvlexpitem.DESTINATION" class="form-control" /></td>
+                            <td align="center"><input type="text" style="border-color:red !important;" id="totalDistance_@p" name="totalDistance_@p" value="@trvlexpitem.DISTANCE" class="form-control decimalinput" /></td>
+                            <td align="center">
+
+                                @Html.DropDownList("travelMode_" + @p, new SelectList(Model.TravelModeList.Where(m => m.ModeType != "Fare"), "travelModeId", "travelModeName", trvlexpitem.TRAVELMODEID), "--Select Mode--", new { @class = "form-control", @Id = "travelMode_" + @p, @style = "border-color: red !important;", @Name = "travelMode_" + @p })
+                            </td>
+                            <td align="center"><input type="text" style="border-color:red !important;text-align: right" id="travleCharge_@p" name="travleCharge_@p" value="@trvlexpitem.FARE" class="form-control decimalinput" /></td>
+                            <td align="center"><input type="text" id="travleRemark_@p" name="travleRemark_@p" value="@trvlexpitem.REMARK" class="form-control" /></td>
+                             
+                            <td align="center">
+                                
+                                @if (Model.ActionName != "display" && (Model.travelExpHDRMaster.status < 2 || Model.travelExpHDRMaster.status == null))
+                                {
+                                    <span>
+                                        <input type="file" id="localconvenseAttachment_@trvlexpitem.DSRDTLID@p" name="localconvenseAttachment_@trvlexpitem.DSRDTLID@p" data-fileid="localconvenseAttachmentfile_@item.DTLPLAN_ID@p" onchange="saveattachment(this)" class="form-control" style="width:60%; float:left;" />
+                                    </span>
+                                }
+                                @if (!string.IsNullOrEmpty(trvlexpitem.ATTACHMENT))
+                                {
+                                    <span>
+                                        <a href="@Url.Action("DownloadAttachment", "Travel", new { fileName = trvlexpitem.ATTACHMENT })" class="btn btn-primary" id="localconvenseAttachmentdownload_@trvlexpitem.DSRDTLID@p" style="float:left;margin: 0 2px 0 2px;"><i class="fa fa-download" style="padding: 4px 1px;"></i></a>
+                                    </span>
+                                }
+                                <input type="text" style="display:none;" id="localconvenseAttachmentfile_@trvlexpitem.DSRDTLID@p" name="localconvenseAttachmentfile_@trvlexpitem.DSRDTLID@p" value="@trvlexpitem.ATTACHMENT" class="form-control" />
+                            </td>
+                            <td align="center">
+                                @if (p > 1)
+                                {
+                                    <a data-tbl="@tbl" data-name="@tbl@p" class="btn btn-sm btn-secondary  pt-top " onclick="return deleteRow(this);"><i class="fa fa-trash bg_red"></i></a>
+                                }
+                            </td>
+                        </tr>
+                                    p++;
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            int p = 1;
+                        <tr id="@tbl@p">
+                            <td align="center">@p</td>
+                            <td align="center"><input type="text" id="localconvdate_@p" name="localconvdate_@p" class="form-control" value="@item.Plandate.Value.ToString("dd/MMM/yyyy")" onchange="TravelDateValidatin(this)" readonly="readonly" /></td>
+                            <td align="center"><input type="text" style="border-color:red !important;" id="fromSource_@p" name="fromSource_@p" class="form-control" /></td>
+                            <td align="center"><input type="text" style="border-color:red !important;" id="toDestination_@p" name="toDestination_@p" class="form-control" /></td>
+                            <td align="center"><input type="text" style="border-color:red !important;" id="totalDistance_@p" name="totalDistance_@p" class="form-control decimalinput" /></td>
+                            <td align="center">
+
+                                @Html.DropDownList("travelMode_" + @p, new SelectList(Model.TravelModeList.Where(m => m.ModeType != "Fare"), "travelModeId", "travelModeName"), "--Select Mode--", new { @class = "form-control", @Id = "travelMode_" + @p, @style = "border-color: red !important;", @Name = "travelMode_" + @p })
+                            </td>
+                            <td align="center"><input type="text" style="border-color:red !important; text-align: right" id="travleCharge_@p" name="travleCharge_@p" class="form-control decimalinput" /></td>
+                            <td align="center"><input type="text" id="travleRemark_@p" name="travleRemark_@p" class="form-control" /></td>
+                            
+                            <td align="center">
+                                <input type="file" id="localconvenseAttachment_@item.DTLPLAN_ID@p" name="localconvenseAttachment_@item.DTLPLAN_ID@p" data-fileid="localconvenseAttachmentfile_@item.DTLPLAN_ID@p" onchange="saveattachment(this)" class="form-control" style="width:60%; float:left;" />
+                                <input type="text" style="display:none;" id="localconvenseAttachmentfile_@item.DTLPLAN_ID@p" name="localconvenseAttachmentfile_@item.DTLPLAN_ID@p" class="form-control" />
+                            </td>
+                            <td align="center">
+                                @if (p > 1)
+                                {
+                                    <a data-tbl="@tbl" data-name="@tbl@p" class="btn btn-sm btn-secondary  pt-top " onclick="return deleteRow(this);"><i class="fa fa-trash bg_red"></i></a>
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            i++;
+        }
+    }
+
+
+</div>
+<script>
+    $(document).ready(function () {
+        $('.DatePicker').datepicker({
+            format: 'dd/M/yyyy',
+            endDate: new Date()
+
+        });
+
+       
+
+    });
+    function viewDSRdata(input) {
+         
+        var pcode = $(input).attr("data-plancode");
+
+        var url = "/Travel/CheckDSR?usercode=" + $("#travelExpHDRMaster_UserCode").val() + "&FromDate=" + formatDate($("#travelExpHDRMaster_fromDate").val()) + "&ToDate=" + formatDate($("#travelExpHDRMaster_toDate").val()) + "&plancode=" + pcode;
+        window.open(url, '_blank');
+
+    }
+    
+</script>

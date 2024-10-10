@@ -1,0 +1,187 @@
+﻿@model LumaxDMS.Models.BaseReportModel
+@using BusinessObject
+@using LumaxDMS.AppCode
+@{
+    UserMaster user = (UserMaster)Session[Constants.Session.USER];
+}
+<link href="~/Content/css/DateRange/daterangepicker.css" rel="stylesheet" />
+
+@Html.HiddenFor(m => m.FROMDATE)
+
+@Html.HiddenFor(m => m.TODATE)
+<div class="card-body">
+    <div class="row">
+
+        <div class="col-lg-2 col-xs-12">
+            <label for="pwd">
+                Date:
+            </label>
+        </div>
+        <div class='col-lg-6'>
+            <div class="">
+                <div id="reportrange" class="form-control" style="clear: both">
+                    <i class="fa fa-calendar" style="float: left"></i>&nbsp;
+                    <span style="font-size:11px;"></span><b class="caret"></b>
+                </div>
+            </div>
+        </div>
+        @*<div class="col-lg-2 col-xs-12">
+                <div class="input-group date" id="fromdatepicker">
+                    @Html.TextBoxFor(@model => model.FROMDATE, new { @class = "form-control datepicker", @readonly = "readonly" })
+                    <span class="input-group-append input-group-addon">
+                        <i class="input-group-text2 fa fa-calendar"></i>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(model => model.FROMDATE)
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    To Date:
+                </label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <div class="input-group date" id="todatepicker">
+                    @Html.TextBoxFor(@model => model.TODATE, new { @class = "form-control datepicker", @readonly = "readonly" })
+                    <span class="input-group-append input-group-addon">
+                        <i class="input-group-text2 fa fa-calendar"></i>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(model => model.TODATE)
+            </div>*@
+
+        <div class="col-lg-2 col-xs-12">
+            <label for="pwd">
+                User Type:
+            </label>
+        </div>
+        <div class="col-lg-2 col-xs-12">
+            @Html.DropDownListFor(m => m.USERTYPEID, new SelectList(Model.ProspectTypeList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME"), "ALL", new { @class = "form-control", @onchange = "return OnChangeUserType();" })
+        </div>
+    </div>
+    <div class="row row_pt">
+        <div class="col-lg-2 col-xs-12">
+            <label for="pwd">
+                Customer Name:
+            </label>
+        </div>
+        <div class="col-lg-6 col-xs-12">
+            <div id="dv_retailer" class="dv_prospect">
+                @Html.DropDownListFor(m => m.RETAILERID, new SelectList(Model.RetailerList, "PROSPECT_ID", "PROSPECTFULLNAME"), "ALL", new { @class = "form-control choosen-select" })
+            </div>
+            <div id="dv_mechanic" class="dv_prospect">
+                @Html.DropDownListFor(m => m.MECHANICID, new SelectList(Model.MechanicList, "PROSPECT_ID", "PROSPECTFULLNAME"), "ALL", new { @class = "form-control choosen-select" })
+            </div>
+            <div id="dv_eretailer" class="dv_prospect">
+                @Html.DropDownListFor(m => m.ERETAILERID, new SelectList(Model.ERetailerList, "PROSPECT_ID", "PROSPECTFULLNAME"), "ALL", new { @class = "form-control choosen-select" })
+            </div>
+
+            <div id="dv_dealer">
+                @Html.DropDownListFor(m => m.CUSTOMERID, new SelectList(Model.DealerList, "DEALER_ID", "DEALERFULLNAME"), "ALL", new { @class = "form-control choosen-select" })
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-xs-12">
+            <label for="pwd">
+                Status:
+            </label>
+        </div>
+        <div class="col-lg-2 col-xs-12">
+            @Html.DropDownListFor(m => m.FINALSTATUS, new SelectList(Model.StatusList, "Value", "Text"), new { @class = "form-control" })
+        </div>
+    </div>
+    <br />
+    <div class="card-footer">
+        <div class="clearfix">
+            <div class="float-right">
+                <input type="Submit" name="input" value="Filter" class="btn btn-primary" />
+                <input type="Submit" name="input" value="Export" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/AutoCompleteJS/prism.js"></script>
+<script src="/Content/AutoCompleteJS/chosen.jquery.js" type="text/javascript"></script>
+
+<script src="~/Scripts/ProjectJS/Common.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //$('#fromdatepicker').datepicker({
+        //    format: 'dd/M/yyyy'
+        //});
+
+        //$('#todatepicker').datepicker({
+        //    format: 'dd/M/yyyy'
+        //});
+        //$('#FROMDATE').val(formatDate($('#FROMDATE').val()));
+        //$('#TODATE').val(formatDate($('#TODATE').val()));
+
+        FormatDateRange(formatDate('@Model.FROMDATE'), formatDate('@Model.TODATE'), 'reportrange');
+
+        OnLoadEvent();
+
+        $(".choosen-select").chosen();
+    });
+
+    function OnLoadEvent() {
+        var dealerid = '@user.DEALER_ID';
+        if (dealerid != null && dealerid != 0) {// meanse login user is dealer
+            $('#dv_prospect').hide();
+            $('#CUSTOMERID').prop('disabled', true).trigger("chosen:updated");
+            $('#USERTYPEID').prop('disabled', true);
+
+        }
+        else {
+            OnChangeUserType();
+
+
+        }
+
+    }
+
+    function OnChangeUserType() {
+        var usertype = $("#USERTYPEID").val();
+        if (usertype == "") {
+            $('.dv_prospect').hide();
+
+            $('#dv_dealer').show();
+
+            $('#CUSTOMERID').prop('disabled', true).trigger("chosen:updated");
+        }
+        else if (usertype == 1)// dealeer
+        {
+            $('.dv_prospect').hide();
+
+            $('#dv_dealer').show();
+
+            $('#CUSTOMERID').prop('disabled', false).trigger("chosen:updated");
+        } else {
+            $('#dv_dealer').hide();
+            $('.dv_prospect').hide();
+
+            if (usertype == 2) {
+                $('#dv_retailer').show();
+            }
+            else if (usertype == 3) {
+                $('#dv_mechanic').show();
+            }
+            else if (usertype == 4) {
+                $('#dv_eretailer').show();
+            }
+
+            $('#CUSTOMERID').prop('disabled', false).trigger("chosen:updated");
+
+        }
+    }
+
+
+    $('.btn-primary').click(function () {
+        debugger;
+        var daterange = $('#reportrange')[0].innerText;
+        var dt1 = $.trim(daterange.split('-')[0]);
+        var dt2 = $.trim(daterange.split('-')[1]);
+        document.getElementById("FROMDATE").value = dt1;
+        document.getElementById("TODATE").value = dt2;
+    });
+</script>

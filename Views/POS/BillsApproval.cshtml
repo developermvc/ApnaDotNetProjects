@@ -1,0 +1,225 @@
+﻿@{
+    ViewBag.Title = "BillsApproval";
+    
+}
+
+
+
+<div class="card card-default">
+<div class="panel panel-default panel_pt">
+<div class="card-header card_bg">
+<div class="card-title card_tittle2">BILLS APPROVAL</div>
+</div> 
+      
+            <div class="card-body">
+			  <form class="form-horizontal">
+                <div class="row">
+                    <div class="col-lg-2">
+                    <label for="pwd">
+                        Ref No:</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        Ref Date :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control datepicker from_bg from_bg2" id="pwd">
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        Name :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                </div>
+                </div>
+                <div class="row row_pt">
+                   <div class="col-lg-2">
+                    <label for="pwd">
+                        Hd. Qtr.:</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        Cat :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                </div>
+                 <div class="col-lg-2">
+                    <label for="pwd">
+                        DOJ:</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                </div>
+                    
+                </div>
+                 <div class="row row_pt">
+                  <div class="col-lg-2">
+                    <label for="pwd">
+                        DOL :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd">
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        Month Of :</label>
+                </div>
+                <div class="col-lg-2">
+                    <select class="form-control from_bg from_bg2" id="sel1">
+                        <option>Jan</option>
+                        <option>Feb</option>
+                        <option>Mar</option>
+                        <option>Apr</option>
+                    </select>
+                </div>
+                      <div class="col-lg-2">
+                    <label for="pwd">
+                        Remarks :</label>
+                </div>
+                  <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" id="pwd"/>
+                </div>
+                </div>
+				</form>
+				</div>
+				
+				  <div class="card-footer">
+                           <div class="clearfix">
+                              <div class="float-left">
+                                  <button class="btn btn-primary" type="submit">Submit</button>
+								 <button class="btn btn-primary" type="submit">Clear</button>
+                              </div>
+                            
+                           </div>
+                        </div>
+						
+						
+						
+						
+						
+						<div class="row">
+               <div class="col-xl-12">
+                  <form method="post" action="#" data-parsley-validate="" novalidate="">
+                     <!-- START card-->
+                    
+                        <div class="card-header card_bg">
+                           <div class="card-title card_tittle2">SEARCH COLLECTION</div>
+                        </div>
+                        <div class="card-body">
+
+                          <form class="form-horizontal">
+                          
+                        <table class="table table-responsive table-bordered" style="display: inline-table !important;">
+                    <thead class="thead-lights">
+                       <tr> 
+                         <th style="text-align: center">
+                                <input type="checkbox" />
+                            </th>
+                        <th style="text-align: center">
+                               S.No
+                            </th>
+                           
+                            <th style="text-align: center">
+                                Account Head
+                            </th>
+                            <th style="text-align: center">
+                                Monthly Awd
+                            </th>
+                            <th style="text-align: center">
+                              YTD Awd
+                            </th>
+                            <th style="text-align: center">
+                                YTD Paid
+                            </th>
+                             <th style="text-align: center">
+                                YTD Bal
+                            </th>
+                             <th style="text-align: center">
+                                Now Paid
+                            </th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <td align="center">
+                                <input type="checkbox"/>
+                            </td>
+                            <td align="center">
+                                 1
+                            </td>
+                            <td align="center">
+                                   Anshuman
+                            </td>
+                           <td align="center">
+                                2450
+                            </td>
+                           <td align="center">
+                                1200
+                            </td>
+                            <td align="center">
+                                3200
+                            </td>
+                              <td align="center">
+                                1736
+                            </td>
+                              <td align="center">
+                                5234
+                            </td>
+                        </tr>
+                    </tbody>
+					
+                </table>
+                           
+                           
+                        </form>
+                           
+
+                        </div>
+                      
+                 
+                     <!-- END card-->
+                  </form>
+               </div>
+               
+            </div>
+						
+		
+</form>
+</div>
+
+
+  <div class="card-footer">
+                           <div class="clearfix">
+                              <div class="float-left">
+                                  <button class="btn btn-primary" type="submit">Add Row</button>
+								 <button class="btn btn-primary" type="submit">Delete</button>
+                              </div>
+							   <div class="float-right">
+                                  <button class="btn btn-primary" type="submit">Approve</button>
+								 <button class="btn btn-primary" type="submit">Save</button>
+								 <button class="btn btn-primary" type="submit">Clear</button>
+                              </div>
+                            
+                           </div>
+                        </div>
+			
+</div>
+</div>
+
+
+<script src="/vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".datepicker").datepicker({ orientation: "bottom auto" });
+
+    });
+</script>

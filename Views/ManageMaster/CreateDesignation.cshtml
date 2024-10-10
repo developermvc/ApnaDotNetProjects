@@ -1,0 +1,137 @@
+﻿@model LumaxDMS.Models.DesignationModel
+@using LumaxDMS.AppCode
+@{
+                ViewBag.Title = "CREATE DESIGNATION";
+}
+@using (Html.BeginForm("CreateDesignation", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Designation_Id)
+
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="designationtitle">CREATE DESIGNATION</div>
+        </div>
+
+        <div id="dv_displaydetail" class="card-body">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Designation Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DesignationName, new { @class = "form-control from_bg", onblur = "return ValidateDesignationNameExist(this)" })
+                    @Html.ValidationMessageFor(model => model.DesignationName)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Designation Description:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DesignationDesc, new { @class = "form-control from_bg" })
+                    @Html.ValidationMessageFor(model => model.DesignationDesc)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                    {
+                        <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn-primary" />
+                    }
+
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                    {
+                        <input type="submit" class="btn btn-primary" name="btntype" value="Update" style="display: none"
+                               id="btnupdate" />
+                    }
+                    <input type="reset" class="btn btn-primary" name="btntype" value="Clear" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+<script type="text/javascript">
+
+
+    function EditDesignation(DesignationId, ActionName) {
+
+        var checkUrl = '@Url.Action("EditDesignation", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ DesignationId: DesignationId }),
+            dataType: "json",
+            success: EditDesignationSucceeded,
+            error: EditDesignationFailed
+        });
+
+
+    }
+
+    function EditDesignationSucceeded(result) {
+        debugger;
+
+        $('#Designation_Id').val(result.DESIGNATION_ID);
+        $('#DesignationName').val(result.DESIGNATIONNAME);
+        $('#DesignationDesc').val(result.DESIGNATIONDESC);
+        $('#designationtitle').text('UPDATE DESIGNATION');
+        if (result.ISACTIVE == "Y") {
+            $('#IsActive').prop('checked', true);
+        }
+        else {
+            $('#IsActive').prop('checked', false);
+        }
+
+        $('#btnupdate').show();
+        $('#btnadd').hide();
+
+
+    }
+
+    function EditDesignationFailed() {
+
+    }
+
+    function ValidateDesignationNameExist(element) {
+        debugger;
+        var designationName = $(element).val();
+        var designationId = $('#Designation_Id').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("CheckIsDesignationExist", "ManageMaster")',
+            data: JSON.stringify({ designationName: designationName, designationId: designationId }),
+            dataType: "json",
+            success: function (data) {
+                if (data == true) {
+                    alert("Designation Name already exists");
+                    $('#DesignationName').val('');
+                    $('#DesignationName').focus();
+                }
+            },
+            error: function (data) {
+                // throw ex;
+            }
+
+        });
+    }
+
+</script>

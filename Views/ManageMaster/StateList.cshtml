@@ -1,0 +1,113 @@
+﻿@model LumaxDMS.Models.StateModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CreateState";
+}
+
+@{Html.RenderPartial("CreateState", @Model);}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">STATE LIST</div>
+    </div>
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+                <div class="col-sm-12 col-md-12">
+                    <table id="statetbl" class="table table-striped table-bordered dt-responsive nowrap" style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    State Code
+                                </th>
+                                <th>State Name</th>
+
+                                <th>
+                                    State Desc
+                                </th>
+                                <th>
+                                    Country Name
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.stateMasterList)
+                            {
+                            <tr>
+                                <td>
+                                    @item.STATECODE
+                                </td>
+                                <td>
+                                    @item.STATENAME
+                                </td>
+
+                                <td>
+                                    @item.STATEDESC
+                                </td>
+                                <td>
+                                    @item.CountryName
+                                </td>
+
+                                <td>
+                                    @Html.DisplayStatus(@item.ISACTIVE)
+                                </td>
+                                <td class="text_center">
+                                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                    {
+                                        <a href="#" title="edit state" onclick="return EditState(@item.STATE_ID)">
+                                            <i class="fa fa-pencil">
+                                            </i>
+                                        </a>
+                                    }
+                                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                    {
+
+                                        <a href="#" onclick="return DeleteState(@item.STATE_ID)" title="delete state">
+                                            <i class="fa fa-trash bg_red"></i>
+                                        </a>
+                                    }
+
+                                    </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("DeleteState", "ManageMaster", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.State_Id, new { @Id = "Del_StateId" });
+}
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#statetbl').DataTable();
+        });
+
+        function DeleteState(id) {
+            $('.modal-title').html("DELETE STATE");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_StateId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+    </script>
+}

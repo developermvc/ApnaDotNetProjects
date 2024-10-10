@@ -1,0 +1,61 @@
+﻿@model LumaxDMS.Models.DepartmentModel
+@{
+    ViewBag.Title = "_CreateDepartment";
+}
+
+@using (Html.BeginForm("CreateDepartment", "Admin", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Department_Id)
+
+    <div class="card card_ps">
+        <div class="header_ps">
+            <span>CREATE DEPARTMENT </span>
+        </div>
+        <div id="dv_displaydetail" class="card-body" style="padding-top: 20px;">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        Department Name:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DepartmentName, new { @class = "form-control" })
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        Department Description:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DepartmentDesc, new { @class = "form-control" })
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        Remarks:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control" })
+                </div>
+            </div>
+            <br />
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+            <hr />
+            <div class="row" style="margin-top: -4px !important;">
+                <div class="col-lg-12 text-right margin_lf">
+                    <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn_font" />
+                    <input type="submit" class="btn btn_font" name="btntype" value="Update" style="display: none"
+                        id="btnupdate" />
+                    <input type="submit" class="btn btn_font" name="btntype" value="Clear" />
+                </div>
+            </div>
+        </div>
+    </div>
+               
+}

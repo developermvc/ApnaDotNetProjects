@@ -1,0 +1,115 @@
+﻿@model LumaxDMS.Models.AccountModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Account List";
+}
+
+@{Html.RenderPartial("CreateAccount", Model);}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">ACCOUNT LIST</div>
+    </div>
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12">
+                    <table id="Accounttbl" class="table table-striped table-bordered dt-responsive nowrap"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    Account Code
+                                </th>
+                                <th>
+                                    Account Name
+                                </th>
+                                <th>
+                                    IsActive
+                                </th>
+                                <th>
+                                    Created By
+                                </th>
+                                <th>
+                                    Created Date
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AccountList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.ACCOUNTCODE
+                                    </td>
+                                    <td>
+                                        @item.ACCOUNTNAME
+                                    </td>
+                                    <td>
+                                        @Html.DisplayStatus(@item.ISACTIVE)
+                                    </td>
+                                    <td>
+                                        @item.CREATEDBY
+                                    </td>
+                                    <td>
+                                        @Html.DisplayDate(@item.CREATEDDATE)
+                                    </td>
+                                    <td class="text_center">
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                        {
+                                            <a href="#" title="Edit Account" onclick="return EditAccount(@item.ACCOUNTID)">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                        }
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                        {
+                                            <a href="##" onclick="return DeleteAccount(@item.ACCOUNTID)" title="InActive Account">
+                                                <i class="fa fa-trash bg_red"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("DeleteAccount", "ManageMaster", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.AccountId, new { @Id = "Del_AccountId" });
+}
+
+
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#Accounttbl').DataTable();
+        });
+        function DeleteAccount(id) {
+            $('.modal-title').html("DELETE ACCOUNT");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_AccountId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+
+    </script>
+}
+

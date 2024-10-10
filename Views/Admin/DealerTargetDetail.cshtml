@@ -1,0 +1,55 @@
+﻿@model LumaxDMS.Models.DealerTargetModel
+
+@{
+    var counter = 1;
+}
+<table id="DealerTargettbl" class="table table-striped table-bordered dt-responsive nowrap"
+       style="width: 100%">
+    <thead class="thead-lights">
+        <tr>
+            <th>
+                Month
+            </th>
+            <th>
+                Initial Target
+            </th>
+            <th>
+                Completed Target
+            </th>
+            <th>
+                Map Category
+            </th>
+        </tr>
+    </thead>
+    @if (Model.DealerTargetList != null)
+    {
+        <tbody>
+            @Html.Hidden("DealerTargetCount", Model.DealerTargetList.Count(), new { @Name = "DealerTargetCount" })
+            @foreach (var item in Model.DealerTargetList)
+            {
+                <tr>
+                    @Html.HiddenFor(m=> item.DEALERTARTGETID, new { @Id= "DealerTargetId_"+counter, @Name = "DealerTargetId_"+counter })
+                    <td>
+                        @item.MONTH
+                        @Html.HiddenFor(m => item.MONTH, new { @Id = "Month_" + counter, @Name = "Month_" + counter })
+                    </td>
+                    <td>
+                        @item.INITIALTARGET
+                        @Html.HiddenFor(m => item.INITIALTARGET, new { @Id = "InitialTarget_" + counter, @Name = "InitialTarget_" + counter, @class = "form-control" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(m => item.MONTHLYTARGET, new { @Id = "MonthlyTarget_" + counter, @maxlength="13", @Name = "MonthlyTarget_" + counter, @class = "form-control", @Style="text-align:right", @onchange="return ValidateMonthlyTarget(this);" })
+                        @Html.HiddenFor(m=>item.MONTHLYTARGET, new { @Id = "hdnMonthlyTarget_"+counter, @Name="hdnMonthlyTarget_"+counter})
+                    </td>
+                    <td>
+                       <a title="Map Category" id="hdn" onclick="return EditCategoryTarget(@counter);" href="/Admin/CategoryWiseDealerTarget?DealerTargetId=@item.DEALERTARTGETID">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                    </td>
+                </tr>
+                { counter = counter + 1; }
+            }
+        </tbody>
+    }
+
+</table>

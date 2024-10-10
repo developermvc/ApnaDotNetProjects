@@ -1,0 +1,149 @@
+﻿@model LumaxDMS.Models.AccountModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CREATE ACCOUNT";
+}
+@using (Html.BeginForm("CreateAccount", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.AccountId)
+
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="AccountTitle">CREATE ACCOUNT</div>
+        </div>
+
+        <div id="dv_displaydetail" class="card-body">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Account Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.AccountCode, new { @class = "form-control from_bg", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(model => model.AccountCode)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Account Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.AccountName, new { @class = "form-control from_bg", @onchange = "return ValidateAccountNameExist(this);" })
+                    @Html.ValidationMessageFor(model => model.AccountName)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Use In:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.UseIn, new SelectList(Model.UseInList, "Value", "Text", Model.UseIn), "--Select--", new { @Class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.UseIn)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                    {
+                        <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn-primary" />
+                    }
+
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                    {
+                        <input type="submit" class="btn btn-primary" name="btntype" value="Update" style="display: none"
+                               id="btnupdate" />
+                    }
+                    <input type="reset" class="btn btn-primary" name="btntype" value="Clear" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+<script type="text/javascript">
+
+
+    function EditAccount(AccountId, ActionName) {
+
+        var checkUrl = '@Url.Action("EditAccount", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ AccountId: AccountId }),
+            dataType: "json",
+            success: EditAccountSucceeded,
+            error: EditAccountFailed
+        });
+
+
+    }
+
+    function EditAccountSucceeded(result) {
+        debugger;
+
+        $('#AccountId').val(result.ACCOUNTID);
+        $('#AccountCode').val(result.ACCOUNTCODE);
+        $('#AccountName').val(result.ACCOUNTNAME);
+        $('#UseIn').val(result.USEIN);
+        $('#AccountTitle').text('UPDATE ACCOUNT');
+        if (result.ISACTIVE == "Y") {
+            $('#IsActive').prop('checked', true);
+        }
+        else {
+            $('#IsActive').prop('checked', false);
+        }
+
+        $('#btnupdate').show();
+        $('#btnadd').hide();
+
+
+    }
+
+    function EditAccountFailed() {
+
+    }
+
+    function ValidateAccountNameExist(element) {
+        debugger;
+        var accountName = $(element).val();
+        var accountId = $('#AccountId').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("CheckIsAccountExist", "ManageMaster")',
+            data: JSON.stringify({ accountName: accountName, accountId: accountId }),
+            dataType: "json",
+            success: function (data) {
+                if (data == true) {
+                    alert("Account name already exists");
+                    $('#AccountName').val('');
+                    $('#AccountName').focus();
+                }
+            },
+            error: function (data) {
+                // throw ex;
+            }
+
+        });
+    }
+
+</script>

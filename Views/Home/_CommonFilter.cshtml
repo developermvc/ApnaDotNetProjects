@@ -1,0 +1,56 @@
+﻿@model LumaxDMS.Models.DashboardModel
+
+@Html.Hidden("hdnSelectedUserArea")
+<div id="dv_displaydetail" class="card-body">
+    <div class="row row_pt">
+
+
+
+        <div class='col-lg-2'>
+            <div class="">
+                <div id="reportrange" class="form-control" style="clear: both">
+                    <i class="fa fa-calendar" style="float: left"></i>&nbsp;
+                    <span style="font-size:11px;"></span><b class="caret"></b>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-xs-12 emponlydv">
+            @Html.DropDownListFor(m => m.C_SelectedAreaType, new SelectList(Model.C_AreaTypeList, "Value", "Text"), new { @class = "form-control po_hdr", @onchange = "return OnChangeAreaType();" })
+            @Html.ValidationMessageFor(model => model.C_SelectedAreaType)
+        </div>
+        <div class="col-lg-3 col-xs-12 emponlydv">
+            <div id="dv_lbArea_1" class="dvarea_choosen">
+                @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_CountryList, "AREAID", "AREANAME", Model.C_SelectedIds), new { @Id = "lbArea_1", @Name = "sbCountry", @Class = "avaiable_mcode areachosen-select", @placeholder = "Filter By..." })
+            </div>
+            <div id="dv_lbArea_2" class="dvarea_choosen" style="display:none">
+                @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_ZoneList, "AREAID", "AREANAME", Model.C_SelectedIds), new { @Id = "lbArea_2", @Name = "sbZone", @Class = "avaiable_mcode areachosen-select" })
+            </div>
+            <div id="dv_lbArea_3" class="dvarea_choosen" style="display:none">
+                @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_StateList, "AREAID", "AREANAME", Model.C_SelectedIds), new { @Id = "lbArea_3", @Name = "sbState", @Class = "avaiable_mcode areachosen-select" })
+            </div>
+            <div id="dv_lbArea_4" class="dvarea_choosen" style="display:none">
+                @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_TerriotryList, "AREAID", "AREANAME", Model.C_SelectedIds), new { @Id = "lbArea_4", @Name = "sbTerritory", @Class = "avaiable_mcode areachosen-select" })
+            </div>
+            <div id="dv_lbArea_5" class="dvarea_choosen" style="display:none">
+                @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_DistrictList, "AREAID", "AREANAME", Model.C_SelectedIds), new { @Id = "lbArea_5", @Name = "sbDistrict", @Class = "avaiable_mcode areachosen-select" })
+            </div>
+            <div id="dv_lbArea_6" class="dvarea_choosen" style="display:none">
+                @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_CityList, "AREAID", "AREANAME", Model.C_SelectedIds), new { @Id = "lbArea_6", @Name = "sbCity", @Class = "avaiable_mcode areachosen-select" })
+            </div>
+            <div id="dv_lbArea_7" class="dvarea_choosen" style="display:none">
+                @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_PartyList, "AREAID", "AREANAME", Model.C_SelectedIds), new { @Id = "lbArea_7", @Name = "sbParty", @Class = "avaiable_mcode areachosen-select" })
+            </div>
+            <div id="dv_lbArea_8" class="dvarea_choosen" style="display:none">
+                @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_PartyGroupList, "AREAID", "AREANAME", Model.C_SelectedIds), new { @Id = "lbArea_8", @Name = "sbPartyGroup", @Class = "avaiable_mcode areachosen-select" })
+            </div>
+        </div>
+        <div class="col-lg-2 col-xs-12">
+            @Html.DropDownListFor(m => m.SelectedSegment, new SelectList(Model.SegmentList, "MAINSEGMENTID", "MAINSEGMENTCODE"), "-ALL-", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.SelectedSegment)
+        </div>
+        <div class="col-lg-3 col-xs-12">
+            <input type="button" class="btn btn-primary" name="btntype" value="Show Status" id="btnSearchDashboard" />
+            <input type="reset" class="btn btn-primary" name="btntype" value="Refresh" />
+        </div>
+    </div>
+</div>

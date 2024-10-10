@@ -1,0 +1,37 @@
+﻿@model LumaxDMS.Models.SchemeReportModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Scheme Report";
+
+}
+
+@{Html.RenderPartial("_WaitModal");}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">SCHEME LIST</div>
+    </div>
+    @using (Html.BeginForm("SchemeReport", "Report", FormMethod.Post, new { @Id = "SCFormId" }))
+    {
+        { Html.RenderPartial("_ReportFilter", @Model); }
+
+    }
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                @{ Html.RenderPartial("_ReportData", @Model); }
+            </div>
+        </div>
+    </div>
+</div>
+@section JS {
+    <script src="~/Scripts/DateRange/moment.min.js"></script>
+    <script src="~/Scripts/DateRange/daterangepicker.js"></script>
+    <script src="~/Scripts/DateRange/DateTimeFormat.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            HideWaitingSymbol();
+        });
+    </script>
+}

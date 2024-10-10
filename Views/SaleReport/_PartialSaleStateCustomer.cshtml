@@ -1,0 +1,68 @@
+﻿@model LumaxDMS.Models.SaleReportModel
+
+<table class="table table-bordered" id="tableCustomer">
+    <thead title="Customer Wise Sale Report">
+        <tr>
+            <th>
+                Customer Code
+            </th>
+            <th>
+                Customer Name
+            </th>
+            <th>
+                Station
+            </th>
+            <th>
+                Total Order
+            </th>
+            <th>
+                Net Sale
+            </th>
+            <th>
+                Pending DA
+            </th>
+            <th>
+                Pending Order
+            </th>
+            <th>
+                Execution %
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.saleStateCustomerlist != null)
+        {
+            foreach (var item in Model.saleStateCustomerlist)
+            {
+        <tr>
+            <td>
+                @item.DEALERCODE
+            </td>
+            <td id="@item.DEALER_ID"  onclick="return onCustomerClick(this)" style="cursor: pointer !important;">
+                <span style="color: green">@item.CUSTOMERNAME</span>
+            </td>
+            <td>
+                @item.STATION
+            </td>
+            <td>
+                @item.NETORDER
+            </td>
+            <td>
+                @item.NETSALE
+            </td>
+            <td>
+                @item.PENDINGDA
+            </td>
+            <td>
+                @item.PENDINGORDER
+            </td>
+
+            <td>
+                @item.EXECUTION
+            </td>
+        </tr>
+            }
+        }
+    </tbody>
+</table>
+ 

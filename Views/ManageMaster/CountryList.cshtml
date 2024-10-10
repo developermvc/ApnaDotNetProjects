@@ -1,0 +1,113 @@
+﻿@model LumaxDMS.Models.CountryModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CreateCountry";
+
+}
+@{Html.RenderPartial("CreateCountry", @Model);}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">COUNTRY LIST</div>
+    </div>
+
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12">
+                    <table id="countrytbl" class="table table-striped table-bordered dt-responsive nowrap"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    Country Code
+                                </th>
+                                <th>
+                                    Country Name
+                                </th>
+
+                                <th>
+                                    Country Desc
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.countryMasterList)
+                            {
+                            <tr>
+                                <td>
+                                    @item.COUNTRYCODE
+                                </td>
+                                <td>
+                                    @item.COUNTRYNAME
+                                </td>
+
+                                <td>
+                                    @item.COUNTRYDESC
+                                </td>
+
+                                <td>
+                                    @Html.DisplayStatus(@item.ISACTIVE)
+                                </td>
+                                <td class="text_center">
+                                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                    {
+                                        <a href="#" title="edit country" onclick="return EditCountry(@item.COUNTRY_ID)">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    }
+                                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                    {
+                                        <a href="##" onclick="return DeleteCountry(@item.COUNTRY_ID)" title="delete country">
+                                            <i class="fa fa-trash bg_red"></i>
+                                        </a>
+                                    }
+                                    </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@using (Html.BeginForm("DeleteCountry", "ManageMaster", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.Country_id, new { @Id = "Del_CountryId" });
+}
+
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#countrytbl').DataTable();
+        });
+
+        function DeleteCountry(id) {
+            $('.modal-title').html("DELETE COUNTRY");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_CountryId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+    </script>
+}

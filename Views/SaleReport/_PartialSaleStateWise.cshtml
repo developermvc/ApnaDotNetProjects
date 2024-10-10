@@ -1,0 +1,61 @@
+﻿@model LumaxDMS.Models.SaleReportModel
+
+<table class="table table-bordered" id="tableStateWise">
+    <thead title="State Wise Sale Report">
+        <tr>
+            <th>
+                State
+            </th>
+            <th>
+                Budget
+            </th>
+            <th>
+                Total Order
+            </th>
+            <th>
+                Net Sale
+            </th>
+            <th>
+                Pending DA
+            </th>
+            <th>
+                Pending Order
+            </th>
+            <th>
+                Execution %
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.saleStateWiseslist != null)
+        {
+            foreach (var item in Model.saleStateWiseslist)
+            {
+                <tr>
+                    <td id="@item.STATE_ID" onclick="return onStateClick(this)" style="cursor: pointer !important;">
+                        <span  style="color: green" >@item.STATENAME</span>
+                    </td>
+                    <td>
+                        @item.BUDGET
+                    </td>
+                    <td>
+                        @item.NETORDER
+                    </td>
+                    <td>
+                        @item.NETSALE
+                    </td>
+                    <td>
+                        @item.PENDINGDA
+                    </td>
+                    <td>
+                        @item.PENDINGORDER
+                    </td>
+
+                    <td>
+                        @item.EXECUTION
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,309 @@
+﻿@model LumaxDMS.Models.CityModel
+@using (Html.BeginForm("CreateCity", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.City_Id)
+
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="cityformtitle">CREATE CITY</div>
+        </div>
+
+        <div id="dv_displaydetail" class="card-body">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Country Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedCountryId, new SelectList(Model.countryMasterList, "Country_Id", "CountryName"), "--Select--", new { @class = "form-control from_bg chosen-select", @onchange = "return GetStateByCountryId(this);" })
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        State Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedStateId, new SelectList(Model.stateMasterList, "State_Id", "StateName"), "--Select--", new { @class = "form-control from_bg chosen-select", @onchange = "return GetDistrictByStateId(this);" })
+                    @Html.ValidationMessageFor(model => model.SelectedStateId)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        District Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedDistrictId, new SelectList(Model.districtMasterList, "District_Id", "DistrictName"), "--Select--", new { @class = "form-control from_bg chosen-select" })
+                    @Html.ValidationMessageFor(model => model.SelectedDistrictId)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        City Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.CityCode, new { @class = "form-control from_bg", title = "Enter city Code" })
+                    @Html.ValidationMessageFor(model => model.CityCode)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        City Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.CityName, new { @class = "form-control from_bg", onblur = "return CheckCityValidation(this)", title = "Enter city name" })
+                    @Html.ValidationMessageFor(model => model.CityName)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        City Desc:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.CityDesc, new { @class = "form-control from_bg", title = "Enter city Desc" })
+                    @Html.ValidationMessageFor(model => model.CityDesc)
+                </div>
+
+            </div>
+
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        City Class:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedCityClassId, new SelectList(Model.CityClassList, "CITYCLASS_ID", "CLASSNAME"), "--Select--", new { @class = "form-control from_bg chosen-select" })
+                    @Html.ValidationMessageFor(model => model.SelectedCityClassId)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    <button class="btn btn-primary" type="submit" id="btnadd" name="btntype" value="Create" onclick="return checkValidation();">Create</button>
+                    <button class="btn btn-primary" type="submit" id="btnupdate" style="display:none" name="btntype" value="Update" onclick="return checkValidation();">Update</button>
+                    <button class="btn btn-primary" type="button" onclick="resetValidation()">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+<script type="text/javascript">
+
+    //$(".chosen-select").chosen();
+    
+    function CheckCityValidation() {
+        debugger;
+        var checkUrl = '@Url.Action("CheckIscityExist", "ManageMaster")';
+        var CityId = $('#City_Id').val();
+        var cityName = $('#CityName').val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ cityName: cityName, cityId: CityId }),
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    alert("City Name already exists");
+                    $('#CityName').val('');
+                    $('#CityName').focus();
+                }
+            },
+            error: function (data) {
+
+            }
+        });
+
+    }
+
+    function EditCity(city_id) {
+        debugger;
+        var checkUrl = '@Url.Action("EditCity", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ city_id: city_id }),
+            dataType: "json",
+            success: EditCitySucceeded,
+            error: EditCityFailed
+        });
+
+
+    }
+
+    function EditCitySucceeded(result) {
+        debugger;
+        if (result != null && result.citymaster != null) {
+
+
+            FillStateList(result.stateList);
+            FillDistrictList(result.districtList);
+
+            $('#City_Id').val(result.citymaster.CITY_ID);
+            $('#CityName').val(result.citymaster.CITYNAME);
+            $('#CityCode').val(result.citymaster.CITYCODE);
+            $('#CityDesc').val(result.citymaster.CITYDESC);
+            $('#SelectedDistrictId').val(result.citymaster.DISTRICT_ID).trigger("chosen:updated");
+            $('#SelectedStateId').val(result.citymaster.StateId).trigger("chosen:updated");
+            $('#SelectedCountryId').val(result.citymaster.CountryId).trigger("chosen:updated");
+            $('#SelectedCityClassId').val(result.citymaster.CITYCLASS_ID).trigger("chosen:updated");
+
+            if (result.citymaster.ISACTIVE == "Y") {
+                $('#IsActive').prop('checked', true);
+            }
+            else {
+                $('#IsActive').prop('checked', false);
+            }
+
+            $('#btnupdate').show();
+            $('#btnadd').hide();
+            $('#cityformtitle').text("UPDATE CITY");
+
+        }
+
+
+    }
+
+
+
+
+    function EditCityFailed() {
+
+    }
+
+    function resetform() {
+        window.location.href = "/ManageMaster/CityList"
+    }
+
+    function FillStateList(statelist) {
+        var v = "<option>--Select--</option>";
+        $.each(statelist, function (i, state) {
+
+            v += "<option value=" + state.STATE_ID + ">" + state.STATENAME + "</option>";
+
+        });
+
+        $("#SelectedStateId").html(v);
+        $("#SelectedStateId").val('').trigger("chosen:updated");
+    }
+
+
+    function FillDistrictList(districtlist) {
+        var v = "<option>--Select--</option>";
+            $.each(districtlist, function (i, district) {
+
+                v += "<option value=" + district.DISTRICT_ID + ">" + district.DISTRICTNAME + "</option>";
+
+        });
+
+        $("#SelectedDistrictId").html(v);
+        $("#SelectedDistrictId").val('').trigger("chosen:updated");
+    }
+
+
+    function GetStateByCountryId(obj) {
+        debugger;
+        var CountryId = obj.value;
+        var checkUrl = '@Url.Action("GetStateByCountryId", "ManageMaster")';
+        $.ajax({
+            url: checkUrl,
+            type: "GET",
+            dataType: "JSON",
+            data: { id: CountryId },
+            success: GetStateByCountryIdSuccess,
+            error: GetStateByCountryIdFail
+        });
+
+    }
+
+
+    function GetDistrictByStateId(obj) {
+        debugger;
+        var StateId = obj.value;
+        var checkUrl = '@Url.Action("GetDistrictByStateId", "ManageMaster")';
+        $.ajax({
+            url: checkUrl,
+            type: "GET",
+            dataType: "JSON",
+            data: { id: StateId },
+            success: GetDistrictByStateIdSuccess,
+            error: GetDistrictByStateIdFail
+        });
+
+    }
+
+        function GetDistrictByStateIdSuccess(result) {
+        debugger;
+        FillDistrictList(result);
+           
+
+    }
+    function GetStateByCountryIdSuccess(result) {
+        debugger;
+        FillStateList(result);
+        
+
+    }
+        function GetDistrictByStateIdFail() {
+
+    }
+    function GetStateByCountryIdFail() {
+
+    }
+
+    function checkValidation() {
+        debugger;
+        var valid = true;
+        var countryid = $('#SelectedCountryId').val();
+        var stateid = $('#SelectedStateId').val();
+        var districtid = $('#SelectedDistrictId').val();
+        if (countryid == "" || countryid == null) {
+            $('#SelectedCountryId').trigger('chosen:activate');
+            alert("Please select country");
+            valid = false;
+        } else if (stateid == "" || stateid == null) {
+            $('#SelectedStateId').trigger('chosen:activate');
+            alert("Please select state");
+            valid = false;
+        } else if (districtid == "" || districtid == null) {
+            $('#SelectedDistrictId').trigger('chosen:activate');
+            alert("Please select district");
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    function resetValidation() {
+
+        $("#CityCode-error").html('');
+        $("#CityName-error").html('');
+        $("#CityDesc-error").html('');
+
+    }
+
+</script>

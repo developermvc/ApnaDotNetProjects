@@ -1,0 +1,255 @@
+﻿@model LumaxDMS.Models.FieldRoleHierModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "CREATE APPROVAL HIERARCHY";
+}
+
+@using (Html.BeginForm("CreateApprovalHierarchy", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.FRH_ID)
+    @Html.HiddenFor(m=>m.SelectedUserIds)
+
+
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName == Constants.BTN_EDIT)
+                    {
+                        <span>UPDATE APPROVAL HIERARCHY</span>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Functionality Name:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.FunctionalityName, new { @class = "form-control", disabled = "disabled" })
+                            @Html.HiddenFor(model => model.FNC_ID, new { @Name = "hdnFncId" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Designation:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.DropDownListFor(model => model.FIELD_ROLE, new SelectList(Model.DesignationList, "DESIGNATION_ID", "DESIGNATIONNAME", Model.FIELD_ROLE), "--Select--", new { @Class = "form-control", @Id="DesignationName", @Name = "DesignationName" })
+                            @Html.HiddenFor(model => model.FIELD_ROLE, new { @Name = "hdnFieldRole" })
+                            @Html.Hidden("hdnNewRole", new { @Name = "hdnNewRole"})
+                            
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Approval Level:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.ApprovalLevel, new { @class = "form-control", @readonly="readonly" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Is Final Approve:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.CheckBoxFor(model => model.IsFinalApproval, new { @disabled = "disabled"})
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <br />
+                        <div class="row">
+                            <div class="dual-list list-left col-md-5">
+                                <div class="well well_bg">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="input-group">
+                                                <i class="fa fa-search" aria-hidden="true" style="padding: 8px 8px; background: #ddd;">
+                                                </i>
+                                                <input type="text" name="SearchDualList" class="form-control" placeholder="search" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="btn-group list_bg">
+                                                <a class="btn btn-default selector" title="select all" style="border: 1px solid #ccc;
+                                            background: #fff; margin-left: -5px; position: relative; bottom: 10px;">
+                                                    <i class="fa fa-check-square-o" aria-hidden="true"
+                                                       style="font-size: 13px;"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group" id="momentlistLeft"></ul>
+                                </div>
+                            </div>
+                            <div class="list-arrows col-md-1 text-center">
+                                <button class="btn btn-default btn-sm move-left" type="button" style="background: #fff;
+                            border: 1px solid #ddd;">
+                                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                                </button>
+                                <button class="btn btn-default btn-sm move-right" type="button" style="background: #fff;
+                            border: 1px solid #ddd;">
+                                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="dual-list list-right col-md-5">
+                                <div class="well">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="btn-group">
+                                                <a class="btn btn-default selector" title="select all">
+                                                    <a class="btn btn-default selector"
+                                                       title="select all" style="border: 1px solid #ccc; background: #fff; margin-left: -25px;">
+                                                        <i class="fa fa-check-square-o" aria-hidden="true" style="font-size: 13px;"></i>
+                                                    </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <div class="input-group">
+                                                <i class="fa fa-search" aria-hidden="true" style="padding: 8px 8px; background: #ddd;">
+                                                </i>
+                                                <input type="text" name="SearchDualList" class="form-control" placeholder="search">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list_bg2" id="momentlistRight"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="clearfix">
+                            <div class="float-right">
+                                @if (Model.ActionName == Constants.BTN_EDIT)
+                                {
+                                    <input type="submit" class="btn btn-primary" name="btntype" value="Update" onclick="return CheckValidation();"
+                                           id="btnupdate" />
+                                }
+                                <input type="reset" class="btn btn-primary" name="btntype" value="Clear" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+{
+    <script type="text/javascript">
+
+        var leftresult = '@Html.Raw(Json.Encode(@Model.UserMasterList))';
+        var rightresult = '@Html.Raw(Json.Encode(@Model.SelectedUserMasterList))';
+
+        $(document).ready(function () {
+            @*$("#DesignationName option:contains(" + '@Html.Raw(Json.Encode(@Model.FIELD_ROLE))' + ")").attr('selected', 'selected');*@
+            $('#hdnNewRole').val(@Html.Raw(Json.Encode(@Model.FIELD_ROLE)));
+            $("#DesignationName option").map(function () {
+                if ($(this).text() == @Html.Raw(Json.Encode(@Model.FIELD_ROLE))) return this;
+            }).attr('selected', 'selected');
+        
+            FillUserListIntoMomentLeft(leftresult);
+            FillUserListIntoMomentRight(rightresult);
+        });
+
+        $('#DesignationName').on('change', function () {
+            $('#hdnNewRole').val($('#DesignationName option:Selected').text());
+        });
+
+        function FillUserListIntoMomentLeft(result) {
+            var v = "";
+            $.each($.parseJSON(result), function (i, user) {
+                v += "<li class=\"list-group-item\"><input type=\"hidden\" value=\"" + user.USER_ID + "\" name=\"menu_" + user.USER_ID + "\">" + user.EmpName + "</li>"
+            });
+
+            $("#momentlistLeft").html(v);
+        }
+
+        function FillUserListIntoMomentRight(result) {
+            var v = "";
+            $.each($.parseJSON(result), function (i, user) {
+                v += "<li class=\"list-group-item\"><input type=\"hidden\" value=\"" + user.USER_ID + "\" name=\"menu_" + user.USER_ID + "\">" + user.EmpName + "</li>"
+            });
+
+            $("#momentlistRight").html(v);
+        }
+
+        $(function () {
+
+            $('body').on('click', '.list-group .list-group-item', function () {
+                $(this).toggleClass('active');
+            });
+            $('.list-arrows button').click(function () {
+                var $button = $(this), actives = '';
+                if ($button.hasClass('move-left')) {
+                    actives = $('.list-right ul li.active');
+                    actives.clone().appendTo('.list-left ul');
+                    actives.remove();
+                } else if ($button.hasClass('move-right')) {
+                    actives = $('.list-left ul li.active');
+                    actives.clone().appendTo('.list-right ul');
+                    actives.remove();
+                }
+            });
+            $('.dual-list .selector').click(function () {
+                var $checkBox = $(this);
+                if (!$checkBox.hasClass('selected')) {
+                    $checkBox.addClass('selected').closest('.well').find('ul li:not(.active)').addClass('active');
+                    $checkBox.children('i').removeClass('glyphicon-unchecked').addClass('glyphicon-check');
+                } else {
+                    $checkBox.removeClass('selected').closest('.well').find('ul li.active').removeClass('active');
+                    $checkBox.children('i').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
+                }
+            });
+            $('[name="SearchDualList"]').keyup(function (e) {
+                var code = e.keyCode || e.which;
+                if (code == '9') return;
+                if (code == '27') $(this).val(null);
+                var $rows = $(this).closest('.dual-list').find('.list-group li');
+                var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+                $rows.show().filter(function () {
+                    var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                    return ! ~text.indexOf(val);
+                }).hide();
+            });
+
+        });
+
+        function CheckValidation() {
+            debugger;
+            var valid = true;
+            document.getElementById("SelectedUserIds").value = "";
+            var arr = new Array();
+            var result = $('#momentlistRight').find("input");
+            var i = 0; var l = result.length;
+            for (i == 0; i < l; i++) {
+                var userid = result[i].value;
+                arr.push(userid);
+
+            }
+            document.getElementById("SelectedUserIds").value = arr;
+            if (i > 0) {
+                return true;
+            }
+            else {
+                alert("Please add atleast one user");
+                return false;
+            }
+            //if ($('#momentlistRight li').length == 0) {
+            //    alert("Please add atleast one user");
+            //    valid = false;
+            //}
+            //return valid;
+        }
+
+    </script>
+
+}

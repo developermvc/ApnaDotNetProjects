@@ -1,0 +1,242 @@
+﻿@model LumaxDMS.Models.TravelModeModel
+@*<link href = "/Content/TimePickerCSS/bootstrap.min.css" rel = "stylesheet"/>*@
+@*<link href="/Content/TimePickerCSS/bootstrap-datepicker.css" rel="stylesheet" />*@
+
+@*<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link href="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/build/css/bootstrap-datetimepicker.css" rel="stylesheet">*@
+
+
+@using (Html.BeginForm("CreateTravelMode", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.TravelModeId)
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="frmlabel">CREATE TRAVELMODE</div>
+        </div>
+
+
+        <div id="dv_displaydetail" class="card-body" style="padding-top: 20px;">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        TravelMode Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.TravelModeCode, new { @class = "form-control from_bg", title = "Enter taravelmode Code", @autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.TravelModeCode)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        TravelMode Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.TravelModeName, new { @class = "form-control from_bg ", onblur = "return CheckTravelModeValidation(this)", title = "Enter tarvelmode Name", @autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.TravelModeName)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        TravelMode Desc:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.Description, new { @class = "form-control from_bg ", title = "Enter travelmode Desc" })
+                    @Html.ValidationMessageFor(model => model.Description)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Type
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(m=>m.ModeType, new List<SelectListItem>
+                       {
+                          new SelectListItem{ Text="Local", Value = "Local" },
+                          new SelectListItem{ Text="Fare", Value = "Fare" },
+                          new SelectListItem{ Text="Both", Value = "Both" },
+                       },new {@class = "form-control" ,@onchange="isEnable(this)"})
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Rate:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.Rate, new { @class = "form-control from_bg numberinput", title = "Enter travelmode rate", @maxLength = "7", @autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.Rate)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+
+
+            </div>
+            @*<div class="row">
+                    <div class="col-md-2 red">
+                        <label>Valid From </label>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class='input-group date' id="datetimepicker1">
+                                @Html.TextBoxFor(m => m.CreatedDate, new { @class = "form-control DatePicker", @placeholder = "To Date", @readonly = "readonly" })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+
+
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn-primary" />
+                    <input type="submit" class="btn btn-primary" name="btntype" value="Update" style="display: none" id="btnupdate" />
+                    <button class="btn btn-primary" type="button" onclick="resetValidation()">Clear</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @*<script src = "/Scripts/timepikerjs/jquery-1.11.1.min.js" ></script >
+        <script src = "/Scripts/timepikerjs/bootstrap-datepicker.js" ></script >
+
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
+         <script src="https://cdn.rawgit.com/Eonasdan/bootstrap-datetimepicker/e8bddc60e73c1ec2475f827be36e1957af72e2ea/src/js/bootstrap-datetimepicker.js"></script>*@
+
+    @*<script>
+            $(document).ready(function () {
+                $('#datetimepicker1').datetimepicker({
+                    format: 'YYYY/MMM/DD hh:mm A',
+                    //minDate: moment()
+                });
+                //$('.DatePicker').datepicker({
+                //    format: 'dd/M/yyyy',
+                //    endDate: new Date()
+
+                //})
+            })
+        </script>*@
+
+    <script>
+        function isEnable(input) {
+            if ($(input).val() == "Fare") {
+                $("#Rate").attr("readonly", "readonly");
+                $("#Rate").val(0);
+            }
+            else {
+                $("#Rate").attr("readonly", false);
+            }
+        }
+
+        function CheckTravelModeValidation(country_id) {
+        debugger;
+        var checkUrl = '@Url.Action("CheckIstravelmodeExist", "ManageMaster")';
+            var tModeId = $('#TravelModeId').val();
+            var tModeName = $('#TravelModeName').val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ travelModeName: tModeName, travelModeId: tModeId }),
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    alert("Travelmode Name already exists");
+                    $('#TravelModeName').val('');
+                    $('#TravelModeName').focus();
+                }
+            },
+            error: function (data) {
+
+            }
+        });
+
+    }
+
+
+
+
+        function EditTravelMode(TravelModeId) {
+
+        var checkUrl = '@Url.Action("EditTravelMode", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ TravelMode_Id: TravelModeId }),
+            dataType: "json",
+            success: EditTravelModeSucceeded,
+            error: EditCountryFailed
+        });
+
+
+        }
+
+
+        function EditTravelModeSucceeded(result) {
+            debugger;
+
+            $('#frmlabel').text('EDIT TRAVELMODE');
+            $('#TravelModeId').val(result.travelModeId);
+            $('#TravelModeCode').val(result.travelModeCode);
+            $('#TravelModeName').val(result.travelModeName);
+            $('#Description').val(result.description);
+            $('#Rate').val(result.rate);            
+            $("#ModeType").val(result.ModeType).change();
+            if (result.ModeType == "Fare") {
+                $('#Rate').val(result.rate).attr("readonly", true);
+            }
+            if (result.isActive == "Y") {
+                $('#IsActive').prop('checked', true);
+            }
+            else {
+                $('#IsActive').prop('checked', false);
+            }
+
+            $('#btnupdate').show();
+            $('#btnadd').hide();
+          //  $('#countryformtitle').text("UPDATE COUNTRY");
+
+
+        }
+
+        function EditCountryFailed() {
+
+        }
+
+        
+
+        function resetValidation() {
+
+            $("#TravelModeCode-error").html('');
+            $("#TravelModeName-error").html('');
+            $("#Description-error").html('');
+            $("#Rate-error").html('');
+            
+
+        }
+
+    </script>
+
+
+
+
+}

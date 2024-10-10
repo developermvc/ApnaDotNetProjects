@@ -1,0 +1,115 @@
+﻿@model LumaxDMS.Models.Common_UserAreaModel
+
+<link href="~/Scripts/Choosen/Choosen.css" rel="stylesheet" />
+@Html.Hidden("hdnSelectedUserArea")
+<div class="row  row_pt">
+    <div class="col-lg-2 col-xs-12">
+        @Html.DropDownListFor(m => m.C_SelectedAreaType, new SelectList(Model.C_AreaTypeList, "Value", "Text"), new { @class = "form-control po_hdr", @onchange = "return OnChangeAreaType();" })
+        @Html.ValidationMessageFor(model => model.C_SelectedAreaType)
+    </div>
+    <div class="col-lg-10 col-xs-12 forSecondary">
+        <div id="dv_lbArea_1" class="dv_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_CountryList, "AREAID", "AREANAME"), new { @Id = "lbArea_1", @Name = "sbCountry", @Class = "avaiable_mcode chosen-select" })
+        </div>
+        <div id="dv_lbArea_2" class="dv_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_ZoneList, "AREAID", "AREANAME"), new { @Id = "lbArea_2", @Name = "sbZone", @Class = "avaiable_mcode chosen-select" })
+        </div>
+        <div id="dv_lbArea_3" class="dv_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_StateList, "AREAID", "AREANAME"), new { @Id = "lbArea_3", @Name = "sbState", @Class = "avaiable_mcode chosen-select" })
+        </div>
+        <div id="dv_lbArea_4" class="dv_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_TerriotryList, "AREAID", "AREANAME"), new { @Id = "lbArea_4", @Name = "sbTerritory", @Class = "avaiable_mcode chosen-select" })
+        </div>
+        <div id="dv_lbArea_5" class="dv_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_DistrictList, "AREAID", "AREANAME"), new { @Id = "lbArea_5", @Name = "sbDistrict", @Class = "avaiable_mcode chosen-select" })
+        </div>
+        <div id="dv_lbArea_6" class="dv_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_CityList, "AREAID", "AREANAME"), new { @Id = "lbArea_6", @Name = "sbCity", @Class = "avaiable_mcode chosen-select" })
+        </div>
+        <div id="dv_lbArea_7" class="dv_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_PartyList, "AREAID", "AREANAME"), new { @Id = "lbArea_7", @Name = "sbParty", @Class = "avaiable_mcode chosen-select" })
+        </div>
+        <div id="dv_lbArea_8" class="dv_choosen">
+            @Html.ListBoxFor(model => model.C_SelectedIds, new SelectList(Model.C_PartyGroupList, "AREAID", "AREANAME"), new { @Id = "lbArea_8", @Name = "sbPartyGroup", @Class = "avaiable_mcode chosen-select" })
+        </div>
+    </div>
+</div>
+<div class="clearfix">
+    <input type="button" name="btntype" value="Add Row" id="btnadd" onclick="return AddParty();" class="btn btn-primary" />
+</div>
+<script src="~/Content/AutoCompleteJS/prism.js"></script>
+<script src="/Content/AutoCompleteJS/chosen.jquery.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+    var config = {
+        '.chosen-select': { data_placeholder:'ALL'},
+        '.chosen-select-deselect': { allow_single_deselect: true },
+        '.chosen-select-no-single': { disable_search_threshold: 10 },
+        '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+        '.chosen-select-width': { width: "100%" }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+   
+    $('.chosen-select').on("chosen:ready", function () {
+        debugger;
+        OnChangeAreaType();
+    });
+
+    function OnChangeAreaType() {
+
+        var selectedareaid = $('#C_SelectedAreaType').val();
+        $('.dv_choosen').hide();
+        $('#dv_lbArea_' + selectedareaid).show();
+        
+    }
+    $(document).ready(function () {
+        OnChangeAreaType();
+        $('.chosen-container-multi').find('input[type="text"]').attr('value', 'ALL');
+        //$('#lbArea_' + $('#C_SelectedAreaType').val()).find('input[type="text"]').attr('value', 'ALL');
+     
+      //  GetAllUserArea();
+    });
+
+    //function GetAllUserArea() {
+    //    debugger;
+    //    var selectedareaid = $('#C_SelectedAreaType').val();
+    //    $.ajax({
+    //        url: '@Url.Action("GetAllUserAreaByFilterId", "Admin")',
+    //        type: "GET",
+    //        dataType: "JSON",
+    //        data: { UserAreaTypeId: selectedareaid, DataFor: "USER_AREA", AreaId: "" },
+    //        async: false,
+    //        beforeSend: function () { $('Select#lbArea_' + selectedareaid).empty(); }
+    //        //success: function (result) {
+    //        //    $('Select#lbArea_' + selectedareaid)
+    //        //}
+    //    }).done(function (data) {
+    //        response($.map(data, function (item) {
+    //            $('Select#lbArea_' + selectedareaid).append('<option value="' + item.AREAID + '">' + item.AREANAME + '</option>');
+    //        }));
+
+    //        $('Select#lbArea_' + selectedareaid).trigger("chosen:updated");
+    //        $('Select#lbArea_' + selectedareaid).trigger("liszt:updated");
+
+    //    });
+    //}
+
+    $('.chosen-select').on('change', function () {
+        debugger;
+        var id = "";
+        if (id == "") {
+            id = $(this).val();
+        }
+        else {
+            id = id + "," + $(this).val();
+        }
+
+        $('#hdnSelectedUserArea').val(id);
+    });
+
+    
+
+</script>

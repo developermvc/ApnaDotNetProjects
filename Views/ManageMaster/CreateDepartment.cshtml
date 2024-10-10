@@ -1,0 +1,151 @@
+﻿@model LumaxDMS.Models.DepartmentModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Create Department";
+}
+@using (Html.BeginForm("CreateDepartment", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Department_Id)
+
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="departmenttitleid">CREATE DEPARTMENT</div>
+        </div>
+        <div id="dv_displaydetail" class="card-body">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Department Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DepartmentName, new { @class = "form-control from_bg", onblur = "return ValidateDepartmentNameExist(this)" })
+                    @Html.ValidationMessageFor(model => model.DepartmentName)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Department Description:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DepartmentDesc, new { @class = "form-control from_bg" })
+                    @Html.ValidationMessageFor(model => model.DepartmentDesc)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd" class="redlabel">
+                        Remarks:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control from_bg" })
+                    @Html.ValidationMessageFor(model => model.Remarks)
+                </div>
+            </div>
+            <br />
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                    {
+                        <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn-primary" />
+                    }
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                    {
+
+                        <input type="submit" class="btn btn-primary" name="btntype" value="Update" style="display: none"
+                               id="btnupdate" />
+                    }
+                    <input type="reset" class="btn btn-primary" name="btntype" value="Clear" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+<script type="text/javascript">
+
+
+    function EditDepartment(DepartmentId) {
+
+        var checkUrl = '@Url.Action("EditDepartment", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ DepartmentId: DepartmentId }),
+            dataType: "json",
+            success: EditDepartmentSucceeded,
+            error: EditDepartmentFailed
+        });
+
+
+    }
+
+    function EditDepartmentSucceeded(result) {
+        debugger;
+
+        $('#Department_Id').val(result.DEPARTMENT_ID);
+        $('#DepartmentName').val(result.DEPARTMENTNAME);
+        $('#DepartmentDesc').val(result.DEPARTMENTDESC);
+        $('#Remarks').val(result.REMARKS);
+        $('#departmenttitleid').text('UPDATE DEPARTMENT');
+
+        if (result.ISACTIVE == "Y") {
+            $('#IsActive').prop('checked', true);
+        }
+        else {
+            $('#IsActive').prop('checked', false);
+        }
+
+        $('#btnupdate').show();
+        $('#btnadd').hide();
+
+
+    }
+
+    function EditDepartmentFailed() {
+
+    }
+    function ValidateDepartmentNameExist(element) {
+        debugger;
+        var departmentName = $(element).val();
+        var departmentId = $('#Department_Id').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("CheckIsDepartmenExist", "ManageMaster")',
+            data: JSON.stringify({ departmentName: departmentName, departmentId: departmentId }),
+            dataType: "json",
+            success: function (data) {
+                if (data == true) {
+                    alert("Department Name already exists");
+                    $('#DepartmentName').val('');
+                    $('#DepartmentName').focus();
+                }
+            },
+            error: function (data) {
+                // throw ex;
+            }
+
+        });
+    }
+
+
+</script>

@@ -1,0 +1,123 @@
+﻿@model LumaxDMS.Models.ComplaintModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "ComplaintList";
+}
+
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>COMPLAINT LIST</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+
+                    <div class="col-sm-12 col-md-12">
+                        @*<div class="panel-heading" style="padding: 10px;">*@
+                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                        {
+                            <a class="mb-1 btn btn-success pull-right right_bottom" href="/Complaint/CreateComplaint?@Constants.HASH_COMPLAINT">Create New</a>
+                        }
+
+                        <table id="ComplaintList" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        Complaint No.
+                                    </th>
+                                    <th>
+                                        Complaint Date
+                                    </th>
+                                    <th>
+                                        Complaint Type
+                                    </th>
+                                    <th>
+                                        Customer Type
+                                    </th>
+                                    <th>
+                                        Case Type
+                                    </th>
+                                    <th>
+                                        Complaint Status
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ComplaintList)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.COMPLAINTCODE
+                                        </td>
+                                        <td>
+                                            @Html.DisplayDate(@item.COMPLAINTDATE)
+                                        </td>
+                                        <td>
+                                            @item.ComplaintTypeName
+                                        </td>
+                                        <td>
+                                            @item.ProspectTypeName
+                                        </td>
+                                        <td>
+                                            @item.CaseTypeName
+                                        </td>
+                                        <td>
+                                            @item.DisplayStatus
+                                        </td>
+                                        <td>
+                                            @Html.HiddenFor(m => m.ComplaintList[0].COMPLAINTID, new { id = "hdnComplaintId" })
+                                            @if (Model.PermissionNameList.Contains(Constants.PermissionName.VIEW) && item.Action == "VIEW")
+                                            {
+                                                <a href="/Complaint/CreateComplaint?ComplaintId=@item.COMPLAINTID&ActionName=VIEW&@Constants.HASH_COMPLAINT" title="View Complaint">
+                                                    <i class="icon-eye"></i>
+                                                </a>
+                                            }
+                                            else if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT) && item.Action == "EDIT")
+                                            {
+                                                <a href="/Complaint/CreateComplaint?ComplaintId=@item.COMPLAINTID&ActionName=EDIT&@Constants.HASH_COMPLAINT" title="View Complaint">
+                                                    <i class="icon-pencil"></i>
+                                                </a>
+                                            }
+                                            @if (item.DisplayStatus.ToUpper()== "REJECTED" || item.DisplayStatus.ToUpper() == "APPROVED")
+                                            {
+                                                <a href="/Complaint/PrintComplaint?ComplaintId=@item.COMPLAINTID" target="_blank" title="Print Complaint">
+                                                    <i class="icon-cloud-download marginsm"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#ComplaintList').DataTable({
+                "order": [[1, "desc"]],
+                "aoColumns": [
+                    null,
+                    { "sType": "date" },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            });
+        });
+
+    </script>
+}
+

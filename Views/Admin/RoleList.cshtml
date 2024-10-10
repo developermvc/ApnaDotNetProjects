@@ -1,0 +1,106 @@
+﻿@model LumaxDMS.Models.RoleModel
+@using LumaxDMS.AppCode
+@{
+                /**/
+
+
+                ViewBag.Title = "RoleList";
+}
+@*<section class="section-container">*@
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">ROLE MANAGEMENT</div>
+    </div>
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+                <div class="col-sm-12 col-md-12 right_bottom">
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                    {
+                        <a class="mb-1 btn btn-success pull-right" href="/Admin/CreateRole?@Constants.HASH_ADMIN">Create New</a>
+                    }
+
+                    <table id="roletbl" class="table table-striped table-bordered dt-responsive nowrap" style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    Role Name
+                                </th>
+                                <th>
+                                    Role Description
+                                </th>
+                                <th>Status</th>
+                                <th>
+                                    Menu Name
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.RoleList)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.ROLENAME
+                                    </td>
+                                    <td>
+                                        @item.ROLEDESCRIPTION
+                                    </td>
+                                    <td> @Html.DisplayStatus(@item.ISACTIVE)</td>
+                                    <td>
+                                        @item.MenuName
+                                    </td>
+                                    <td>
+                                        @Html.HiddenFor(m => m.RoleList[0].ROLE_ID, new { id = "hdnroleid" })
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                        {
+                                            <a href="/Admin/CreateRole?RoleId=@item.ROLE_ID&ActionName=edit&@Constants.HASH_ADMIN" title="Edit Role"><i class="fa fa-pencil"></i></a>
+                                        }
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                        {
+                                            <a href="#" title="Delete Role" onclick="return DeleteRole('@item.ROLE_ID')">
+                                                <i class="fa fa-trash bg_red"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm("DeleteRole", "Admin", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.role_id, new { @Id = "Del_RoleId" });
+}
+
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#roletbl').DataTable();
+        });
+
+        function DeleteRole(id) {
+            $('.modal-title').html("DELETE ROLE");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_RoleId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+    </script>
+}

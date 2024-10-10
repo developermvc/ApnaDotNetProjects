@@ -1,0 +1,15 @@
+2019-04-24 10:17:21,755 DEBUG DebugLogger - Insert PO end for po number WOHR1904240001
+2019-04-24 18:59:25,363 DEBUG DebugLogger - Insert PO end for po number WOBR1904240002
+2019-04-24 18:59:25,528 DEBUG DebugLogger - InterimReportController.cs Microsoft.Reporting.WebForms.MissingReportSourceException: The source of the report definition has not been specified
+   at Microsoft.Reporting.WebForms.LocalReport.EnsureExecutionSession()
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, CreateAndRegisterStream createStreamCallback, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.Render(String format, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at LumaxDMS.Controllers.SalesOrderController.SavePoAttachmentFile(String poNumber) in D:\Projects\LumaxNew\LumaxDMS\Controllers\SalesOrderController.cs:line 943
+2019-04-24 19:09:15,847 DEBUG DebugLogger - Insert PO end for po number WOBR1904240003
+2019-04-24 19:09:15,964 DEBUG DebugLogger - InterimReportController.cs Microsoft.Reporting.WebForms.MissingReportSourceException: The source of the report definition has not been specified
+   at Microsoft.Reporting.WebForms.LocalReport.EnsureExecutionSession()
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, CreateAndRegisterStream createStreamCallback, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.Render(String format, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at LumaxDMS.Controllers.SalesOrderController.SavePoAttachmentFile(String poNumber) in D:\Projects\LumaxNew\LumaxDMS\Controllers\SalesOrderController.cs:line 943

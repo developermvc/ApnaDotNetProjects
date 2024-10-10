@@ -1,0 +1,227 @@
+﻿@model LumaxDMS.Models.DashboardModel
+
+<style type="text/css">
+    .margin4 {
+        margin-top: -4%;
+    }
+
+
+    tbody {
+        display: block;
+        max-height: 260px;
+        overflow-y: scroll;
+    }
+
+    table td {
+        font-size: 12px !important;
+        padding: 1px !important;
+    }
+
+        thead, tfoot, tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+            tfoot td {
+                position: -webkit-sticky;
+                position: sticky;
+                bottom: 0;
+                border: 1px solid #ddd;
+                background: #eee;
+            }
+
+    /*.nav-tabs > .nav-item > .nav-link {
+        font-weight: 700;
+        color: #fff;
+        background-color: #555;
+        margin: 0;
+        border: 1px solid #dde6e9;
+        border-radius: 0;
+        padding: 10px 20px;
+    }*/
+
+    .table > thead > tr > th {
+        vertical-align: middle !important;
+        text-align: center !important;
+    }
+</style>
+<ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+        <a id="al" class="nav-link" font-size:inherit" data-toggle="tab" data-name="ALL" href="#"  onclick="Showfig(this)">ALL</a>
+    </li>
+    <li class="nav-item">
+        <a id="2w" class="nav-link" font-size:inherit" data-toggle="tab" data-name="2W" href="#" onclick="Showfig(this)">2W</a>
+    </li>
+    <li class="nav-item">
+        <a id="4w" class="nav-link" font-size:inherit" data-toggle="tab" data-name="4W" href="#" onclick="Showfig(this)">4W</a>
+    </li>
+
+</ul>
+<div class="row row_pt">
+    
+    <div class="col-md-6" id="dashboardAll">
+        <div class="card card-default" id="OrderAndSale">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+                    Order and Sale (Lacs)
+                </div>
+            </div>
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_ordersaleid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" id="dashboard4w" style="display:none;">
+        <div class="card card-default">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+                    4W
+                </div>
+            </div>
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_ordersaleid_1"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" id="dashboard2w" style="display:none;">
+        <div class="card card-default">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+                    2W
+                </div>
+            </div>
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_ordersaleid_2"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-default" style="display:block!important">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+                    Budget Achievement
+                </div>
+            </div>
+
+            <div class="col-md-6" style="float:left!important;">
+                <div class="card bg-info-light pt-2 b0" style="margin: 20px 0 0 0!important;">
+                    <div class="px-2">
+                        <div class="margin4">Budget : <label id="lblbudget1"></label> </div>
+                        @*<div class="margin4">Budget : @Model.BudgetSaleDashboard.TOTALBUDGET</div>*@
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-md-6" style="float:left!important;">
+                <div class="card bg-info-light pt-2 b0" style="margin: 20px 0 0 0!important;">
+                    <div class="px-2">
+
+                        <div class="margin4">Sale : <lable id="lblsale"></lable></div>
+                    </div>
+
+                </div>
+            </div>
+            @*<input id="totalbudgetachievement" type="text" style="display:none;" value="@Model.BudgetSaleDashboard.ACHIEVEMENT"/>*@
+
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_segmentbudgetid" style="margin-left:15%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-default" style="display:block!important">
+            <div class="card-header card_bg">
+                <div class="card-title card_tittle2" style="text-align:center">
+
+                    Payment Target vs Collection
+
+                </div>
+            </div>
+
+            <div class="" style="float:left!important; width:48%;">
+                <div class="card bg-info-light pt-2 b0" style="margin: 20px 0 0 10px!important; ">
+                    <div class="px-2">
+
+                        <div class="margin4">Budget : <label id="lblbudget2"></label></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="" style="float:left!important; width:48%;">
+                <div class="card bg-info-light pt-2 b0" style="margin: 20px 0 0 10px!important; ">
+                    <div class="px-2">
+
+                        <div class="margin4">Collect : <label id="lblcollection"></label></div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div id="dv_displaydetail" class="card-body">
+                <div id="chart_segmentpaymentid" style="margin-left:15%"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@*<div class="row row_pt">
+   
+   
+
+
+</div>*@
+
+ 
+
+<div class="card card_ps" id="dashboardcatlist" style="margin-top:8px;">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>Category Wise List</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+
+                    <div id="chart_categorywiseid" class="" style="overflow:scroll">
+                        <table id="categorywisedatatable" class="table table-striped table-bordered dt-responsive nowrap" style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th style="text-align:left;">PRODUCT</th>
+                                    <th style="text-align:left;">TARGET</th>
+                                    <th style="text-align:left;">ORDER-PENDING</th>
+                                    <th style="text-align:left;">ORDER-CURRENT</th>
+                                    <th style="text-align:left;">NET-ORDER</th>
+                                    <th style="text-align:left;">DIN-CURRENT</th>
+                                    <th style="text-align:left;">SALE-INVOICE</th>
+                                    <th style="text-align:left;">NET-SALE</th>
+                                    <th style="text-align:left;">DISPATCH</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot style="width:99.3%">
+                                <tr style="font-weight: bold; bottom: 0; border: 1px solid #ddd; background: #eee; position: sticky; position: -webkit-sticky;">
+                                    <td class="col-xs-2">Total</td>
+                                    <td class="col-xs-2"><span id="ttarget"></span></td>
+                                    <td class="col-xs-2"><span id="tordpen"></span></td>
+                                    <td class="col-xs-1"><span id="tordcurnt"></span></td>
+                                    <td class="col-xs-1"><span id="tnetord"></span></td>
+                                    <td class="col-xs-1"><span id="tdincurrent"></span></td>
+                                    <td class="col-xs-1"><span id="tinvc"></span></td>
+                                    <td class="col-xs-1"><span id="tnetsale"></span></td>
+                                    <td class="col-xs-1"><span id="tdispatch"></span></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    
+</script>

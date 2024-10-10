@@ -1,0 +1,35 @@
+2019-04-19 12:47:14,318 DEBUG DebugLogger - Insert PO end for po number WOBR1904190001
+2019-04-19 12:47:14,326 DEBUG DebugLogger - Insert PO to SAP start for po number WOBR1904190001
+2019-04-19 12:47:14,424 DEBUG DebugLogger - Po Send by dealer name ANJANA ENTERPRISES
+2019-04-19 12:47:14,436 DEBUG DebugLogger - found po details success 3
+2019-04-19 12:47:35,538 DEBUG DebugLogger - insert po to sap success with message 
+2019-04-19 12:47:35,821 DEBUG DebugLogger - Insert PO to SAP start for po number WOBR1904190001
+2019-04-19 12:47:35,866 DEBUG DebugLogger - Po Send by dealer name ANJANA ENTERPRISES
+2019-04-19 12:47:35,871 DEBUG DebugLogger - found po details success 3
+2019-04-19 12:47:35,873 DEBUG DebugLogger - insert po to sap success with message 
+2019-04-19 12:47:35,884 DEBUG DebugLogger - Fail 
+2019-04-19 12:50:36,734 DEBUG DebugLogger - Insert PO end for po number WOGJ1904190002
+2019-04-19 12:50:36,734 DEBUG DebugLogger - Insert PO to SAP start for po number WOGJ1904190002
+2019-04-19 12:50:36,779 DEBUG DebugLogger - Po Send by dealer name BHAYGLAXMI AUTO SALES
+2019-04-19 12:50:36,784 DEBUG DebugLogger - found po details success 2
+2019-04-19 12:50:36,784 DEBUG DebugLogger - insert po to sap success with message 
+2019-04-19 12:50:36,786 DEBUG DebugLogger - Fail 
+2019-04-19 12:50:36,786 DEBUG DebugLogger - Insert PO to SAP start for po number WOGJ1904190002
+2019-04-19 12:50:36,831 DEBUG DebugLogger - Po Send by dealer name BHAYGLAXMI AUTO SALES
+2019-04-19 12:50:36,835 DEBUG DebugLogger - found po details success 2
+2019-04-19 12:50:36,836 DEBUG DebugLogger - insert po to sap success with message 
+2019-04-19 12:50:36,838 DEBUG DebugLogger - Fail 
+2019-04-19 12:57:12,422 DEBUG DebugLogger - Insert PO end for po number WOBR1904190003
+2019-04-19 12:57:12,429 DEBUG DebugLogger - Insert PO to SAP start for po number WOBR1904190003
+2019-04-19 12:57:12,542 DEBUG DebugLogger - Po Send by dealer name ANJANA ENTERPRISES
+2019-04-19 12:57:12,553 DEBUG DebugLogger - found po details success 2
+2019-04-19 12:57:33,662 DEBUG DebugLogger - insert po to sap success with message 
+2019-04-19 12:57:33,924 DEBUG DebugLogger - Insert PO to SAP start for po number WOBR1904190003
+2019-04-19 12:57:33,971 DEBUG DebugLogger - Po Send by dealer name ANJANA ENTERPRISES
+2019-04-19 12:57:33,976 DEBUG DebugLogger - found po details success 2
+2019-04-19 12:57:33,978 DEBUG DebugLogger - insert po to sap success with message 
+2019-04-19 12:57:33,989 DEBUG DebugLogger - Fail 
+2019-04-19 18:20:55,906 DEBUG DebugLogger - Insert PO end for po number WOUP1904190004
+2019-04-19 18:22:39,327 DEBUG DebugLogger - Insert claim to SAP start for claim number CLM1904190003
+2019-04-19 18:37:17,190 DEBUG DebugLogger - Insert PO end for po number WOUP1904190005
+2019-04-19 18:38:06,927 DEBUG DebugLogger - Insert claim to SAP start for claim number CLM1904190004

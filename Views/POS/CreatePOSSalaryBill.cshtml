@@ -1,0 +1,853 @@
+﻿@model LumaxDMS.Models.POSBILLModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "Create Part Of salary Bills";
+    var counter = 1;
+}
+
+@using (Html.BeginForm("CreatePOSSalaryBill", "POS", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.POSBILLHDRID, new { @Id = "POSBILLHDRID", @Name = "POSBILLHDRID" })
+    @Html.DropDownList("HiddenEmpId", new SelectList(Model.EmployeeList, "EMP_ID", "FullName"), "--Select--", new { @class = "form-control", @Id = "HiddenEmpId", @Name = "HiddenEmpId", @Style = "display:none" })
+    @Html.DropDownList("HiddenUserId", new SelectList(Model.UserList, "USER_ID", "USERCODE"), "--Select--", new { @class = "form-control", @Id = "HiddenUserId", @Name = "HiddenUserId", @Style = "display:none" })
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName == "view")
+                    {
+                        <span>VIEW PART OF SALARY BILLS</span>
+                    }
+                    else
+                    {
+                        <span>CREATE PART OF SALARY BILLS</span>
+                    }
+                </div>
+                <div class="card-body custom_responsive2">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Ref No.:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.RefNo, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Ref Date:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="input-group date" id="todatepicker1">
+                                @Html.TextBoxFor(model => model.REFDATE, new { @class = "form-control", @readonly = "readonly" })
+
+                                @*<span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>*@
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Employee Name:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(model => model.EmployeeId, new SelectList(Model.EmployeeList, "EMP_ID", "DISPLAYEMPNAME", Model.EmployeeId), "--Select--", new { @Class = "partychosen-select", @onchange = "return GetEmpDetails();" })
+                            @Html.ValidationMessageFor(model => model.EmployeeId)
+                            @Html.HiddenFor(model => model.EmployeeId, new { @Id = "hdnEmployeeId", @Name = "hdnEmployeeId" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Hd Qtr:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.HdQtr, new { @class = "form-control", @readonly = "readonly" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Designation:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(model => model.DesignationId, new SelectList(Model.DesignationList, "DESIGNATION_ID", "DESIGNATIONNAME", Model.DesignationId), "--Select--", new { @Class = "form-control", @disabled = "disabled" })
+                            @*@Html.TextBoxFor(model => model.Category, new { @class = "form-control", @readonly = "readonly" })*@
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                DOJ:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="input-group date" id="todatepicker1">
+                                @Html.TextBoxFor(model => model.DOJ, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                DOL:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="input-group date" id="todatepicker1">
+                                @Html.TextBoxFor(model => model.DOL, new { @class = "form-control", @readonly = "readonly" })
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Financial Year:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(model => model.FINACIALID, new SelectList(Model.FinancialYearList, "FINACIALID", "FINACIALYEAR", Model.FINACIALID), "--Select--", new { @Class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.FINACIALID)
+                            @Html.HiddenFor(model => model.FINACIALID, new { @Id = "hdnFinancialId", @Name = "hdnFinancialId" })
+                        </div>
+                        <div class="col-lg-1 col-xs-12">
+                            <label for="pwd">
+                                Upload Bill Attachments:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            <a href="##" class="btn btn-primary" onclick="return DownloadDocumentFile('@Model.Attachment');"><i class="fa fa-download" style="padding: 4px 0px;"></i></a>
+                            @Html.TextBoxFor(model => model.Attachment, new { type = "file", @multiple = "multiple", @Id = "attachment", @Name = "attachment", @onchange = "ValidateFileType(this);", @class = "fileInputProspect btn btn-primary", @style = "padding: 7px 5px; width: 204px;" })
+                        </div>
+                        @*<div class="col-lg-2 col-xs-12">
+                                <label for="pwd">
+                                    Month Of:
+                                </label>
+                            </div>
+                            <div class="col-lg-2 col-xs-12">
+                                @Html.DropDownListFor(model => model.Month, new SelectList(Model.MonthList, "Value", "Text", Model.Month), "--select--", new { @class = "form-control", @onchange = "return GetEmpDetailsByEmpId(this);" })
+                                @Html.ValidationMessageFor(model=>model.Month)
+                            </div>*@
+
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Remarks:
+                            </label>
+                        </div>
+                        <div class="col-lg-10 col-xs-12">
+                            @Html.TextAreaFor(model => model.RemarksHdr, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="card-body">
+                            <table id="POSSalarybilltbl" class="table table-striped table-bordered dt-responsive nowrap"
+                                   style="width: 100%">
+                                <thead class="thead-lights">
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" id="chkSelectAllposbill" class="pull-left" />
+                                            <a href="#" onclick="return removeCheckedposbill();" title="Remove Checked Rows"><i class="fa fa-trash bg_red"></i></a>
+                                        </th>
+                                        <th>
+                                            From Month
+                                        </th>
+                                        <th>
+                                            To Month
+                                        </th>
+                                        <th>
+                                            Account
+                                        </th>
+                                        <th>
+                                            Expense Amount
+                                        </th>
+                                        <th>
+                                            Remark
+                                        </th>
+                                        <th>
+                                            Receipt/Declr Date
+                                        </th>
+                                        <th>
+                                            Received By
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.POS_Bill_DtlList != null)
+                                {
+                                    <tbody>
+                                        @Html.Hidden("POSBillDtlCount", Model.POS_Bill_DtlList.Count(), new { @Name = "POSBillDtlCount" })
+                                        @foreach (var item in Model.POS_Bill_DtlList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" />&nbsp;
+                                                    @Html.HiddenFor(m => item.POSBILLDTL, new { @Id = "hdnPOSBILLHDRID_" + counter, @Name = "hdnPOSBILLHDRID_" + counter })
+                                                    @Html.HiddenFor(m=> item.STATUS, new { @Id = "hdnStatus_"+counter, @Name ="hdnStatus_"+counter})
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.FROMMONTH, new SelectList(Model.MonthList, "Value", "Text", item.FROMMONTH), "--select--", new { @class = "form-control", @Id = "FromMonth_" + counter, @Name = "FromMonth_" + counter, @onchange = "return GetEmpDetailsByEmpId(" + counter + ");" })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.TOMONTH, new SelectList(Model.MonthList, "Value", "Text", item.TOMONTH), "--select--", new { @class = "form-control", @Id = "ToMonth_" + counter, @Name = "ToMonth_" + counter, @onchange = "return GetEmpDetailsByEmpId(" + counter + ");" })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.ACCOUNTID, new SelectList(Model.AccountList, "ACCOUNTID", "ACCOUNTNAME", item.ACCOUNTID), "--select--", new { @class = "form-control", @Id = "AccountId_" + counter, @Name = "AccountId_" + counter, @onchange = "return GetEmpDetailsByEmpId(" + counter + ");" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.EXPAMOUNT, new { @class = "form-control decimal", @Id = "Amount_" + counter, @Style = "text-align:right;", @maxlength = "13", @Name = "Amount_" + counter })  @*, @onchange="return ValidateExpenseAmount(this);"*@
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.REMARKS, new { @class = "form-control", @Id = "Remarks_" + counter, @Name = "Remarks_" + counter })
+                                                </td>
+                                                <td>
+                                                    <div class="input-group date" id="todatepicker">
+                                                        @Html.TextBoxFor(m => item.RECEIPTDATE, new { @class = "form-control ReceiptDate", @Id = "ReceivedDate_" + counter, @Name = "ReceivedDate_" + counter })
+
+                                                        <span class="input-group-append input-group-addon">
+                                                            <i class="input-group-text2 fa fa-calendar"></i>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.RECIVEDBYID, new SelectList(Model.UserList, "USER_ID", "USERCODE", item.RECIVEDBYID), "--select--", new { @class = "partychosen-select", @Id = "ReceivedBy_" + counter, @Name = "ReceivedBy_" + counter })
+                                                </td>
+                                            </tr>
+                                            counter++;
+                                        }
+                                    </tbody>
+                                }
+
+                            </table>
+                            <br />
+                            <div class="clearfix">
+                                <input type="button" name="btntype" value="Add Row" id="btnaddrow" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+                            <input type="submit" name="btntype" value="Save" onclick="return CheckValidate();" id="btnadd" class="btn btn-primary" />
+                            <input type="submit" name="btntype" value="Submit" onclick="return CheckValidate();" id="btnadd" class="btn btn-primary" />
+                            <input type="reset" class="btn btn-primary" name="btntype" onclick="return Clear()" value="Clear" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+{
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+
+    <script type="text/javascript">
+        var valid = true;
+        var numrows = Number(@counter);
+        var serialnumber = 1;
+        var rowsarray = ["0", "0"];
+
+        function OpenDatePicker() {
+            $('.datepicker').datepicker({
+                format: 'dd/M/yyyy'
+            });
+            //$('.datepicker').datepicker("hide");
+
+        }
+        $(document).ready(function () {
+            $('.partychosen-select').chosen();
+            OpenDatePicker();
+            //if ($('#EmployeeId').val() > 0) {
+            //    $('#EmployeeId').prop('disabled', true).trigger("chosen:updated");
+            //}
+            $('#POSSalarybilltbl tbody tr').each(function (i, data) {
+                if ($(this).find('#hdnStatus_' + (i + 1)).val() == 3 || $(this).find('#hdnStatus_' + (i + 1)).val() == 2) {
+                    $(this).find('select').attr('disabled', 'disabled');
+                    $(this).find('input').attr('readonly', 'readonly');
+                    $(this).find('.partychosen-select').prop('disabled', true).trigger("chosen:updated");
+                }
+            });
+            //alert(new Date().toDateString());
+            $('#REFDATE').val(formatDate(new Date().toDateString()));
+            //$('#REFDATE').datepicker('setDate', new Date()).trigger('change');
+            var financialyear = "";
+            if (new Date().getMonth() + 1 < 4) {
+                financialyear = (new Date().getUTCFullYear() - 1) + "-" + (new Date().getUTCFullYear());
+            }
+            else {
+                financialyear = (new Date().getUTCFullYear()) + "-" + (new Date().getUTCFullYear() + 1)
+            }
+            if ($('#FINACIALID').val() > 0) {
+                $('#FINACIALID').prop('disabled', true);
+            }
+            else {
+                $("#FINACIALID option:contains(" + financialyear + ")").attr('selected', 'selected');
+                $("#FINACIALID").prop('disabled', true);
+                $('#hdnFinancialId').val($("#FINACIALID").val());
+            }
+            //$("#FINACIALID option:contains(" + financialyear + ")").attr('selected', 'selected');
+            $('#FinancialYear').val(financialyear);
+            $('.ReceiptDate').datepicker({
+                format: 'dd/M/yyyy',
+                endDate: "-1d"
+            });
+
+            $('#DOJ').val(formatDate($('#DOJ').val()));
+
+            if ($('#DOL').val() != "") {
+                $('#DOL').val(formatDate($('#DOL').val()));
+            }
+            if ($('.ReceiptDate').val() != "") {
+                $('.ReceiptDate').val(formatDate($('.ReceiptDate').val()));
+            }
+            if ('@Model.IsAdmin' != "Y") {
+                $('#EmployeeId option').attr('selected', 'selected').trigger("chosen:updated");
+                $('#EmployeeId').prop('disabled', true).trigger("chosen:updated");
+            } else {
+                GetEmpDetails();
+            }
+            if ('@Model.ActionName' == "view") {
+                $('input').attr('disabled', 'disabled');
+                $('textarea').attr('disabled', 'disabled');
+                $('select').attr('disabled', 'disabled');
+                $('select').prop('disabled', true).trigger("chosen:updated");
+                $('input[type="submit"]').hide();
+                $('input[type="reset"]').hide();
+                $('input[type="button"]').hide();
+            }
+
+        });
+
+        function GetEmpDetailsByEmpId(rounumber) {
+            debugger;
+            var valid = true;
+            var ct = 0;
+            var id = rounumber;
+            var checkUrl = '@Url.Action("GetByEmployeeId", "POS")';
+
+            if ($('#FromMonth_' + id).val() > (new Date().getMonth() + 1) || $('#ToMonth_' + id).val() > (new Date().getMonth() + 1)) {
+                alert("You can not add future month expense");
+                $('#FromMonth_' + id).val("");
+                $('#ToMonth_' + id).val("");
+            }
+
+            if (($('#FromMonth_' + id).val() < 4 && ($('#ToMonth_' + id).val() < $('#FromMonth_' + id).val())) || ($('#FromMonth_' + id).val() < 4 && $('#ToMonth_' + id).val() >= 4)) {
+                $('#ToMonth_' + id).val("");
+            }
+
+            $('#POSSalarybilltbl tbody tr').each(function (i, data) {
+                if ($('#FromMonth_' + (i + 1)).attr('id') != undefined && $('#ToMonth_' + (i + 1)).attr('id') != undefined && $('#FromMonth_' + (i + 1)).attr('id') != $('#FromMonth_' + id).attr('id')
+                    && $('#FromMonth_' + id).val() != "" && $('#ToMonth_' + id).val() != "") {
+                    if (($('#FromMonth_' + (i + 1)).val() >= $('#FromMonth_' + id).val() && $('#ToMonth_' + (i + 1)).val() <= $('#ToMonth_' + id).val()) || ($('#FromMonth_' + (i + 1)).val() <= $('#FromMonth_' + id).val() && $('#ToMonth_' + (i + 1)).val() <= $('#ToMonth_' + id).val())) {
+                        ct = ct + 1;
+                    if (ct > 0) {
+                        alert("Selected from month and to month already lies in between any previous selected months");
+                        $('#FromMonth_' + id).val("");
+                        $('#ToMonth_' + id).val("");
+                        valid = false;
+                        }
+                    }
+                }
+            });
+
+            if ($('#EmployeeId').val() > 0) {
+                    var checkUrl3 = '@Url.Action("ValidateEmpSalaryBillExist", "POS")';
+                    $.ajax({
+                       type: "POST",
+                        url: checkUrl3,
+                        data: { EmployeeId: $('#EmployeeId').val(), financialyear: $('#FINACIALID').val(), POSBILLHDRID: $('#POSBILLHDRID').val() },
+                        dataType: "JSON",
+                        success: function (result) {
+                           if (result == true) {
+                                alert("Employee salary bill already mapped with this financial year");
+                                $('#EmployeeId').val("").trigger("chosen:updated");
+                               valid = false;
+                            }
+                            if (valid == true) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: checkUrl,
+                                    data: { EmployeeId: $('#EmployeeId').val() },
+                                    dataType: "JSON",
+                                    success: function (result) {
+                                        if (result != null) {
+                                            $('#HdQtr').val(JSON.parse(result).CityName);
+                                            //$('#Category').val(JSON.parse(result).CATEGORY);
+                                            $('#DesignationId').val(JSON.parse(result).DESIGNATION_ID);
+                                            $('#DOJ').val(JSON.parse(result).JOININGDATE != null ? formatDate(JSON.parse(result).JOININGDATE) : "");
+                                            $('#DOL').val(JSON.parse(result).LEAVINGDATE != null ? formatDate(JSON.parse(result).LEAVINGDATE) : "");
+                                            //$('#DOJ').datepicker({ dateFormat: 'd/M/yyyy','setDate': new Date(JSON.parse(result).JOININGDATE) }).trigger('change');
+                                            //$('#DOL').datepicker('setDate', new Date(JSON.parse(result).LEAVINGDATE)).trigger('change');
+
+                                        }
+                                    },
+                                    error: function (result) {
+
+                                    }
+                                });
+                            }
+                        },
+                        error: function (result) {
+
+                         }
+                });
+
+                
+
+
+
+                if ($('#AccountId_' + id).val() > 0) {
+                    $('#POSSalarybilltbl tbody tr').each(function (i, data) {
+                        if ($('#AccountId_' + (i + 1)).attr('id') != undefined && $('#AccountId_' + (i + 1)).attr('id') != $('#AccountId_' + id).attr('id')) {
+                            if ($('#AccountId_' + (i + 1)).val() == $('#AccountId_' + id).val() && $('#FromMonth_' + (i + 1)).val() == $('#FromMonth_' + id).val() && $('#ToMonth_' + (i+1)).val() == $('#ToMonth_' + id).val()) {
+                                alert("Account already selected");
+                                $('#AccountId_' + id).val("");
+                                valid = false;
+                            }
+                        }
+                    });
+                    if (valid == true && $('#FromMonth_' + id).val() != "" && $('#ToMonth_' + id).val() != "") {
+                        var checkUrl2 = '@Url.Action("ValidateEmpExpenseExist", "POS")';
+                        $.ajax({
+                            type: "POST",
+                            url: checkUrl2,
+                            data: { EmployeeId: $('#EmployeeId').val(), financialyear: $('#FINACIALID').val(), AccountId: $('#AccountId_' + id).val(), FromMonth: $('#FromMonth_' + id).val(), ToMonth: $('#ToMonth_' + id).val() },
+                            dataType: "JSON",
+                            success: function (result) {
+                                if (result == true) {
+                                    alert("Employee expense not added");
+                                    $('#Amount_' + id).val("");
+                                    $('#AccountId_' + id).val("");
+                                    valid = false;
+                                }
+                            },
+                            error: function (result) {
+
+                            }
+                        });
+                    }
+
+                }
+            }
+            return valid;
+
+        }
+
+        function ValidateFileType(obj) {
+            var valid = true;
+            var file = $(obj).val();
+            var filenameAttr = $(obj).attr('name');
+            var fileSize = 0;
+            //var file1 = $(obj)[0].files[0];
+            var fileType = "";
+            var validImageTypes = ["image/gif", "image/jpeg", "image/png", "application/pdf"];
+
+            $($(obj)[0].files).each(function () {
+                fileType = $(this)[0].type;
+                if ($.inArray(fileType, validImageTypes) < 0) {
+                    alert("Please upload image and pdf type file only");
+                    $(obj).val("");
+                    valid = false;
+                    return valid;
+                }
+            });
+
+            if (file != "") {
+                fileSize = GetFileSize($(obj).attr('id'));
+                if (fileSize > 5.0) {
+                    alert("Please upload files upto 5 mb only");
+                    return false;
+
+
+                }
+            }
+            //if (valid) {
+            //        $($(obj)[0].files).each(function () {
+            //            fileSize += $(this)[0].size;
+            //        });
+            //        if (fileSize / 1024 / 1024 > 2) {
+            //            alert("Please upload file upto 2 mb only");
+            //            $(obj).val("");
+            //            valid = false;
+            //            return valid;
+            //        }
+            //        else {
+            //            return valid;
+            //        }
+
+
+            //}
+            return valid;
+        }
+
+        function GetFileSize(fileField) {
+
+            try {
+                var fileSize = 0;
+                //for IE
+                if (navigator.userAgent.match(/msie/i)) {
+
+                    //before making an object of ActiveXObject, 
+                    //please make sure ActiveX is enabled in your IE browser
+                    //var objFSO = new ActiveXObject("Scripting.FileSystemObject"); 
+
+                    //var filePath = $("#"+fileField)[0].value;
+                    //var objFile = objFSO.getFile(filePath);
+                    //fileSize = objFile.size; 
+                    //size in kb
+                    //fileSize = fileSize / 1048576; 
+                    //size in mb
+                    fileSize = fileSize;
+                }
+                //for FF, Safari, Opeara and Others
+                else {
+                    fileSize = $("#" + fileField)[0].files[0].size //size in kb
+                    fileSize = fileSize / 1048576; //size in mb 
+                }
+                return fileSize;
+            }
+            catch (e) {
+                alert("Error is :" + e);
+            }
+        }
+
+        function DownloadDocumentFile(FileType) {
+            var checkUrl = '@Url.Action("CheckForFiles", "POS")';
+
+                $.ajax({
+                    type: "POST",
+                    url: checkUrl,
+                    data: { FileType: FileType },
+                    dataType: "JSON",
+                    success: function (result) {
+                        if (result && result.length > 0) {
+                            var myurl = '@Url.Action("DownloadFile", "POS")';
+                            var postarray = JSON.stringify(result);
+                            window.location.href = myurl + "?path=" + postarray + "@Constants.HASH_POS";
+                        }
+                        else {
+                            alert("File not exist");
+                        }
+                    },
+                    error: function (result) {
+                        console.log(result);
+                    }
+                });
+
+        }
+
+        @*function ValidateExpenseAmount(obj) {
+            var valid = true;
+            var ExpAmount = $(obj).val();
+            var id = $(obj).attr('id').split('_');
+            var checkUrl = '@Url.Action("ValidateEmpExpense", "POS")';
+            $.ajax({
+                type: "POST",
+                url: checkUrl,
+                data: { EmployeeId: Number($('#EmployeeId').val()), FinancialYearId: Number($('#FINACIALID').val()), FromMonth: $('#FromMonth_' + id[1]).val(), ToMonth: $('#ToMonth_' + id[1]).val(), AccountId: Number($('#AccountId_' + id[1]).val()), ExpAmount: Number(ExpAmount) },
+                dataType: "JSON",
+                success: function (result) {
+                    if (result == true) {
+                        alert("Employee expense amount exceeded");
+                        $(obj).val("");
+                        valid = false;
+                    }
+                    else {
+                       valid = GetEmpDetailsByEmpId(obj);
+                    }
+                },
+                error: function (result) {
+
+                }
+            });
+            return valid;
+        }*@
+
+        $('#btnaddrow').on('click', function () {
+            var validate = CheckAggregate();
+            if (validate) {
+                numrows = numrows + 1;
+                serialnumber = serialnumber + 1;
+                rowsarray[numrows] = "0";
+                var table = document.getElementById("POSSalarybilltbl");
+                var rowcount = table.rows.length;
+                var row = table.insertRow(rowcount);
+                row.id = "possalarybill_" + numrows;
+
+                var cell1 = row.insertCell(0);
+                var element0 = document.createElement("input");
+                element0.type = "checkbox";
+                var element1 = document.createElement("input");
+                element1.type = "hidden";
+                element1.name = "hdnPOSBILLHDRID_" + numrows;
+                element1.id = "hdnPOSBILLHDRID_" + numrows;
+                var hdnelement1 = document.createElement("input");
+                hdnelement1.type = "hidden";
+                hdnelement1.name = "hdnStatus_" + numrows;
+                hdnelement1.id = "hdnStatus_" + numrows;
+                cell1.appendChild(element0);
+                $(element0).append(element1);
+                $(element1).append(hdnelement1);
+                cell1.align = "centre";
+
+                var ddlFromDate = $(table).find('tr:last').prev('tr').find('td').eq(1).find('select').clone(true);
+                var celldvFromDate = row.insertCell(1);
+                ddlFromDate[0].id = "FromMonth_" + numrows;
+                ddlFromDate[0].name = "FromMonth_" + numrows;
+                ddlFromDate[0].value = "";
+                ddlFromDate[0].removeAttribute('disabled');
+                ddlFromDate[0].setAttribute('onchange', 'return GetEmpDetailsByEmpId(' + numrows + ');');
+                ddlFromDate[0].className = "form-control";
+                celldvFromDate.append(ddlFromDate[0]);
+
+                var ddlToDate = $(table).find('tr:last').prev('tr').find('td').eq(2).find('select').clone(true);
+                var celldvToDate = row.insertCell(2);
+                ddlToDate[0].id = "ToMonth_" + numrows;
+                ddlToDate[0].name = "ToMonth_" + numrows;
+                ddlToDate[0].value = "";
+                ddlToDate[0].removeAttribute('disabled');
+                ddlToDate[0].setAttribute('onchange', 'return GetEmpDetailsByEmpId(' + numrows + ');');
+                ddlToDate[0].className = "form-control";
+                celldvToDate.append(ddlToDate[0]);
+
+                var ddl = $(table).find('tr:last').prev('tr').find('td').eq(3).find('select').clone(true);
+                var celldv = row.insertCell(3);
+                ddl[0].id = "AccountId_" + numrows;
+                ddl[0].name = "AccountId_" + numrows;
+                ddl[0].value = "";
+                ddl[0].removeAttribute('disabled');
+                ddl[0].setAttribute('onchange', 'return GetEmpDetailsByEmpId(' + numrows + ');');
+                ddl[0].className = "form-control";
+                celldv.append(ddl[0]);
+
+                var cell2 = row.insertCell(4);
+                var element2 = document.createElement("input");
+                element2.type = "text";
+                element2.className = "form-control decimal";
+                element2.name = "Amount_" + numrows;
+                element2.id = "Amount_" + numrows;
+                element2.removeAttribute('disabled');
+                element2.style = "text-align:right;";
+                element2.setAttribute("maxlength", "13");
+                //element2.setAttribute("onchange", "return ValidateExpenseAmount(this);");
+                cell2.append(element2);
+
+                var cell3 = row.insertCell(5);
+                var element3 = document.createElement("input");
+                element3.type = "text";
+                element3.className = "form-control";
+                element3.name = "Remarks_" + numrows;
+                element3.removeAttribute('disabled');
+                element3.id = "Remarks_" + numrows;
+                cell3.append(element3);
+
+                var cell4 = row.insertCell(6);
+                var div = document.createElement("div");
+                div.className = "input-group date";
+                div.id = "todatepicker1";
+                var element4 = document.createElement("input");
+                element4.type = "text";
+                element4.className = "form-control datepicker";
+                element4.removeAttribute('disabled');
+                element4.name = "ReceivedDate_" + numrows;
+                element4.id = "ReceivedDate_" + numrows;
+                div.append(element4);
+
+                var spanelement4 = document.createElement("span");
+                spanelement4.className = "input-group-append input-group-addon";
+                var ielement4 = document.createElement("i");
+                ielement4.className = "input-group-text2 fa fa-calendar";
+                spanelement4.append(ielement4);
+                div.append(spanelement4);
+                cell4.append(div);
+
+                var celldReceivedBy = row.insertCell(7);
+                var ddlReceivedBy = $('#HiddenUserId').clone(true);
+                ddlReceivedBy[0].id = "ReceivedBy_" + numrows;
+                ddlReceivedBy[0].name = "ReceivedBy_" + numrows;
+                ddlReceivedBy[0].value = "";
+                ddlReceivedBy[0].removeAttribute('disabled');
+                ddlReceivedBy[0].className = "form-control partychosen-select";
+                celldReceivedBy.append(ddlReceivedBy[0]);
+                $('#ReceivedBy_' + numrows).chosen();
+                $('#ReceivedBy_' + numrows).trigger("chosen:updated");
+
+                document.getElementById("POSBillDtlCount").value = numrows;
+                $(element4).datepicker({
+                    format: 'dd/M/yyyy',
+                    endDate: "-1d"
+                });
+                OpenDatePicker();
+            }
+        });
+
+        function CheckAggregate() {
+
+            valid = true;
+
+            var mtable = document.getElementById("POSSalarybilltbl");
+            var mrowCount = document.getElementById("POSBillDtlCount").value;
+
+            for (var i = 1; i <= mrowCount; i++) {
+                var newcheckboxtd = document.getElementById("hdnPOSBILLHDRID_" + i);
+                var FromMonth = document.getElementById("FromMonth_" + i);
+                var ToMonth = document.getElementById("ToMonth_" + i);
+                var AccountId = document.getElementById("AccountId_" + i);
+                var Amount = document.getElementById("Amount_" + i);
+                var Remarks = document.getElementById("Remarks_" + i);
+                var ReceivedDate = document.getElementById("ReceivedDate_" + i);
+                var ReceivedBy = document.getElementById("ReceivedBy_" + i);
+
+                if (FromMonth != undefined) {
+
+                    if (FromMonth.value == "") {
+                        if (i >= 1) {
+                            alert('Please select from month');
+                            $('#FromMonth_' + i).focus();
+                            valid = false;
+                        }
+                    }
+                }
+
+                if (ToMonth != undefined) {
+
+                    if (ToMonth.value == "") {
+                        if (i >= 1) {
+                            alert('Please select to month');
+                            $('#ToMonth_' + i).focus();
+                            valid = false;
+                        }
+                    }
+                }
+
+                if (AccountId != undefined) {
+
+                    if (AccountId.value == "") {
+                        if (i >= 1) {
+                            alert('Please select account');
+                            $('#AccountId' + i).focus();
+                            valid = false;
+                        }
+                    }
+                }
+
+                if (Amount != undefined && Amount.value == "") {
+                    if (i >= 1) {
+                        alert('Please enter amount');
+                        $('#Amount_' + i).focus();
+                        valid = false;
+                    }
+                }
+
+                if (Remarks != undefined && Remarks.value == "") {
+                    if (i >= 1) {
+                        alert('Please enter remarks');
+                        $('#Remarks_' + i).focus();
+                        valid = false;
+                    }
+                }
+
+                if (ReceivedDate != undefined && ReceivedDate.value == "") {
+                    if (i >= 1) {
+                        alert('Please enter received date');
+                        $('#ReceivedDate_' + i).focus();
+                        valid = false;
+                    }
+                }
+
+                if (ReceivedBy != undefined) {
+
+                    if (ReceivedBy.value == "") {
+                        if (i >= 1) {
+                            alert('Please select received by');
+                            $('#ReceivedBy_' + i).focus();
+                            valid = false;
+                        }
+                    }
+                }
+            }
+
+
+
+            return valid;
+
+        }
+
+        $('#chkSelectAllposbill').on('click', function () {
+            var checkedstatus = this.checked;
+            $('#POSSalarybilltbl tbody tr').find('td:first :checkbox').each(function () {
+                $(this).prop('checked', checkedstatus);
+            });
+        });
+
+        $('body').on('keyup paste', ".decimal", function () {
+            this.value = this.value.replace(/[^0-9\.]/g, '');
+        });
+
+        function removeCheckedposbill() {
+            if ($('#POSSalarybilltbl tbody tr').length > 1 && $('#POSSalarybilltbl tbody tr').find('input[type="checkbox"]:checked').length != $('#POSSalarybilltbl tbody tr').length) {
+                $('#POSSalarybilltbl tbody tr').each(function () {
+                    if ($(this).find('td:first').find('input[type="checkbox"]').is(':checked')) {
+                        $(this).remove();
+                    }
+                });
+
+            }
+            else {
+                alert("Atleast one row is required");
+            }
+        }
+
+        function Clear() {
+            $('#POSSalarybilltbl option[selected]').removeAttr("selected");
+            $('#POSSalarybilltbl select').val("");
+            $('#attachment').val("");
+            $('#POSSalarybilltbl select').val("").trigger("chosen:updated");
+            $('#POSSalarybilltbl input').attr('value', '');
+        }
+
+        function CheckValidate() {
+            valid = true;
+            if ($('#attachment').val() == "" && $('#attachment').attr('value') == "") {
+                alert("Please upload attachment");
+                valid = false;
+            }
+
+            if ($('#EmployeeId').val() > 0) {
+                //valid = GetEmpDetailsByEmpId(obj);
+                if (valid) {
+                    valid = CheckAggregate();
+                }
+            } else {
+                alert("Please select employee");
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        function GetEmpDetails() {
+            debugger;
+            var empid = $("#EmployeeId").val();
+            if (empid != "") {
+                $("#hdnEmployeeId").val(empid);
+
+                $('#POSSalarybilltbl tbody tr').each(function (i, data) {
+                    var rowid = i + 1;
+                    var fromval = $("#FromMonth_" + (rowid)).val();
+                    if (fromval != undefined) {
+                        GetEmpDetailsByEmpId(rowid);
+                    }
+                });
+
+
+            } else {
+                alert("Please select employee");
+            }
+        }
+    </script>
+}

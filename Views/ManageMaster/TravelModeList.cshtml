@@ -1,0 +1,122 @@
+﻿
+@model LumaxDMS.Models.TravelModeModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CreateTravelMode";
+
+}
+@{Html.RenderPartial("CreateTravelMode", @Model);}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">TRAVELMODE LIST</div>
+    </div>
+
+    <div class="container custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12">
+                    <table id="travelmodetbl" class="table table-striped table-bordered dt-responsive nowrap"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    TravelMode Code
+                                </th>
+                                <th>
+                                    TravelMode Name
+                                </th>
+                                <th>Type</th>
+                                <th>
+                                    TravelMode Desc
+                                </th>
+                                <th>
+                                    Rate
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.TravelModeMasterList)
+                            {
+                            <tr>
+                                <td>
+                                    @item.travelModeCode
+                                </td>
+                                <td>
+                                    @item.travelModeName
+                                </td>
+                                <td>
+                                    @item.ModeType
+                                </td>
+                                <td>
+                                    @item.description
+                                </td>
+                                <td>
+                                    @item.rate
+                                </td>
+
+
+                                <td>
+                                    @Html.DisplayStatus(@item.isActive)
+                                </td>
+                                <td class="text_center">
+                                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                    {
+                                        <a href="#" title="edit travelmode" onclick="return EditTravelMode(@item.travelModeId)">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    }
+                                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                    {
+                                        <a href="##" onclick="return DeleteTravelMode(@item.travelModeId)" title="delete travelmode">
+                                            <i class="fa fa-trash bg_red"></i>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@using (Html.BeginForm("DeleteTravelMode", "ManageMaster", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.TravelModeId, new { @Id = "Del_TravelModeId" });
+}
+
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#travelmodetbl').DataTable();
+        });
+
+        function DeleteTravelMode(id) {
+            $('.modal-title').html("DELETE TRAVELMODE");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_TravelModeId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+    </script>
+}

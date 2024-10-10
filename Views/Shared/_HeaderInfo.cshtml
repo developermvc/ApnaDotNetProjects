@@ -1,0 +1,44 @@
+﻿@model LumaxDMS.Models.BaseModel
+<div class="content-heading">
+    <div class="left_heing">
+        <ul>
+            @if (Model != null && Model.BaseUserInfo != null)
+            {
+                if (!string.IsNullOrEmpty(@Model.BaseUserInfo.USERNAME))
+                {
+                    <li>UserName : <b>@Model.BaseUserInfo.USERNAME </b></li>
+                }
+
+                if (!string.IsNullOrEmpty(@Model.BaseUserInfo.HeadQtrName))
+                {
+                    <li>Hd. Qtr. : <b>@Model.BaseUserInfo.HeadQtrName </b></li>
+                }
+                if (!string.IsNullOrEmpty(@Model.BaseUserInfo.DepartmentName))
+                {
+                    <li>Department : <b>@Model.BaseUserInfo.DepartmentName </b></li>
+                }
+                if (!string.IsNullOrEmpty(@Model.BaseUserInfo.DesgnationName))
+                {
+                    <li>Designation : <b>@Model.BaseUserInfo.DesgnationName </b></li>
+                }
+                if (!string.IsNullOrEmpty(@Model.BaseUserInfo.PLANTCODE))
+                {
+                    <li>PLANT : <b>@Model.BaseUserInfo.PLANTCODE </b></li>
+                }
+                if (!string.IsNullOrEmpty(@Model.BaseUserInfo.ORGCODE))
+                {
+                    <li>ORG : <b>@Model.BaseUserInfo.ORGCODE </b></li>
+                }
+                if (!string.IsNullOrEmpty(@Model.BaseUserInfo.CurrentDate))
+                {
+                    <li>Date : <b>@Model.BaseUserInfo.CurrentDate </b></li>
+                }
+            }
+            else
+            {
+
+            }
+        </ul>
+    </div>
+</div>
+@{Html.RenderPartial("_Message", @Model);}

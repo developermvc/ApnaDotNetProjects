@@ -1,0 +1,123 @@
+﻿
+
+<div class="card card-default">
+<div class="card-header card_bg">
+<div class="card-title card_tittle2">PLANNED DALLY SALES REPORTS</div>
+</div>
+<div class="card-body">
+<form class="form-horizontal">
+ <div class="row row botton_tpp">
+ <div class="col-lg-2">
+                        <label for="pwd">
+                            Name:</label>
+                    </div>
+                    <div class="col-lg-2">
+                     <input type="text" class="form-control from_bg"  id="pwd">
+				
+
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Ref No.:</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg"  id="pwd">
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Town:</label>
+                    </div>
+                    <div class="col-lg-2">
+                         <select class="form-control from_bg" id="sel1">
+                            <option>Delhi</option>
+                            <option>Kanpur</option>
+                            <option>Goa</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row row_pt">
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            First Call Time:</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="text" class="form-control from_bg" id="pwd">
+                    </div>
+                    
+                </div>
+				
+				
+				
+            
+</form>
+</div>
+
+  <div class="card-footer">
+   <div class="clearfix">
+   <div class="float-left">
+   <button class="btn btn-primary" type="submit">Search</button>
+	<button class="btn btn-primary" type="submit">Clear</button>
+                              </div>
+                            
+                           </div>
+                        </div>
+			
+
+  
+
+<div class="panel panel-default panel_pt">
+<div class="card-header card_bg">
+<div class="card-title card_tittle2"> DSR LIST </div>
+</div>
+<div class="card-body">
+<table id="example2" class="table table-striped table-bordered" style="width: 100%">
+<thead class="thead-lights">
+<tr>
+<th style="text-align: center">Name</th>
+<th style="text-align: center">Hd. Qtr</th>
+<th style="text-align: center">Ref No.</th>
+<th style="text-align: center">State</th>
+<th style="text-align: center">Trty</th>
+<th style="text-align: center">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Lumax</td>
+ <td align="center">
+                                    India
+                                </td>
+                                <td align="center">
+                                    12345
+                                </td>
+                                <td align="center">
+                                    Delhi
+                                </td>
+                                <td align="center">
+                                    Delhi
+                                </td>
+                               <td class="text_center">
+  <a href="#" title="edit zone" onclick="return EditZone(4)"><i class="fa fa-pencil"></i></a>
+                                              <a href="#" onclick="return DeleteZone(4)" title="delete zone"><i class="fa fa-trash bg_red"></i></a>
+                                        </td>
+                            </tr>
+                             
+                        </tbody>
+                    </table>
+              
+            </div>
+        </div>
+    </div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#example2').DataTable({
+            responsive: true
+        });
+        $(".datepicker").datepicker({ orientation: "bottom auto" });
+
+        new $.fn.dataTable.FixedHeader(table);
+    });
+</script>

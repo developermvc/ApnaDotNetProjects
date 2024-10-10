@@ -1,0 +1,91 @@
+﻿@model LumaxDMS.Models.TravelNormsModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Travel Norms List";
+}
+
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>TRAVEL NORMS LIST</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="padding: 10px;">
+                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                        {
+                            <a class="mb-1 btn btn-success pull-right" href="/ManageMaster/CreateTravelNorm?@Constants.HASH_TRAVEL">Create New</a>
+                        }
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <table id="TravelNormtbl" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        Travel Norms Code
+                                    </th>
+                                    <th>
+                                        Designation Name
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                    <th>
+                                        Created By
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.TravelNormsList)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.TRAVELNORMSCODE
+                                        </td>
+                                        <td>
+                                            @item.DesignationName
+                                        </td>
+                                        <td>
+                                            @Html.DisplayStatus(@item.ISACTIVE)
+                                        </td>
+                                        <td>
+                                            @item.CREATEDBY
+                                        </td>
+                                        <td>
+                                            @Html.HiddenFor(m => m.TravelNormsList[0].TRAVELNORMSID, new { id = "hdnTravelNormId" })
+                                            @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                            {
+                                                <a href="/ManageMaster/CreateTravelNorm?TravelNormId=@item.TRAVELNORMSID&ActionName=edit&@Constants.HASH_TRAVEL" title="Edit Travel Norms Detail"><i class="fa fa-pencil"></i></a>
+                                            }
+                                            @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                            {
+                                                <a href="/ManageMaster/DeleteTravelNorm?Id=@item.TRAVELNORMSID&@Constants.HASH_TRAVEL" title="Delete Travel Norm">
+                                                    <i class="fa fa-trash bg_red"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JS {
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#TravelNormtbl').DataTable();
+    });
+
+    </script>
+}

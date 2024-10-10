@@ -1,0 +1,272 @@
+﻿@model LumaxDMS.Models.PinModel
+@using LumaxDMS.AppCode
+@using (Html.BeginForm("CreatePin", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Pin_Id)
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+
+            <div id="creatpindiv"  style="display:none" class="card-title card_tittle2">CREATE PIN</div>
+            <div id="updatepindiv" style="display:none" class="card-title card_tittle2">UPDATE PIN</div>
+
+        </div>
+        <div id="dv_displaydetail" class="card-body">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Country Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedCountryId, new SelectList(Model.countryMasterList, "Country_Id", "CountryName"), "--Select--", new { @class = "form-control from_bg chosen-select", @onchange = "return GetStateByCountryId(this);" })
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        State Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedStateId, new SelectList(Model.stateMasterList, "State_Id", "StateName"), "--Select--", new { @class = "form-control from_bg chosen-select", @onchange = "return GetDistrictByStateId(this);" })
+                    @Html.ValidationMessageFor(model => model.SelectedStateId)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        District Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedDistrictId, new SelectList(Model.districtMasterList, "State_Id", "StateName"), "--Select--", new { @class = "form-control from_bg chosen-select", @onchange = "return GetCityByDistrictId(this);" })
+                    @Html.ValidationMessageFor(model => model.SelectedDistrictId)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        City Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedCityId, new SelectList(Model.cityMasterList, "City_Id", "CityName"), "--Select--", new { @class = "form-control from_bg chosen-select" })
+                    @Html.ValidationMessageFor(model => model.SelectedCityId)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Pin Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.PinCode, new { @class = "form-control from_bg", type = "number", title = "Enter pin Code" })
+                    @Html.ValidationMessageFor(model => model.PinCode)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Pin Desc:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.PinDesc, new { @class = "form-control from_bg", title = "Enter pin Desc" })
+                    @Html.ValidationMessageFor(model => model.PinDesc)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Locality Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.LocalityCode, new { @class = "form-control from_bg", title = "Enter locality Code" })
+                    @Html.ValidationMessageFor(model => model.LocalityCode)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Locality Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.LocalityName, new { @class = "form-control from_bg", title = "Enter locality Name" })
+                    @Html.ValidationMessageFor(model => model.LocalityName)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    <button class="btn btn-primary" type="submit" id="btnadd" name="btntype" value="Create" onclick="return checkValidation();">Create</button>
+                    <button class="btn btn-primary" type="submit" id="btnupdate" style="display:none" onclick="return checkValidation();" name="btntype" value="Update">Update</button>
+                    <button class="btn btn-primary" type="button" onclick="resetValidation()">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<script src="~/Scripts/ProjectJS/ManageMaster_Common.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(".chosen-select").chosen();
+
+    function CheckPinValidation(pin_id) {
+        debugger;
+        var checkUrl = '@Url.Action("CheckIspinExist", "ManageMaster")';
+        var PinId = $('#Pin_Id').val();
+        var pinCode = $('#PinCode').val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ pinCode: pinCode, pinId: PinId }),
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    alert("Pin Code already exists");
+                    $('#PinCode').val('');
+                    $('#PinCode').focus();
+                }
+            },
+            error: function (data) {
+
+            }
+        });
+
+    }
+
+    function EditPin(pin_id) {
+        debugger;
+        var checkUrl = '@Url.Action("EditPin", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ pin_id: pin_id }),
+            dataType: "json",
+            success: EditPinSucceeded,
+            error: EditPinFailed
+        });
+
+
+    }
+
+    function EditPinSucceeded(result) {
+        debugger;
+        if (result != null && result.pinmaster != null) {
+
+            FillStateList(result.stateList);
+            FillDistrictList(result.districtList);
+            FillCityList(result.cityList);
+            $('#Pin_Id').val(result.pinmaster.PIN_ID);
+            $('#PinCode').val(result.pinmaster.PINCODE);
+            $('#PinDesc').val(result.pinmaster.PINDESC);
+            $('#LocalityCode').val(result.pinmaster.LOCALITYCODE);
+            $('#LocalityName').val(result.pinmaster.LOCALITYNAME);
+            $('#SelectedCityId').val(result.pinmaster.CITY_ID).trigger("chosen:updated");;
+            $('#SelectedDistrictId').val(result.pinmaster.DistrictId).trigger("chosen:updated");;
+            $('#SelectedStateId').val(result.pinmaster.StateId).trigger("chosen:updated");;
+            $('#SelectedCountryId').val(result.pinmaster.CountryId).trigger("chosen:updated");;
+
+            if (result.pinmaster.ISACTIVE == "Y") {
+                $('#IsActive').prop('checked', true);
+            }
+            else {
+                $('#IsActive').prop('checked', false);
+            }
+
+            $('#btnupdate').show();
+            $('#updatepindiv').show();
+            $('#creatpindiv').hide();
+            $('#btnadd').hide();
+            $('#pinformtitle').text("UPDATE PIN");
+        }
+    }
+    function EditPinFailed() {
+
+    }
+
+    function resetform() {
+        window.location.href = "/ManageMaster/PinList";
+    }
+
+    function GetZoneByCountryId(obj) {
+        debugger;
+        var CountryId = obj.value;
+        var checkUrl = '@Url.Action("GetZoneByCountryId", "ManageMaster")';
+        GetZoneByCountry(CountryId, checkUrl)
+    }
+
+    function GetStateByCountryId(obj) {
+        debugger;
+        var CountryId = obj.value;
+        var checkUrl = '@Url.Action("GetStateByCountryId", "ManageMaster")';
+        GetStateByCountry(CountryId, checkUrl)
+    }
+    function GetDistrictByStateId(obj) {
+        debugger;
+        var StateId = obj.value;
+        var checkUrl = '@Url.Action("GetDistrictByStateId", "ManageMaster")';
+        GetDistrictByState(StateId, checkUrl)
+
+    }
+    function GetCityByDistrictId(obj) {
+        debugger;
+        var DistrictId = obj.value;
+        var checkUrl = '@Url.Action("GetCityByDistrictId", "ManageMaster")';
+        GetCityByDistrict(DistrictId, checkUrl)
+
+    }
+
+
+    function checkValidation() {
+        debugger;
+        var valid = true;
+        var countryid = $('#SelectedCountryId').val();
+        var stateid = $('#SelectedStateId').val();
+        var districtid = $('#SelectedDistrictId').val();
+        var cityid = $('#SelectedCityId').val();
+
+        if (countryid == "" || countryid == null) {
+            $('#SelectedCountryId').trigger('chosen:activate');
+            alert("Please select country");
+            valid = false;
+        } else if (stateid == "" || stateid == null) {
+            $('#SelectedStateId').trigger('chosen:activate');
+            alert("Please select state");
+            valid = false;
+        } else if (districtid == "" || districtid == null) {
+            $('#SelectedDistrictId').trigger('chosen:activate');
+            alert("Please select district");
+            valid = false;
+        } else if (cityid == "" || cityid == null) {
+            $('#SelectedCityId').trigger('chosen:activate');
+            alert("Please select city");
+            valid = false;
+        }
+
+        return valid;
+    }
+    function resetValidation() {
+
+        $("#PinCode-error").html('');
+        $("#LocalityCode-error").html('');
+        $("#PinDesc-error").html('');
+        $("#LocalityName-error").html('');
+
+    }
+
+
+</script>

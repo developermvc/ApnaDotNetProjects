@@ -1,0 +1,178 @@
+﻿@{
+    ViewBag.Title = "ApplyOnTypes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="section-container">
+<div class="content-wrapper">
+            <div class="content-heading">
+        SCHEME APPLY ON TYPES
+                 
+            </div>
+
+<div class="col-sm-12">
+    <div class="panel panel-default panel_pt">
+        <div class="panel-heading">
+            CREATE SHEME ON TYPE</div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-2">
+                    <label for="pwd">
+                        Code :</label>
+                </div>
+                <div class="col-lg-2">
+                     <select class="form-control" id="sel1">
+                        <option>#A002</option>
+                        <option>#A003</option>
+                        <option>#A004</option>
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        Name :</label>
+                </div>
+               <div class="col-lg-2">
+                   <select class="form-control" id="sel1">
+                        <option>ON BILLING RATE</option>
+                        <option>APPLY ON MRP</option>
+                        <option>FIXED AMOUNT</option>
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                       Description :</label>
+                </div>
+               <div class="col-lg-2">
+                    <input type="text" class="form-control" placeholder="To Be Sold" id="pwd"/>
+                </div>
+                </div>
+                <div class="row row_pt">
+                 
+                 <div class="col-lg-2">
+                        <label for="pwd">
+                            IsActive :</label>
+                    </div>
+                    <div class="col-lg-2">
+                          <input type="checkbox" />
+                    </div>
+                    
+                </div>
+              
+                       <br />
+                       
+                          
+                            
+                         <button type="button" >
+                            Submit</button>
+                            <button type="button" >
+                            Clear</button>
+                
+            </div>
+       
+    </div>
+</div>
+</div>
+<div class="panel-heading">
+            SHEME TYPE LIST</div>
+<div class="container custom-datable">
+ <div class="card">
+ <div class="panel panel-default">
+ <div class="panel-heading" style="padding:10px;"></div>
+ <div class="col-sm-12 col-md-12">
+ <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Code
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Description
+                                </th>
+                               
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    A001
+                                </td>
+                                <td>
+                                   Dealer
+                                </td>
+                                <td>
+                                    Sold 2 Items
+                                </td>
+                                
+                                <td>
+                                    <a class="btn btn-sm btn-secondary  pt-top " href="#">
+                               <i class="fa fa-pencil aria-hidden="true" style="color:grey !important;"></i>
+                                       
+
+                                    </a>
+                                    <a class="btn btn-sm btn-secondary pt-top" type="button">
+                                       <i class="fa fa-trash bg_red" ></i>
+                                    </a>
+                                </td>
+                            </tr>
+                             
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+
+<script type="text/javascript" >
+
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+
+</script>
+
+<script type="text/javascript">
+
+    jQuery(function ($) {
+
+        $(".sidebar-dropdown > a").click(function () {
+            $(".sidebar-submenu").slideUp(200);
+            if (
+    $(this)
+      .parent()
+      .hasClass("active")
+  ) {
+                $(".sidebar-dropdown").removeClass("active");
+                $(this)
+      .parent()
+      .removeClass("active");
+            } else {
+                $(".sidebar-dropdown").removeClass("active");
+                $(this)
+      .next(".sidebar-submenu")
+      .slideDown(200);
+                $(this)
+      .parent()
+      .addClass("active");
+            }
+        });
+
+        $("#close-sidebar").click(function () {
+            $(".page-wrapper").removeClass("toggled");
+        });
+        $("#show-sidebar").click(function () {
+            $(".page-wrapper").addClass("toggled");
+        });
+
+    });
+
+</script>

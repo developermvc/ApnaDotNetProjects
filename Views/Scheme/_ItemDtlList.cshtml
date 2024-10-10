@@ -1,0 +1,138 @@
+﻿@model LumaxDMS.Models.ItemGroupModel
+@using LumaxDMS.AppCode
+@{
+    var counter = 1;
+}
+@if (Model.ItemGroupDetailList != null)
+{
+    @Html.Hidden("ItemDetailCount", Model.ItemGroupDetailList.Count, new { @Name = "ItemDetailCount" })
+}
+                <div class="col-sm-12 col-md-12">
+                    <table id="itemTbl" class=" table table-striped table-bordered dt-responsive nowrap dataTable no-footer dtr-inline">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    <input type='checkbox' id="chkSelectAllItem" />
+                                    <span style="padding: 25px; position: relative; top: -3px;">
+                                        <a href="##" id="removecheckedItem" title="Remove Checked Rows"><i class="fa fa-trash bg_red"></i></a>
+                                        </span>
+                                </th>
+                                <th>
+                                    Item Code
+                                </th>
+                                <th>
+                                    Item Name
+                                </th>
+                                <th>
+                                    Item Description
+                                </th>
+                                <th>
+                                    Item Family
+                                </th>
+                                <th>
+                                    Segment
+                                </th>
+                                <th>
+                                    Product Category
+                                </th>
+                                <th>
+                                    Sub Category
+                                </th>
+                                <th>
+                                    Min Qty
+                                </th>
+                            </tr>
+                        </thead>
+                        @if (Model.ItemGroupDetailList != null)
+                        {
+                            <tbody>
+
+                                @foreach (var item in Model.ItemGroupDetailList)
+                                {
+                                    <tr id="ItemRow_@counter">
+                                        <td>
+                                            <input type='checkbox' id="Itemcb_@counter" />
+                                            @Html.HiddenFor(m => item.PART_ID, new { @Name = "PartId_" + counter })
+                                        
+                                        </td>
+                                        <td>
+                                            @item.SAP_PartNumber
+                                        </td>
+                                        <td>
+                                            @item.PartNumber
+                                        </td>
+                                        <td>
+                                            @item.PartDescription
+                                        </td>
+                                        <td>
+                                            @item.PartFamilyName
+                                        </td>
+                                        <td>
+                                            @item.SegmentName
+                                        </td>
+                                        <td>
+                                            @item.ProductCategoryName
+                                        </td>
+                                        <td>
+                                            @item.SubcategoryName
+                                        </td>
+                                        <td class="td_width">
+                                            @Html.TextBoxFor(m => item.MIN_QTY, new { @class = "form-control", @Name = "MinQty_" + counter })
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            </tbody>
+                        }
+                    </table>
+                </div>
+           
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            //$("#itemTbl").dataTable({
+            //    "paging": false,
+            //    // "ordering": false,
+            //    "info": false,
+            //    "bFilter": false,
+            //    "scrollX": true,
+            //    scrollY: '80vh',
+            //    scrollCollapse: true
+            //    // "aaSorting": [[7, "desc"]],
+
+            //});
+
+        });
+
+
+
+        $('#removecheckedItem').click(function () {
+            debugger;
+            var table = $('#itemTbl').DataTable();
+            $('#itemTbl tbody').find('tr').each(function () {
+                try {
+                    var firstcb = this.cells[0].id;
+                    var number = this.id.split('_')[1];
+                    if ($("#Itemcb_" + number).is(":checked")) {
+                        debugger;
+                        table.row('#ItemRow_' + number).remove().draw(false);
+                        $('#HiddenRow_' + number).remove();
+                    }
+
+                } catch (e) {
+
+                }
+
+
+            });
+        });
+
+
+        $('#chkSelectAllItem').click(function () {
+            var checkedStatus = this.checked;
+            $('#itemTbl tbody tr').find('td:first :checkbox').each(function () {
+                $(this).prop('checked', checkedStatus);
+            });
+        });
+    </script>

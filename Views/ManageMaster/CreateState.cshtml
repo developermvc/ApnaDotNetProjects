@@ -1,0 +1,163 @@
+﻿@model LumaxDMS.Models.StateModel
+@using (Html.BeginForm("CreateState", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.State_Id)
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="stateformtitle">CREATE STATE</div>
+        </div>
+        <div id="dv_displaydetail" class="card-body">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">Country Name:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedCountryId, new SelectList(Model.countryMasterList, "Country_Id", "CountryName"), "--Select--", new { @class = "form-control from_bg chosen-select", @onchange = "return GetStateByCountryId(this);" })
+                    @Html.ValidationMessageFor(model => model.SelectedCountryId)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">State Code:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.StateCode, new { @class = "form-control from_bg", title = "Enter state Code" })
+                    @Html.ValidationMessageFor(model => model.StateCode)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">State Name:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.StateName, new { @class = "form-control from_bg ", onblur = "return CheckStateValidation(this)", title = "Enter state Name" })
+                    @Html.ValidationMessageFor(model => model.StateName)
+                </div>
+
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">State Desc:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.StateDesc, new { @class = "form-control from_bg", title = "Enter state Desc" })
+                    @Html.ValidationMessageFor(model => model.StateDesc)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">IsActive:</label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    <button class="btn btn-primary" type="submit" id="btnadd" name="btntype" value="Create" onclick="return checkValidation();">Create</button>
+                    <button class="btn btn-primary" type="submit" id="btnupdate" style="display:none" name="btntype" onclick="return checkValidation();" value="Update">Update</button>
+                    <button class="btn btn-primary" type="button" onclick="resetValidation()">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script type="text/javascript">
+
+    $(".chosen-select").chosen();
+    function CheckStateValidation(state_id) {
+        var checkUrl = '@Url.Action("CheckIsstateExist", "ManageMaster")';
+        var StateId = $('#State_Id').val();
+        var stateName = $('#StateName').val();
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ stateName: stateName, stateId: StateId }),
+            dataType: "json",
+            success: function (data) {
+                if (!data) {
+                    alert("State Name already exists");
+                    $('#StateName').val('');
+                    $('#StateName').focus();
+                }
+            },
+            error: function (data) {
+
+            }
+
+        });
+
+    }
+    function EditState(state_id) {
+
+        var checkUrl = '@Url.Action("EditState", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ state_id: state_id }),
+            dataType: "json",
+            success: EditStateSucceeded,
+            error: EditStateFailed
+        });
+
+
+    }
+
+    function EditStateSucceeded(result) {
+        debugger;
+
+            $('#State_Id').val(result.STATE_ID);
+            $('#StateName').val(result.STATENAME);
+            $('#StateCode').val(result.STATECODE);
+            $('#StateDesc').val(result.STATEDESC);
+            $('#SelectedCountryId').val(result.COUNTRY_ID).trigger("chosen:updated");
+
+            if (result.ISACTIVE == "Y") {
+                $('#IsActive').prop('checked', true);
+            }
+            else {
+                $('#IsActive').prop('checked', false);
+            }
+
+            $('#btnupdate').show();
+            $('#btnadd').hide();
+            $('#stateformtitle').text("UPDATE STATE");
+
+
+    }
+
+    function EditStateFailed() {
+
+    }
+
+
+    function resetform() {
+        window.location.href = "/ManageMaster/StateList";
+    }
+
+    function checkValidation() {
+        debugger;
+        var valid = true;
+        var countryid = $('#SelectedCountryId').val();
+        var stateid = $('#SelectedStateId').val();
+        var districtid = $('#SelectedDistrictId').val();
+        if (countryid == "" || countryid == null) {
+            $('#SelectedCountryId').trigger('chosen:activate');
+            alert("Please select country");
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    function resetValidation() {
+
+        $("#StateCode-error").html('');
+        $("#StateName-error").html('');
+        $("#StateDesc-error").html('');
+
+    }
+</script>

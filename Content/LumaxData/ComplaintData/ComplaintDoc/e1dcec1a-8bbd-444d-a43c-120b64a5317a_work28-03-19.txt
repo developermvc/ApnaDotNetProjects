@@ -1,0 +1,41 @@
+Lumax android app
+
+- login failed message shoud be show on the user id text box 
+done- detail/profile  userId (login user id) not showing--- plant code 
+done- detail/profile  designation not fatched
+- dasbord/dasborddetail ( hard code data )/  targate and achivement 
+done- hdqtr name for ADMIN diff in web and app
+done- detail/visit   hard code data
+done- priselist/items comming 10800   (but less)
+- prospect check mobile number is exist 
+done - customer if rtailer then dealer,mechenic then dealer   PageName = "USER_AREA"
+
+
+web page issues
+done- employee management on edit user (web page issue) mobile textbox blank but showing exist
+done-remove product cetagory in prospect create 
+-employee submited without mandetory fields
+
+done-order list
+-order detail 
+done- pricelist detail
+-excel order upload issue
+
+- retailer and mechenic
+
+saurbh.kumar@hitechroboticsystemz.com
+saurabh.kumar@hitechroboticsystemz.com
+
+program.cs
+claim.db
+
+done- collectionsList is hard coded / now removed
+getInvoice is hard code
+
+complaintlist api data not correct
+
+6. GetRetailerOrDealer
+
+
+owner name
+name simple

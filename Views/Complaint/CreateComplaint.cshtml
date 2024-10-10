@@ -1,0 +1,800 @@
+﻿@model LumaxDMS.Models.ComplaintModel
+@using LumaxDMS.AppCode
+
+
+@{
+    ViewBag.Title = "CreateComplaint";
+
+}
+
+
+@section CSS
+{
+    <link href="~/Content/css/bootstrap-datepicker.css" rel="stylesheet" />
+}
+
+@using (Html.BeginForm("CreateComplaint", "Complaint", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.COMPLAINTID)
+
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        @Html.Partial("_WaitModal")
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName.ToLower() == Constants.BTN_CREATE)
+                    {
+                        <span>CREATE COMPLAINT</span>
+                    }
+                    else if (Model.ActionName.ToLower() == Constants.BTN_EDIT)
+                    {
+                        <span>EDIT COMPLAINT ( @Model.ComplaintCode )</span>
+                    }
+                    else
+                    {
+                        <span>VIEW COMPLAINT ( @Model.ComplaintCode )</span>
+                    }
+                </div>
+                <div class="card-body ViewComplaint">
+                    <div class="row">
+                        <div class="col-md-2 ">
+                            <label for="pwd" class="redlabel">
+                                Customer City
+                            </label>
+                        </div>
+                        <div class="col-md-2 ">
+                            @Html.DropDownListFor(m => m.City_ID, new SelectList(Model.CityList, "City_ID", "CITYNAME"), "-- Select--", new { @class = "form-control", @onchange = "return FillProspectData();" })
+                            @Html.HiddenFor(model => model.COMPLAINTID)
+                            @Html.ValidationMessageFor(m => m.City_ID)
+                        </div>
+                        <div class="col-md-2 ">
+                            <label for="pwd" class="redlabel">
+                                Customer Type
+                            </label>
+                        </div>
+                        <div class="col-md-2 ">
+                            <div class="input-group">
+                                @Html.DropDownListFor(m => m.PROSPECTTYPE_ID, new SelectList(Model.ProspectTypeList, "PROSPECTTYPE_ID", "PROSPECTTYPENAME"), "-- Select--", new { @class = "form-control", @onchange = "return FillProspectData();" })
+                                @Html.HiddenFor(model => model.LoggedInUserProspectType)
+                                @Html.ValidationMessageFor(m => m.PROSPECTTYPE_ID)
+                            </div>
+                        </div>
+                        <div class="col-md-2 ">
+                            <label for="pwd" class="redlabel">
+                                Complaint Type
+                            </label>
+                        </div>
+                        <div class="col-md-2 ">
+                            <div class="input-group">
+
+                                @Html.DropDownListFor(m => m.CTYPEID, new SelectList(Model.ComplaintTypeList, "CTYPEID", "CTYPENAME"), "-- Select--", new { @class = "form-control", @onchange = "return GetComplaintReason(this);" })
+                                @Html.ValidationMessageFor(m => m.CTYPEID)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-md-2 ">
+                            <label for="pwd" class="redlabel">
+                                Select Customer
+                            </label>
+                        </div>
+                        <div class="col-md-6 " id="DealerList">
+                            @Html.DropDownListFor(m => m.DEALER_ID, new SelectList(Model.DealerList, "DEALER_ID", "DEALERFULLNAME"), "-- Select--", new { @class = "form-control", @onChange = "return GetInvoiceNumber();" })
+                            @Html.ValidationMessageFor(m => m.DEALER_ID)
+                        </div>
+                        <div class="col-md-6 " id="RetailerList">
+                            @Html.DropDownListFor(m => m.PROSPECT_ID, new SelectList(Model.ProspectList, "PROSPECT_ID", "PROSPECTFULLNAME"), "-- Select--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.PROSPECT_ID)
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="pwd" class="redlabel">
+                                Case Type
+                            </label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group">
+                                @Html.DropDownListFor(m => m.CASETYPEID, new SelectList(Model.ReasonList, "CASETYPEID", "CaseTypeWithApprovalDays"), "-- Select--", new { @class = "form-control", @onChange = "return CheckApprovalExsist();" })
+                                @Html.ValidationMessageFor(m => m.CASETYPEID)
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row row_pt">
+                        @*<div class="col-md-2" id="divInvoice">
+                                <label for="pwd" class="redlabel">
+                                    Invoice No.
+                                </label>
+                            </div>*@
+                        @*<div class="col-md-6" id="Invoicedrop">
+                                @Html.DropDownListFor(m => m.INVOICEID, new SelectList(Model.InvoiceList, "INVOICE_ID", "INVOICENUMBER"),  new { @class = "form-control",@id= "INVOICEID",@name= "INVOICEID" ,@onchange = "return GetPartByInvoiceId(this);" ,@Style = "display:none" })
+
+
+                            </div>*@
+                        @*<div class="col-md-2 " id="divLR">
+                                <label for="pwd">
+                                    LR / GR No.
+                                </label>
+                            </div>*@
+                        @*<div class="col-md-2 " id="divLRText">*@
+                        @*@Html.TextBoxFor(model => model.LRNO, new { @class = "form-control", @disabled = "disabled" })*@
+                        @*</div>*@
+
+
+                    </div>
+                    <div class="row row_pt complaintonlydata">
+                        @*<div class="col-md-2 " id="divLRDate">
+                                <label for="pwd">
+                                    LR / GR Date
+                                </label>
+                            </div>*@
+                        @*<div class="col-md-2 " id="divDateText">
+                                <div class="input-group">
+                                    @Html.TextBoxFor(model => model.LRDATE, new { @class = "form-control datepicker", @onchange = "return CheckValidateDate();", @disabled = "disabled" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>*@
+                        @*<div class="col-md-2  ">
+                                <label for="pwd" class="redlabel">
+                                    Transporter name
+                                </label>
+                            </div>*@
+                        @*<div class="col-md-2 " id="divTransporter">
+                                @Html.TextBoxFor(model => model.TransporterName, new { @class = "form-control", @disabled = "disabled" })
+                            </div>*@
+                        @*<div class="col-md-2">
+                                <label for="pwd">
+                                    Material Receipt Date
+                                </label>
+                            </div>*@
+                        @*<div class="col-lg-2 col-xs-12">
+                                <div class="input-group date" id="fromdatepicker">
+                                    @Html.TextBoxFor(@model => model.RECEIPT_DATE, new { @class = "form-control datepicker", @readonly = "readonly" })
+                                    <span class="input-group-append input-group-addon">
+                                        <i class="input-group-text2 fa fa-calendar"></i>
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.RECEIPT_DATE)
+                            </div>*@
+                    </div>
+                    <div class="row row_pt complaintonlydata showonview">
+                        <div class="col-md-2 ">
+                            <label for="pwd" class="">
+                                CREDIT NOTE NUMBER
+                            </label>
+                        </div>
+                        <div class="col-md-2 ">
+                            @if (Model.PermissionNameList.Contains("AllowCreaditInfoInsert"))
+                            {
+                                @Html.TextBoxFor(model => model.CREDITNOTENUMBER, new { @class = "form-control" })
+                            }
+                            else
+                            {@Html.TextBoxFor(model => model.CREDITNOTENUMBER, new { @class = "form-control", @disabled = "true", @title = "Permition Required" })}
+                        </div>
+
+                        <div class="col-md-2">
+                            <label for="pwd">
+                                CREDIT NOTE DATE
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="input-group date" id="CREDITNOTEDATEpicker">
+                                @if (Model.PermissionNameList.Contains("AllowCreaditInfoInsert"))
+                                {
+                                    @Html.TextBoxFor(@model => model.CREDITNOTEDATE, new { @class = "form-control datepicker", @readonly = "readonly" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(@model => model.CREDITNOTEDATE, new { @class = "form-control datepicker", @disabled = "true", @title = "Permition Required" })
+                                }
+                                <span class="input-group-append input-group-addon">
+                                    <i class="input-group-text2 fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-md-2 ">
+                            <label for="pwd" class="redlabel">
+                                Customer Remark
+                            </label>
+                        </div>
+                        <div class="col-md-6 ">
+                            @Html.TextAreaFor(model => model.COMPLAINTREMARK, new { @class = "form-control", @rows = "4" })
+                            @Html.ValidationMessageFor(m => m.COMPLAINTREMARK)
+                        </div>
+
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-md-2 ">
+                            <label for="pwd">
+                                Upload Complaint Doc
+                            </label>
+                        </div>
+                        <div class="col-md-4 ">
+                            <span>
+                                <a href="##" class="btn btn-primary" id="complaintDoc" style="float:left;margin: 0 2px 0 2px;" onclick="return DownloadDocumentFile('@Model.AttachedURl');"><i class="fa fa-download" style="padding: 4px 1px;"></i></a>
+                                @if (Model.ActionName == "EDIT" && Model.ATTACHEDDOCUMENT != "" && Model.ATTACHEDDOCUMENT != null)
+                                {
+                                    <a id="deleteMainAttatchment" href="##" class="btn btn-primary" style="margin: 0 2px 0 2px; float:left;" title="@Model.ATTACHEDDOCUMENT" onclick="return DeleteMainAttatchment('@Model.AttachedURl',this);"><i class="fa fa-trash" style="padding: 4px 1px;"></i></a>
+                                }
+                                @Html.TextBoxFor(model => model.ATTACHEDDOCUMENT, new { type = "file", @id = "complaintDoc", @Name = "complaintDoc", @onchange = "return ValidateMainAttatchment(this);", @class = "fileInputProspect btn btn-primary", @style = "padding: 7px 5px; width: 180px;float:left;s" })
+                            </span>
+                        </div>
+                    </div>
+                    <br />
+                    @{ Html.RenderPartial("_ComplaintDTL", Model);}
+                </div>
+                <div class="card-footer">
+                    <div class="clearfix">
+                        <div class="float-right">
+                            @if (Model.ActionName != Constants.PermissionName.VIEW.ToUpper())
+                            {
+                                <input type="submit" name="btntype" onclick="return setCounterValue();" value="Save" id="btnadd" class="btn btn-primary" />
+                                <input type="submit" onclick="return CheckValidation();" name="btntype" value="Submit" id="btnadd" class="btn btn-primary" />
+                                @*<input type="reset" class="btn btn-primary" name="btntype" value="Clear" onclick="return Clear();" />*@
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section JS
+    {
+
+    <script src="~/Scripts/ProjectJS/Complaint.js"></script>
+ 
+    <script type="text/javascript">
+         
+        $(document).ready(function () {
+            $(".invoicechosen-select").chosen();
+            $(".invoicechosen-select").trigger("chosen:updated")
+
+            if ('1' == "4") {
+                var citydata = $("#SelectedVisitType").val();
+                var cityarray = citydata.split(",");
+                // Set the value
+                $("#SelectedMType").val(cityarray);
+                // Then refresh
+                $("#SelectedMType").multiselect('rebuild')
+            }
+
+        })
+
+    </script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+         
+        $('.datepicker').datepicker({
+            format: 'dd/M/yyyy',
+            pickerPosition: 'bottom-left'
+        });
+        debugger;
+        var recipetdate = $('#RECEIPT_DATE').val();
+        if (recipetdate != '' && recipetdate != undefined) {
+            $('#RECEIPT_DATE').val(formatDate(recipetdate));
+        }
+        var CREDITNOTEDATE = $('#CREDITNOTEDATE').val();
+        if (CREDITNOTEDATE != '' && CREDITNOTEDATE != undefined) {
+            $('#CREDITNOTEDATE').val(formatDate(CREDITNOTEDATE));
+        }
+        var LRDATE = $('#LRDATE').val();
+        if (LRDATE != '' && LRDATE != undefined) {
+            $('#LRDATEs').val(formatDate(LRDATE));
+        }
+
+        if ($('#LoggedInUserProspectType').val() == "DEALER" || $('#PROSPECTTYPE_ID').val() == "1") {
+            $('#DealerList').show();
+            $('#DEALER_ID').chosen();
+            $('#RetailerList').hide();
+            if ('@Model.ActionName.ToUpper()' != 'VIEW' && '@Model.ActionName.ToUpper()' != 'EDIT' ) {
+                GetInvoiceNumber();
+            }
+        }
+        else {
+            $('#RetailerList').show();
+            $('#PROSPECT_ID').chosen();
+            $('#DealerList').hide();
+            $('#City_ID').chosen();
+        }
+        if ($('#LoggedInUserProspectType').val() == "DEALER") {
+            $('#City_ID').attr('disabled', 'disabled').trigger("chosen:updated");
+            $("#PROSPECTTYPE_ID").attr('disabled', 'disabled');
+            $('#DEALER_ID').attr('disabled', 'disabled').trigger("chosen:updated");
+        }
+
+        if ($('#CTYPEID option:selected').text().trim().toUpperCase() == "COMPLAINT") {
+            $('.complaintonlydata').show();
+            $('.feedbackonlydata').hide();
+        }
+        else if ($('#CTYPEID option:selected').text().trim().toUpperCase() == "FEEDBACK") {
+            $('#divhdr').text($("#CTYPEID :selected").text().trim().toUpperCase());
+            $('.complaintonlydata').hide();
+            $('.feedbackonlydata').show();
+        } else {
+            $('#divhdr').text($("#CTYPEID :selected").text().trim().toUpperCase());
+            $('.complaintonlydata').hide();
+            $('.feedbackonlydata').hide();
+        }
+        debugger;
+        if ('@Model.ActionName.ToUpper()' != 'EDIT') {
+            DisableControl();
+        }
+        ShowOnViewOnlyElement();
+        HideWaitingSymbol();
+
+    });
+
+    function ShowOnViewOnlyElement() {
+
+        if ('@Model.ActionName.ToUpper()' == 'VIEW') {
+
+            $('.showonview').show();
+        } else {
+            $('.showonview').hide();
+        }
+    }
+    function FillProspectData() {
+        debugger;
+        ShowWaitingSymbol();
+
+        var CityId = $('#City_ID').val();
+        var ProspectTypeId = $('#PROSPECTTYPE_ID').val();
+        if (ProspectTypeId == null) {
+            return false;
+        }
+        var checkUrl = '@Url.Action("GetCustomerListByProspectType", "Complaint")';
+
+        var complaintUrl = '@Url.Action("GetAllComplaintType", "Complaint")';
+        GetAllComplaintType(complaintUrl, ProspectTypeId, checkUrl);
+        if (ProspectTypeId != "" && CityId != "") {
+            GetProspectData(ProspectTypeId, CityId, checkUrl)
+        }
+        HideWaitingSymbol();
+
+    }
+
+    function GetComplaintReason(obj) {
+        debugger;
+        var ComplaintTypeId = $(obj).val();
+        var checkUrl = '@Url.Action("GetCaseTypeByComplaintTypeId", "Complaint")';
+        FillComplaintReason(ComplaintTypeId, checkUrl);
+        var ctypename = $("#CTYPEID :selected").text().trim().toUpperCase();
+        $('#divhdr').text($("#CTYPEID :selected").text().trim().toUpperCase());
+        if (ctypename == "FEEDBACK") {
+            $('.feedbackonlydata').show();
+            $('.complaintonlydata').hide();
+            $('#INVOICEID_1').val("");
+            $('#INVOICEID_1').trigger('chosen:activate');
+            GetPartByInvoiceId($('#INVOICEID_1'));
+
+        }
+        else if (ctypename == "COMPLAINT") {
+            $('.feedbackonlydata').hide();
+            $('.complaintonlydata').show();
+
+            RemoveRowFromTable();
+        }
+        else {
+            $('.complaintonlydata').hide();
+            $('.feedbackonlydata').hide();
+            RemoveRowFromTable();
+            $('#INVOICEID_1').val("");
+            $('#INVOICEID_1').trigger('chosen:activate');
+            GetPartByInvoiceId($('#INVOICEID_1'));
+        }
+
+        ShowOnViewOnlyElement();
+
+    }
+
+    function GetPartByInvoiceId(obj) {
+        var invid = $(obj).attr('id').split("_");
+
+        var InvoiceId = 0;
+        var DealerId = 0;
+        var CTYPEID = Number($("#CTYPEID").val());
+        var ctypename = $("#CTYPEID :selected").text().trim().toUpperCase();
+
+        if (obj != undefined && obj != null) {
+            InvoiceId = Number($(obj).val());
+
+        }
+        if (ctypename == "COMPLAINT") {
+            DealerId = Number($('#DEALER_ID').val());
+            var checkUrl = '@Url.Action("GetPartByInvoiceId", "Complaint")';
+            FillpartByInvoiceId(InvoiceId, DealerId, CTYPEID, checkUrl, $('#PARTID_' + invid[1]));
+        }
+        else {
+            var InvoiceId = 0;
+            var DealerId = 0;
+             var checkUrl = '@Url.Action("GetPartByInvoiceId", "Complaint")';
+            FillpartByInvoiceId(InvoiceId, DealerId, CTYPEID, checkUrl, $('#PARTID_' + invid[1]));
+            removeTableRow();
+        }
+
+
+        //var checkUrl = '@Url.Action("getAllItem", "Scheme")';
+
+       // GetInvoiceDetail();
+        //removeTableRow();
+    }
+
+    function removeTableRow() {
+        $("#complainttbl").find("tr:gt(1)").remove();
+        debugger;
+        $(".deleteBtnClass").each(function () {
+            $("#" + this.id).remove();
+        })
+    }
+
+    function GetFileSize(fileField) {
+
+        try {
+            var fileSize = 0;
+            //for IE
+            if (navigator.userAgent.match(/msie/i)) {
+
+                fileSize = fileSize;
+            }
+            //for FF, Safari, Opeara and Others
+            else {
+                fileSize = $("#" + fileField)[0].files[0].size //size in kb
+                fileSize = fileSize / 5242880; //size in mb
+            }
+            return fileSize;
+        }
+        catch (e) {
+            alert("Error is :" + e);
+        }
+    }
+
+    function DownloadDocumentFile(FileType) {
+        var checkUrl = '@Url.Action("CheckForFile", "Complaint")';
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ FileType: FileType }),
+            dataType: "json",
+            success: downloadFileSucceeded,
+            error: downloadFileFailed
+        });
+    }
+
+    function downloadFileSucceeded(filepath) {
+        if (filepath && filepath.length > 0) {
+            var myUrl = '@Url.Action("Downloadfile", "Complaint")';
+            window.location.href = myUrl + "?path=" + filepath+ "@Constants.HASH_COMPLAINT";
+        }
+        else {
+            alert("File not Exists!.");
+        }
+    }
+
+
+         function downloadFileFailed(result) {
+             console.log(result);
+    }
+
+    function DownloadImageFile(FilePath) {
+        var checkUrl = '@Url.Action("CheckForFile", "Complaint")';
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ FileType: FilePath }),
+            dataType: "json",
+            success: downloadImageFileSucceeded,
+            error: downloadFileFailed
+        });
+    }
+
+    function downloadImageFileSucceeded(filepath) {
+        if (filepath && filepath.length > 0) {
+            var myUrl = '@Url.Action("DownloadImagefile", "Complaint")';
+            window.location.href = myUrl + "?path=" + JSON.stringify(filepath)+ "@Constants.HASH_COMPLAINT";
+        }
+        else {
+            alert("File not Exists!.");
+        }
+    }
+
+
+    function ValidateComplaintFileZize(obj) {
+        var file = $('#complaintDoc').val();
+        var fileSize = 0;
+        fileSize = GetFileSize('complaintDoc');
+        if (fileSize > 5.0) {
+            alert("Please select file upto 5 mb only");
+            file.val('');
+        }
+    }
+
+
+
+    function CheckValidation() {
+        debugger;
+        var valid = checkAndValidate();
+        if (valid) {
+            valid = confirm("You are about to submit \n Do you want to continue?");
+        }
+        else {
+            return false;
+        }
+        setCounterValue();
+        return valid;
+
+    }
+    function checkAndValidate() {
+        var valid = true;
+        var City_ID = $('#City_ID').val();
+        var type = $("#PROSPECTTYPE_ID :selected").text().trim().toUpperCase();
+        var DEALER_ID = $('#DEALER_ID').val();
+        var PROSPECT_ID = $('#PROSPECT_ID').val();
+        var INVOICEID = $('#INVOICEID_1').val();
+
+        if (City_ID == "" || City_ID == null) {
+            $('#City_ID').trigger('chosen:activate');
+            alert("Please select city");
+            valid = false;
+        }
+        if (type == "DEALER") {
+
+            if (DEALER_ID == "" || DEALER_ID == null) {
+                $('#DEALER_ID').trigger('chosen:activate');
+                alert("Please select customer");
+                valid = false;
+            } else if ((INVOICEID == "" || INVOICEID == null) && $('#INVOICEID_1').is(':visible')) {
+                $('#INVOICEID_1').trigger('chosen:activate');
+                //$("#INVOICEID").multiselect('rebuild')
+                alert("Please select invoice");
+                valid = false;
+            }
+        }
+        else {
+            if (PROSPECT_ID == "" || PROSPECT_ID == null) {
+                $('#PROSPECT_ID').trigger('chosen:activate');
+                alert("Please select customer");
+                valid = false;
+            }
+        }
+        if (valid) {
+            valid = CheckAggregate();
+        }
+        if (!valid) {
+            return false;
+        }
+        return valid;
+    }
+
+    function DisableControl() {
+
+        //(Model.ActionName == "edit" && Model.CLAIMSTATUSID == (int)CommonFunction.ClaimStatus.Created
+        if ('@Model.ActionName.ToUpper()' == 'VIEW') {
+            $('select').prop('disabled', true).trigger("chosen:updated");
+            $('input').prop('disabled', true);
+            $('textarea').prop('disabled', true);
+            $('.ViewComplaint input, select, textarea').attr("disabled", true);
+            $('#City_ID').prop('disabled', true).trigger("chosen:updated");
+            $('#pagetitle').html('VIEW COMPLAINT');
+            $('#dlbutton').hide();
+        }
+    }
+
+    function CheckApprovalExsist() {
+        debugger;
+        var caseTypeId = $('#CASETYPEID').val();
+        var prospectTypeId = $('#PROSPECTTYPE_ID').val();
+        var prospectId = $('#PROSPECT_ID').val();
+        var dealerId = $('#DEALER_ID').val();
+        var customerId = 0;
+        if (prospectTypeId == 1) {
+            customerId = dealerId;
+        } else {
+            customerId = prospectId;
+        }
+        var myUrl = '@Url.Action("CheckComplaintApprovalExsist", "Complaint")';
+        if (prospectTypeId != "" && customerId != 0) {
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: myUrl,
+                data: JSON.stringify({ CaseTypeId: caseTypeId, CustomerId: customerId, CustomerTypeId: prospectTypeId}),
+                dataType: "json",
+                success: CheckApprovalExsistSucceeded,
+                error: CheckApprovalExsistFailed
+            });
+        } else {
+            alert("Please select customer");
+            $('#CASETYPEID').val('');
+        }
+
+    }
+
+    function CheckApprovalExsistSucceeded(IsApprovalFound) {
+        if (!IsApprovalFound) {
+            alert("Complaint approval not found for this reason. ")
+            $('#CASETYPEID').val('');
+        }
+    }
+
+    function CheckApprovalExsistFailed() {
+
+    }
+
+    function GetInvoiceNumber() {
+
+        var dealerId = $('#DEALER_ID').val();
+        if (dealerId != 0) {
+            var myUrl = '@Url.Action("GetInvoiceNumberByDealerId", "Complaint")';
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: myUrl,
+                data: JSON.stringify({ DealerId: dealerId}),
+                dataType: "json",
+                success: GetInvoiceNumberSucceeded,
+                error: GetInvoiceNumberFailed
+            });
+        } else {
+            alert("Please select customer");
+        }
+
+    }
+
+    function GetInvoiceNumberSucceeded(result) {
+
+        $("#INVOICEID_1").empty();
+        $("#HiddenINVOICEID").empty()
+        var name = $("#INVOICEID_1").attr("id");
+
+        $("#INVOICEID_1").attr('name', name);
+         
+        var v = "<option value=''>--Select--</option>";
+        $('#INVOICEID_1').chosen();
+        $.each(result, function (i, data) {
+            v += "<option value=" + data.INVOICE_ID + ">" + data.INVOICENUMBER + "</option>";
+        });
+        $("#INVOICEID_1").append(v);
+          $("#INVOICEID_1").trigger("chosen:updated");
+        //$('#INVOICEID_1').chosen();
+        $("#HiddenINVOICEID").append(v);
+
+    }
+
+    function GetInvoiceNumberFailed() {
+
+    }
+
+    function GetInvoiceDetail() {
+        var invoiceId = $('#INVOICEID_1').val();
+        if (invoiceId != 0) {
+            var myUrl = '@Url.Action("GetInvoiceDetailByInvoiceId", "Complaint")';
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: myUrl,
+                data: JSON.stringify({ InvoiceId: invoiceId }),
+                dataType: "json",
+                success: GetInvoiceDetailSucceeded,
+                error: GetInvoiceDetailFailed
+            });
+        } else {
+           // alert("Please select invoice");
+        }
+    }
+    function GetInvoiceDetailSucceeded(result) {
+
+        if (result != null) {
+            $('#LRNO').val(result.LRNUMBER);
+            $('#LRDATE').val(formateJsonDate(result.LRDATE));
+            debugger;
+            $('#TransporterName').val(result.TRANSPORT);
+            $('#TransporterName').attr("title",result.TRANSPORT);
+        }
+
+    }
+
+    function GetInvoiceDetailFailed() {
+
+    }
+    //partId: partId, complaintId: complaintId
+
+    @*function DeleteImageFile(partId) {
+        debugger;
+        var checkUrl = '@Url.Action("DeletePartAttatchment", "Complaint")';
+        var complaintId = '@Model.COMPLAINTID';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: checkUrl,
+                data: { "partId": partId, "complaintId": complaintId  },
+            dataType: "JSON",
+            success: DeleteImageFileSucceeded,
+            error: function DeleteImageFileFailed() { }
+        });
+
+        function DeleteImageFileSucceeded() {
+            debugger;
+            $('#deleteBtn_' + partId).hide();
+        }
+    }*@
+    function DeleteImageFile(partId, imagePath, obj) {
+        debugger;
+        var fileName  = imagePath.replace('~/Content/LumaxData/ComplaintData/PartImage/', '');
+        var isSure = confirm('Are you sure to delete  " ' + fileName + ' "');
+        if (isSure) {
+            var onClickValue = $('#downLoadImgBtn_' + partId).attr("onclick");
+            var newOnclieckVal = onClickValue.replace(imagePath, '');
+            var newOnclieckVal1 = newOnclieckVal.replace(',', '');
+            $('#downLoadImgBtn_' + partId).attr("onclick", newOnclieckVal1);
+            $('#' + obj.id).remove();
+
+            var partIdint = parseInt(partId);
+            var complaintId = parseInt(@Model.COMPLAINTID);
+            $.ajax({
+                url: '@Url.Action("DeletePartAttatchment", "Complaint")',
+                type: "POST",
+                dataType: "JSON",
+                data: { PARTID: partIdint, COMPLAINTID: complaintId, IMAGEPATH: imagePath},
+                success: DeleteImageFileSucceeded,
+                error: function getItemLineDiscountFail(result) { //debugger;
+                }
+            });
+        }
+    }
+    function DeleteImageFileSucceeded(obj) {
+    }
+
+    function DeleteMainAttatchment(imagePath, obj) {
+        debugger;
+        var fileName  = imagePath.replace('~/Content/LumaxData/ComplaintData/PartImage/', '');
+        var isSure = confirm('Are you sure to delete  " ' + fileName + ' "');
+        if (isSure) {
+            var onClickValue = $('#complaintDoc').attr("onclick");
+            var newOnclieckVal = onClickValue.replace(imagePath, '');
+            var newOnclieckVal1 = newOnclieckVal.replace(',', '');
+            $('#complaintDoc').attr("onclick", newOnclieckVal1);
+            $('#' + obj.id).remove();
+
+            var complaintId = parseInt(@Model.COMPLAINTID);
+            $.ajax({
+                url: '@Url.Action("DeleteMainAttatchment", "Complaint")',
+                type: "POST",
+                dataType: "JSON",
+                data: { COMPLAINTID: complaintId},
+                success: DeleteMainAttatchmentSucceeded,
+                error: function DeleteMainAttatchmentFail(result) { //debugger;
+                }
+            });
+        }
+    }
+    function DeleteMainAttatchmentSucceeded(obj) {
+    }
+
+    function ValidateMainAttatchment(obj) {
+        debugger;
+        var isFileExist = $('#deleteMainAttatchment').val();
+        if (isFileExist != undefined) {
+            alert("Attatchment Already Existing");
+            $(obj).val("");
+            return false;
+        }
+    }
+</script>

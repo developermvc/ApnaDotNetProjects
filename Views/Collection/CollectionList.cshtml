@@ -1,0 +1,108 @@
+﻿@model LumaxDMS.Models.CollectionModel
+@using LumaxDMS.AppCode
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">COLLECTION LIST</div>
+    </div>
+    <div class="custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12 right_bottom">
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                    {
+                        <input name="input" type="button" class="mb-1 btn btn-success pull-right" value="Create New" onclick="return CreateNew();" />
+                    }
+
+                    <table id="tblCollection" class="table table-bordered"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    COLLECTION CODE
+                                </th>
+                                <th>
+                                    CHANNEL PARTNER
+                                </th>
+                                <th>
+                                    PAYMENT MODE
+                                </th>
+                                <th>
+                                    DEPOSITTYPE NAME
+                                </th>
+                                <th>
+                                    AMOUNT
+                                </th>
+                                <th>
+                                    STATUS
+                                </th>
+                                <th>
+                                    ACTION
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.collectionMasterList)
+                            {
+                            <tr>
+                                <td>
+                                    @item.COLLECTIONCODE
+                                </td>
+                                <td>
+                                    @item.DEALERNAME
+                                </td>
+                                <td>
+                                    @item.PAYMENTMODENAME
+                                </td>
+                                <td>
+                                    @item.DEPOSITTYPENAME
+                                </td>
+                                <td>
+                                    @item.COLLECTIONAMOUNT
+                                </td>
+                                <td>
+                                    @item.DISPLAYSTATUS
+                                </td>
+                                <td>
+                                    @if (item.ACTIONNAME.ToUpper() == "EDIT")
+                                    {
+                                        <a href="/Collection/CreateCollection?Id=@item.COLLECTIONID&ActionName=Edit&@Constants.HASH_COLLECTION" title="Edit Collection">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    }
+                                    @if (item.ACTIONNAME.ToUpper() == "VIEW")
+                                    {
+                                        <a href="/Collection/CreateCollection?Id=@item.COLLECTIONID&ActionName=view&@Constants.HASH_COLLECTION" title="View Collection">
+                                            <i class="icon-eye marginsm"></i>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+        
+            $('#tblCollection').DataTable({
+                "order": [[0, "desc"]],
+            });
+        });
+
+        function CreateNew() {
+            var myUrl = '@Url.Action("CreateCollection", "Collection")';
+			window.location.href = myUrl + "?ActionName=" + 'Create'+ "@Constants.HASH_COLLECTION";
+        }
+
+    </script>
+}

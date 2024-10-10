@@ -1,0 +1,190 @@
+﻿@model LumaxDMS.Models.CaseTypeModel
+@using LumaxDMS.AppCode
+
+@using (Html.BeginForm("CreateCaseType", "Complaint", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.CASETYPEID)
+
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2" id="casetitle">CREATE CASE TYPE</div>
+    </div>
+
+    <div id="dv_displaydetail" class="card-body custom_responsive2">
+        <div class="row">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd" class="redlabel">
+                    Complaint Type:
+                </label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                @Html.DropDownListFor(model => model.CTYPEID, new SelectList(Model.ComplaintTypeList, "CTYPEID", "CTYPENAME", Model.CTYPEID), "-- Select--", new { @class = "form-control" })
+                @Html.HiddenFor(model => model.CTYPEID)
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd" class="redlabel">
+                    Case Type Code:
+                </label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                @Html.TextBoxFor(model => model.CASETYPECODE, new { @class = "form-control", disabled = "disabled" })
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd" class="redlabel">
+                    Case Type Name:
+                </label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                @Html.TextBoxFor(model => model.CASETYPENAME, new { @class = "form-control", onchange = "return ValidateCaseTypeNameExist();" })
+                @Html.ValidationMessageFor(model => model.CASETYPENAME)
+            </div>
+        </div>
+        <div class="row row_pt">
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd" class="redlabel">
+                    Case Type Description:
+                </label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                @Html.TextBoxFor(model => model.CASEDESCRIPTION, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CASEDESCRIPTION)
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    Approval Days:
+                </label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                @Html.TextBoxFor(model => model.APPROVALDAYS, new { @class = "form-control", @min ="1", onchange = "return ValidateCaseTypeNameExist();" })
+                @Html.ValidationMessageFor(model => model.APPROVALDAYS)
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                <label for="pwd">
+                    IsActive:
+                </label>
+            </div>
+            <div class="col-lg-2 col-xs-12">
+                @Html.CheckBoxFor(model => model.IsActive)
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card-footer">
+        <div class="clearfix">
+            <div class="float-right">
+                @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                {
+                    <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn-primary" />
+                }
+
+                @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                {
+                    <input type="submit" class="btn btn-primary" name="btntype" value="Update" style="display: none"
+                           id="btnupdate" />
+                }
+                    <button class="btn btn-primary" type="button" onclick="resetValidation()">Clear</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+}
+
+<script type="text/javascript">
+
+
+    function EditCaseType(CaseTypeId) {
+
+        var checkUrl = '@Url.Action("EditCaseType", "Complaint")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ CaseTypeId: CaseTypeId }),
+            dataType: "json",
+            success: EditCaseTypeSucceeded,
+            error: EditCaseTypeFailed
+        });
+
+
+    }
+
+    function EditCaseTypeSucceeded(result) {
+        debugger;
+
+        $('#CTYPEID').val(result.CTYPEID);
+        $('#CASETYPEID').val(result.CASETYPEID);
+        $('#CASETYPECODE').val(result.CASETYPECODE);
+        $('#CASETYPENAME').val(result.CASETYPENAME);
+        $('#CASEDESCRIPTION').val(result.CASEDESCRIPTION);
+        $('#APPROVALDAYS').val(result.APPROVALDAYS);
+        $('#casetitle').text('UPDATE CASE TYPE');
+        if (result.ISACTIVE == "Y") {
+            $('#IsActive').prop('checked', true);
+        }
+        else {
+            $('#IsActive').prop('checked', false);
+        }
+
+        $('#btnupdate').show();
+        $('#btnadd').hide();
+
+
+    }
+
+     function EditCaseTypeFailed() {
+
+    }
+
+    function InActive(CaseTypeId) {
+        var checkUrl = '@Url.Action("InActiveCaseType", "Complaint")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ CaseTypeId: CaseTypeId }),
+            dataType: "json",
+            success: EditCaseTypeSucceeded,
+            error: EditCaseTypeFailed
+        });
+    }
+
+    function ValidateCaseTypeNameExist() {
+        debugger;
+        if ($('#CASETYPENAME').val() != "" && $('#APPROVALDAYS').val() != 0 && $('#APPROVALDAYS').val() != "") {
+            var casetypeName = $('#CASETYPENAME').val();
+            var approvaldays = $('#APPROVALDAYS').val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("CheckIsCaseTypeExist", "Complaint")',
+                data: JSON.stringify({ casetypename: casetypeName, approvaldays: approvaldays }),
+                dataType: "json",
+                success: function (data) {
+                    if (data == true) {
+                        alert("Case type already exists with same approval days");
+                        $('#CASETYPENAME').val('');
+                        $('#CASETYPENAME').focus();
+                        $('#APPROVALDAYS').val('');
+                    }
+                },
+                error: function (data) {
+                    // throw ex;
+                }
+
+            });
+        }
+      }
+    function resetValidation() {
+
+        $("#APPROVALDAYS-error").html('');
+        $("#CASETYPENAME-error").html('');
+        $("#CASEDESCRIPTION-error").html('');
+
+    }
+</script>

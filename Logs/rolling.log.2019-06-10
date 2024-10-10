@@ -1,0 +1,25 @@
+2019-06-10 11:33:08,548 DEBUG DebugLogger - Insert PO end for po number WOMH1906100001
+2019-06-10 11:34:52,548 DEBUG DebugLogger - Insert PO end for po number WOkr1906100002
+2019-06-10 11:35:28,858 DEBUG DebugLogger - Insert PO end for po number WOkr1906100002
+2019-06-10 11:35:40,160 DEBUG DebugLogger - Insert PO end for po number WOkr1906100002
+2019-06-10 11:35:47,319 DEBUG DebugLogger - Insert PO end for po number WOkr1906100002
+2019-06-10 11:47:26,937 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:47:34,108 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:49:56,759 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:50:06,476 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:52:05,303 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:52:11,658 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:53:27,279 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:53:41,950 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:54:17,282 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:54:23,186 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:54:56,164 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 11:55:10,165 DEBUG DebugLogger - Insert PO end for po number WOHR1906100003
+2019-06-10 12:41:30,766 DEBUG DebugLogger - export enter
+2019-06-10 12:41:30,771 DEBUG DebugLogger - got file path
+2019-06-10 12:41:30,776 DEBUG DebugLogger - strat excel workbook created 
+2019-06-10 12:41:30,888 DEBUG DebugLogger - excel workbook created 
+2019-06-10 12:41:31,086 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\9f47a73e-5574-4f4d-a11c-ccada1dafbad_ExportData.xls
+2019-06-10 12:41:31,181 DEBUG DebugLogger - file export complete
+2019-06-10 12:41:31,181 DEBUG DebugLogger - read file byte System.Byte[]
+2019-06-10 12:51:14,268 DEBUG DebugLogger - Insert PO end for po number WOHR1905160006

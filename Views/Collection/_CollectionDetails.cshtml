@@ -1,0 +1,191 @@
+﻿@model LumaxDMS.Models.CollectionModel
+@{
+    int i = 0;
+}
+<style>
+    /*thead, tbody, tfoot {
+        display: block;
+    }
+
+    tbody {
+        height: 100px;
+        overflow-y: auto;  
+        overflow-x: hidden;
+    }*/
+    /*table {
+        height: 200px;
+        overflow-y: scroll;
+    }*/
+</style>
+<div class="createpanel createonlydv">
+    <hr />
+    <table class="table border fixed_header" id="colltbl">
+        <thead>
+            <tr>
+                <th  class="createonly">
+                    <label>    <input type="checkbox" id="chkSelectAllScheme" class="pull-left" /></label>
+                </th>
+                <th >
+                    <label class="tbllabel">SR. No</label>
+                </th>
+
+                <th >
+                    <label class="tbllabel redlabel">DOCUMENT TYPE</label>
+                </th>
+                <th >
+                    <label class="tbllabel"> ACCOUNT DOC NO</label>
+                </th>
+                <th >
+                    <label class="tbllabel">DOCUMENT DATE</label>
+                </th> 
+                <th >
+                    <label class="tbllabel">BILL NO</label>
+                </th>
+                <th >
+                    <label class="tbllabel">BILL DATE</label>
+                </th>
+                <th >
+                    <label class="tbllabel">AMOUNT</label>
+                </th>
+                <th >
+                    <label class="tbllabel">CD AMOUNT</label>
+                </th>
+                <th >
+                    <label class="tbllabel">NET AMOUNT</label>
+                </th>
+                <th >
+                    <label class="tbllabel redlabel">RECEIVED AMOUNT</label>
+                </th>
+
+            </tr>
+        </thead>
+        <tbody style="text-align: left;" id="ctblbody">
+            @if (Model.collectionDtlMasterList != null)
+            {
+                foreach (var item in Model.collectionDtlMasterList)
+                {
+                    i = i + 1;
+            <tr id="colnDtlRow_@i">
+                <td class="createonly">
+                    @if (item.ISAMOUNTRECEIVED == "Y")
+                    {
+                        item.IsChecked = true;
+                    }
+                    else
+                    {
+                        item.IsChecked = false;
+                    }
+                    @if (item.NETAMOUNT < 0)
+                    {
+                        @Html.CheckBoxFor(m => item.IsChecked, new { @Id = "IsChecked_" + i, @Name = "IsChecked_" + i, @onclick = "return onCBCheck()",@disabled= "true" })
+                    }
+                    else
+                    {
+                        @Html.CheckBoxFor(m => item.IsChecked, new { @Id = "IsChecked_" + i, @Name = "IsChecked_" + i, @onclick = "return onCBCheck()" })
+                    }
+                </td>
+                <td >
+                    @i
+                </td>
+                <td >
+                    @Html.HiddenFor(m => item.COLLECTIONDTLID, new { @Id = "COLLECTIONDTLID_" + i, @Name = "COLLECTIONDTLID_" + i })
+                    @Html.TextBoxFor(m => item.DOCUMENTTYPE, new { @class = "form-control", @Name = "txtDOCUMENTTYPE_" + i, @Id = "txtDOCUMENTTYPE_" + i, @readonly = "true" })
+                </td>
+                <td >
+                    @Html.TextBoxFor(M => item.ACCOUNTDOCNO, new { @class = "form-control", @Name = "ACCOUNTDOCNO_" + i, @readonly = "true" })
+                </td>
+                <td  class="gatepasspanel">
+                    @Html.TextBoxFor(M => item.DOCUMENTDATE, new { @class = "form-control", @Name = "txtDOCUMENTDATE_" + i, @Id = "txtDOCUMENTDATE_" + i, @readonly = "true" })
+                </td>
+                <td  class="gatepasspanel">
+                    @Html.TextBoxFor(M => item.BILLNO, new { @class = "form-control", @Name = "txtBILLNO_" + i, title = item.BILLNO, @Id = "txtBILLNO_" + i, @readonly = "true" })
+                </td>
+                <td  class="gatepasspanel">
+                    @Html.TextBoxFor(M => item.BILLDATE, new { @class = "form-control", @Name = "txtBILLDATE_" + i, @Id = "txtBILLDATE_" + i, @readonly = "true" })
+                </td>
+                <td  class="gatepasspanel">
+                    @Html.TextBoxFor(M => item.BILLAMOUNT, new { @class = "form-control", @Name = "txtBILLAMOUNT_" + i, @Id = "txtBILLAMOUNT_" + i, @readonly = "true" })
+                </td>
+
+                <td  class="gatepasspanel">
+                    @Html.TextBoxFor(M => item.CASHDISCOUNT, new { @class = "form-control", @Name = "txtCASHDISCOUNT_" + i, @Id = "txtCASHDISCOUNT_" + i, @readonly = "true" })
+                </td>
+                <td >
+                    @Html.TextBoxFor(M => item.NETAMOUNT, new { @class = "form-control", @Name = "txtNETAMOUNT_" + i, @Id = "txtNETAMOUNT_" + i, @readonly = "true" })
+                </td>
+                <td class="gatepasspanel">
+                    @if (item.NETAMOUNT < 0)
+                    {
+                        @Html.TextBoxFor(M => item.RECIVEDAMOUNT, new { @class = "form-control numberdecimalinput rcvdamt", @Name = "txtRECIVEDAMOUNT_" + i, @Id = "txtRECIVEDAMOUNT_" + i, @readonly = "true", @autocomplete = "off", @onblur = "return showTotals();", @Value = @item.RECIVEDAMOUNT > 0 ? item.RECIVEDAMOUNT : @item.NETAMOUNT })
+                    }
+                    else if (item.IsChecked)
+                    {
+                        @Html.TextBoxFor(M => item.RECIVEDAMOUNT, new { @class = "form-control numberdecimalinput rcvdamt", @Name = "txtRECIVEDAMOUNT_" + i, @Id = "txtRECIVEDAMOUNT_" + i, @autocomplete = "off", @onblur = "return showTotals();", @Value = @item.RECIVEDAMOUNT > 0 ? item.RECIVEDAMOUNT : @item.NETAMOUNT })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(M => item.RECIVEDAMOUNT, new { @class = "form-control numberdecimalinput rcvdamt", @Name = "txtRECIVEDAMOUNT_" + i, @Id = "txtRECIVEDAMOUNT_" + i, @autocomplete = "off", @onblur = "return showTotals();", @Value ="", @disabled = "disabled" })
+                    }
+                </td>
+
+            </tr>
+                }
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td  class="createonly"></td>
+                <td ></td>
+                <td colspan="2">Item Line Totals: </td>
+                <td ></td>
+                <td ></td>
+                <td ></td>
+                <td >
+                    <label id="lblLineItemTotalINVOICEAMOUNT"><b></b>0</label>
+                </td>
+                @*<td >
+            <label id="lblLineItemTotalBALANCEAMOUNT"><b></b>0</label>
+        </td>*@
+                <td >
+                    <label id="lblLineItemTotalCASHDISCOUNT"><b></b>0</label>
+                </td>
+                <td >
+                    <label id="lblLineItemTotalNETAMOUNT"><b></b>0</label>
+                </td>
+                <td >
+                    <label id="lblLineItemTotalRECIVEDAMOUNT"><b></b>0</label>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$("table").DataTable({
+        //    "scrollY": "340px",
+        //    "scrollCollapse": true,
+        //    "paging": false,
+        //    "ordering": false,
+        //    "searching": false,
+        //    "info": false
+        //});
+        formatlineitem();
+    });
+
+    $('#chkSelectAllScheme').click(function () {
+        var checkedStatus = this.checked;
+        $('#colltbl tbody tr').find('td:first :checkbox').each(function () {
+            debugger;
+            var isDisabled = $("#" + this.id).prop('disabled');
+            if (!isDisabled) {
+                $(this).prop('checked', checkedStatus);
+            }
+        });
+        EnabledisableRow();
+    });
+    function onCBCheck() {
+        EnabledisableRow();
+    }
+</script>

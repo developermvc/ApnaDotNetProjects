@@ -1,0 +1,429 @@
+﻿@model LumaxDMS.Models.TravelNormsModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CREATE TRAVEL NORM";
+    var counter = 1;
+    var catcounter = 1;
+    var openclass = "";
+    var closeclass = "";
+    var isdone = "";
+}
+
+@section CSS
+{
+    <link href="/Content/AutoCompleteCSS/chosen.css" rel="stylesheet" type="text/css" />
+}
+
+@using (Html.BeginForm("CreateTravelNorm", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.TravelNormsId)
+
+
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        @Html.Partial("_WaitModal")
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName == Constants.BTN_CREATE)
+                    {
+                        <span>CREATE TRAVEL NORM</span>
+                    }
+                    else
+                    {
+                        <span>UPDATE TRAVEL NORM</span>
+                    }
+                </div>
+                <div class="card-body custom_responsive2">
+                    <div class="row">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                Travel Norm Code:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.TravelNormCode, new { @class = "form-control", disabled = "disabled" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd" class="redlabel">
+                                Designation List:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @if (Model.TravelNormsId > 0)
+                            {
+                                @Html.DropDownListFor(model => model.DesignationId, new SelectList(Model.DesignationList, "DESIGNATION_ID", "DESIGNATIONNAME"), "-- Select--", new { @class = "form-control",@disabled="disabled" })
+                                @Html.ValidationMessageFor(model => model.DesignationId)
+                                @Html.HiddenFor(model => model.DesignationId)
+                            }
+                            else
+                            {
+                                @Html.DropDownListFor(model => model.DesignationId, new SelectList(Model.DesignationList, "DESIGNATION_ID", "DESIGNATIONNAME"), "-- Select--", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.DesignationId)
+                            }
+
+
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                IsActive:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.CheckBoxFor(model => model.IsActive)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="card-body">
+                            <table id="TravelNormDTLList" class="table table-striped table-bordered dt-responsive nowrap"
+                                   style="width: 100%">
+                                <thead class="thead-lights">
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" id="chkSelectAllTravelNorm" class="pull-left" />
+                                            <a href="#" onclick="return removeCheckedTravelNorm();" title="Remove Checked Rows"><i class="fa fa-trash bg_red"></i></a>
+                                        </th>
+                                        <th>
+                                            City Class
+                                        </th>
+                                        <th>
+                                            Travel Component
+                                        </th>
+                                        <th>
+                                            Travel Amount
+                                        </th>
+                                    </tr>
+                                </thead>
+                                @if (Model.TravelNormsDTLList != null)
+                                {
+                                    <tbody>
+                                        @Html.Hidden("TravelNormDTLCount", Model.TravelNormsDTLList.Count, new { @Name = "TravelNormDTLCount" })
+                                        @foreach (var item in Model.TravelNormsDTLList)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" />&nbsp;
+                                                    @Html.HiddenFor(m => item.TRAVELNORMSDTLID, new { @id = "TravelNormDTLId_" + counter, @Name = "TravelNormDTLId_" + counter })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.CITYCLASSID, new SelectList(Model.CityClassList, "CITYCLASS_ID", "CLASSNAME", item.CITYCLASSID), "-- Select--", new { @id = "CityClassId_" + counter, @Name = "CityClassId_" + counter, @class = "form-control", @onchange ="return CheckDuplicateData(this);" })
+                                                </td>
+                                                <td>
+                                                    @Html.DropDownListFor(m => item.TRAVELCOMPID, new SelectList(Model.TravelComponentList, "TRAVELCOMPID", "COPONENTNAME", item.TRAVELCOMPID), "-- Select--", new { @id = "TravelCompId_" + counter, @Name = "TravelCompId_" + counter, @class = "form-control", @onchange = "return CheckDuplicateData(this);" })
+                                                </td>
+                                                <td>
+                                                    @Html.TextBoxFor(m => item.TRAVELAMOUNT, new { @id = "TravelAmount_" + counter, @Name = "TravelAmount_" + counter, @maxlength="13", @Style="text-align:right", @class = "form-control decimal" })
+                                                </td>
+                                            </tr>
+                                            counter++;
+                                        }
+                                    </tbody>
+                                }
+                            </table>
+                            <br />
+                            <div class="clearfix">
+                                <input type="button" name="btntype" value="Add Row" id="btnaddrow" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                Travel Mode:
+                            </label>
+                        </div>
+                        <div class="col-lg-10 col-xs-12 forSecondary">
+                            <div id="dv_lbItem_1" class="dvitem_choosen">
+                                @Html.ListBoxFor(model => model.TravelMode_Ids, new SelectList(Model.TravelModeList, "travelModeId", "travelModeName", Model.TravelMode_Ids), new { @Id = "TravelModeId_", @Name = "TravelModeId_", @Class = "avaiable_mcode itemchosen-select" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.InActiveTravelCompList != null)
+                        {
+
+                            <div id="InActiveTravelCompDetail" class="card-body">
+
+                                @Html.Hidden("InActiveTravelCompCount", Model.InActiveTravelCompList.Count, new { @Name = "InActiveTravelCompCount" })
+                                @foreach (var item in Model.InActiveTravelCompList)
+                                {
+                                    var cls = "";
+                                    var clsclose = "";
+                                    if (catcounter == 1 || (catcounter - 1) % 3 == 0)
+                                    {
+                                        cls = "<div class='row row_pt'>";
+                                        openclass = "openappendclass";
+                                        closeclass = "";
+                                        isdone = "done";
+                                    }
+
+                                    if (catcounter % 3 == 0 || Model.InActiveTravelCompList.Count == catcounter)
+                                    {
+                                        closeclass = "closeappendclass";
+                                        openclass = "";
+                                        isdone = "done";
+                                        clsclose = "</div>";
+                                    }
+
+                                    if (isdone == "")
+                                    {
+                                        openclass = "";
+                                        closeclass = "";
+                                    }
+                                    @Html.Raw(@cls)
+                                    <div class="col-lg-2 @openclass">
+                                        <label for="pwd" id="lblcompname" class="redlabel">
+                                            @item.COPONENTNAME:
+                                            @Html.HiddenFor(m => @item.TRAVELCOMPID, new { @id = "InACtiveCompId_"+catcounter, @Name = "InACtiveCompId_" + catcounter })
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 @closeclass">
+                                        @Html.TextBoxFor(m => item.TravelAmount, new { @class = "form-control decimal", @maxlength="13", @id= "InActiveTravelAmount_"+catcounter, @Name = "InActiveTravelAmount_" + catcounter })
+                                    </div>
+                                    @Html.Raw(@clsclose)
+
+
+                                    catcounter++;
+                                }
+
+                            </div>
+                            <br />
+                        }
+                    </div>
+
+
+                    <div class="card-footer">
+                        <div class="clearfix">
+                            <div class="float-right">
+                                @if (Model.ActionName == Constants.BTN_CREATE)
+                                {
+                                    <input type="submit" name="btntype" value="Create" id="btnadd" onclick="return CheckValidation();" class="btn btn-primary" />
+                                    <input type="reset" class="btn btn-primary" name="btntype" onclick="return Clear()" value="Clear" />
+                                }
+                                else
+                                {
+                                    <input type="submit" class="btn btn-primary" name="btntype" value="Update" onclick="return CheckValidation();"
+                                           id="btnupdate" />
+                                }
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+
+@section JS
+{
+    <script type="text/javascript">
+        var valid = true;
+        var numrows = Number(@counter);
+        var serialnumber = 1;
+        var rowsarray = ["0", "0"];
+
+        $(document).ready(function () {
+            HideWaitingSymbol();
+            $('.itemchosen-select').chosen();
+            $('#DesignationId').chosen();
+            
+        });
+
+        $('body').on('keyup paste', ".decimal", function () {
+            this.value = this.value.replace(/[^0-9\.]/g, '');
+        });
+
+        function CheckDuplicateData(obj) {
+            var id = $(obj).attr('id').split('_');
+            
+            $('#TravelNormDTLList tbody tr').each(function (i, data) {
+                if ($(this).find('#CityClassId_'+(i + 1)).attr('id') != $('#CityClassId_' + id[1]).attr('id') && $(this).find('#CityClassId_' + (i + 1)).val() == $('#CityClassId_' + id[1]).val()
+                    && $(this).find('#TravelCompId_' + (i + 1)).val() == $('#TravelCompId_' + id[1]).val()) {
+                    alert("Already selected");
+                    $(obj).val("");
+                    $(obj).focus();
+                }
+            });
+        }
+
+        $('#btnaddrow').on('click', function () {
+            var validate = CheckAggregate();
+            if (validate) {
+                //numrows = numrows;
+                serialnumber = serialnumber + 1;
+                rowsarray[numrows] = "0";
+                var table = document.getElementById("TravelNormDTLList");
+                var rowcount = table.rows.length;
+                var row = table.insertRow(rowcount);
+                row.id = "TravelNorm_" + rowcount;
+
+                var cell1 = row.insertCell(0);
+                var element0 = document.createElement("input");
+                element0.type = "checkbox";
+                var element1 = document.createElement("input");
+                element1.type = "hidden";
+                element1.name = "TravelNormDTLId_" + rowcount;
+                element1.id = "TravelNormDTLId_" + rowcount;
+                cell1.appendChild(element0);
+                $(element0).append(element1);
+                cell1.align = "centre";
+
+                var ddl = $('#CityClassId_1').clone(true);
+                var celldv = row.insertCell(1);
+                ddl[0].id = "CityClassId_" + rowcount;
+                ddl[0].name = "CityClassId_" + rowcount;
+                ddl[0].value = "";
+                ddl[0].setAttribute('onchange', 'return CheckDuplicateData(this);');
+                celldv.append(ddl[0]);
+
+                var ddltravelcomp = $('#TravelCompId_1').clone(true);
+                var cellddl = row.insertCell(2);
+                ddltravelcomp[0].id = "TravelCompId_" + rowcount;
+                ddltravelcomp[0].name = "TravelCompId_" + rowcount;
+                ddltravelcomp[0].value = "";
+                ddltravelcomp[0].setAttribute('onchange', 'return CheckDuplicateData(this);');
+                cellddl.append(ddltravelcomp[0]);
+
+                var cell2 = row.insertCell(3);
+                var element2 = document.createElement("input");
+                element2.type = "text";
+                element2.className = "form-control decimal";
+                element2.style = "text-align:right";
+                element2.name = "TravelAmount_" + rowcount;
+                element2.id = "TravelAmount_" + rowcount;
+                cell2.append(element2);
+
+                document.getElementById("TravelNormDTLCount").value = rowcount;
+            }
+        });
+
+        $('#chkSelectAllTravelNorm').on('click', function () {
+            var CheckedStatus = this.checked;
+            $('#TravelNormDTLList tbody tr').find('td:first :checkbox').each(function () {
+                $(this).prop('checked', CheckedStatus);
+            });
+        });
+
+        function removeCheckedTravelNorm() {
+            
+            if ($('#TravelNormDTLList tbody tr').length > 1 && $('#TravelNormDTLList tbody tr').find('input[type="checkbox"]:checked').length != $('#TravelNormDTLList tbody tr').length) {
+                $('#TravelNormDTLList tbody tr').each(function () {
+                    if ($(this).find('td:first').find('input[type="checkbox"]').is(':checked')) {
+                        $(this).remove();
+                    }
+                });
+                $('#TravelNormDTLCount').prop('value', $('#TravelNormDTLList tbody tr').length);
+            }
+            else {
+                alert("Atleast one row is required");
+            }
+        }
+
+        function CheckAggregate() {
+
+            valid = true;
+
+            var mtable = document.getElementById("TravelNormDTLList");
+            var mrowCount = document.getElementById("TravelNormDTLCount").value;
+
+            for (var i = 1; i <= mrowCount; i++) {
+                var newcheckboxtd = document.getElementById("TravelNormDTLId_" + i);
+                var CityClassId = document.getElementById("CityClassId_" + i);
+                var TravelCompId = document.getElementById("TravelCompId_" + i);
+                var TravelAmount = document.getElementById("TravelAmount_" + i);
+
+                if (CityClassId != undefined) {
+
+                    if (CityClassId.value == "") {
+                        if (i >= 1) {
+                            alert('Please select city class');
+                            $('#CityClassId_' + i).focus();
+                            valid = false;
+                        }
+                    }
+                }
+
+                if (TravelCompId != undefined) {
+
+                    if (TravelCompId.value == "") {
+                        if (i >= 1) {
+                            alert('Please select travel component');
+                            $('#TravelCompId_' + i).focus();
+                            valid = false;
+                        }
+                    }
+                }
+
+                if (TravelAmount != undefined && TravelAmount.value == "") {
+                    if (i >= 1) {
+                        alert('Please enter travel amount');
+                        $('#TravelAmount_' + i).focus();
+                        valid = false;
+                    }
+                }
+            }
+
+            return valid;
+
+        }
+
+        function CheckNotCityClassAggregate() {
+
+            valid = true;
+
+            var mtable = document.getElementById("InActiveTravelCompDetail");
+            var mrowCount = document.getElementById("InActiveTravelCompCount").value;
+
+            for (var i = 1; i <= mrowCount; i++) {
+                var InActivetravelCompId = document.getElementById("InACtiveCompId_" + i);
+                var InActiveTravelAmount = document.getElementById("InActiveTravelAmount_" + i);
+                var lblcompname = $('#InACtiveCompId_' + i).closest('label').text().trim().toLowerCase().split(':');
+
+                if ($('#InActiveTravelAmount_' + i).val() == "" || $('#InActiveTravelAmount_' + i).val() == 0) {
+                    alert("Please enter " + lblcompname[0]);
+                    $('InActiveTravelAmount_' + i).focus();
+                    valid = false;
+                }
+            }
+
+            return valid;
+
+        }
+
+        function Clear() {
+            $('#TravelNormDTLList option[selected]').removeAttr("selected");
+            $('#TravelNormDTLList select').val("");
+            $('#TravelNormDTLList input').attr('value', '');
+            $('#DesignationId').val("").trigger("chosen:updated");
+            $('#TravelMode_Ids option').prop('selected', false);
+            $('#IsActive').attr('checked', false);
+            $('#TravelModeId_').val("").trigger("chosen:updated");
+            $('#InActiveTravelCompDetail input').attr('value', '');
+        }
+
+        function CheckValidation() {
+            debugger;
+            if ($('#DesignationId').val() != "" && $('#DesignationId').val() != "0") {
+                valid = CheckAggregate();
+                if (valid && ($('#TravelModeId_').val() == "" || $('#TravelModeId_').val() == 0)) {
+                    alert("Plaese select atleast one travel mode");
+                    valid = false;
+                }
+                if (valid && $('#InActiveTravelCompCount').val() > 0) {
+                    valid = CheckNotCityClassAggregate();
+                }
+            }
+            else {
+                alert("Please select designation");
+                valid = false;
+            }
+            return valid;
+        }
+
+    </script>
+}

@@ -1,0 +1,250 @@
+﻿@model LumaxDMS.Models.BaseModel
+@using BusinessObject
+@using LumaxDMS.AppCode
+@{
+    UserMaster currentuser = (UserMaster)Session[Constants.Session.USER];
+}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Bootstrap Admin App + jQuery">
+    <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>LUMAX</title>
+    <!-- =============== VENDOR STYLES ===============-->
+    <!-- FONT AWESOME-->
+    <link href="/Content/css/fa-solid.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/Content/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/Content/css/bootstrap.css" />
+    <!-- =============== APP STYLES ===============-->
+    <link rel="stylesheet" href="/Content/css/app.css" />
+    <link rel="stylesheet" href="/Content/css/glyphicon.css" />
+    <link rel="stylesheet" href="/Content/css/theme-h.css" />
+    <!-- SIMPLE LINE ICONS-->
+    <link href="/Content/css/simple-line-icons.css" rel="stylesheet" type="text/css" />
+    <!-- ANIMATE.CSS-->
+    <link rel="stylesheet" type="text/css" href="/Content/css/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" type="text/css" href="/Content/css/responsive.bootstrap4.min.css" />
+    <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+</head>
+<div class="wrapper">
+    <header class="topnavbar-wrapper">
+        <div class="container-fluid top_div">
+            <div class="row">
+                <div class="col-md-4 col-xs-4">
+                    <!-- START Top Navbar-->
+                    <nav class="navbar topnavbar">
+                        <!-- START navbar header-->
+                        <div class="navbar-header">
+                            <ul class="navbar-nav mr-auto flex-row left-side">
+                                <li class="nav-item">
+                                    <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                                    <a class="nav-link d-none d-md-block d-lg-block d-xl-block" href="#" data-trigger-resize="" data-toggle-state="aside-collapsed">
+                                        <em class="fas fa-bars"></em>
+                                    </a>
+                                    <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
+                                    <a class="nav-link sidebar-toggle d-md-none" href="#" data-toggle-state="aside-toggled" data-no-persist="true">
+                                        <em class="fas fa-bars" style="color: #000;"></em>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+
+                                    <a href="/Home/Index"> <img src="/Content/Images/logo2.png" style="position: relative; top: 8px;" class="img_left"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                <div class="col-md-4 col-xs-5 hidden-xs dms">
+                    <h4 class="tittle_cr hidden-xs">
+                        DEALER MANAGEMENT SYSTEMS
+                        <span class="apk">
+                            <a href="##" value="DownloadSampleExcel" class="btn btn-primary"
+                               title="Download Sample Excel"
+                               onClick="window.location.href='/Content/LumaxData/APK/app-debug.zip'">
+                                Download App &nbsp; <i class="fa fa-download"></i>
+                            </a>
+                        </span>
+                    </h4>
+                </div>
+                <div class="admin_new">
+                    <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+                        <li class="hidden-xs hidden-xs dms ">
+                            <img src="/Content/Images/mainlogo.png" class="hidden-xs hidden-xs dms">
+                        </li>
+                        <li class="nav-item dropdown show">
+                            <a class="nav-link navbar-avatar" data-toggle="dropdown"
+                               href="#" aria-expanded="true" data-animation="scale-up" role="button">
+                                <span class="avatar avatar-online">
+
+                                    @if (Model != null && Model.BaseUserInfo != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(Model.BaseUserInfo.EMPIMGPATH))
+                                        {
+                                            <img src="@Model.BaseUserInfo.EMPIMGPATH" alt="@Model.BaseUserInfo.USERNAME" style="width: 35px;height: 35px;">
+                                        }
+                                        else
+                                        {
+                                            <img src="/Content/Images/5.jpg" alt="...">
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <img src="/Content/Images/5.jpg" alt="...">
+                                    }
+                                    <i></i>
+                                </span>
+                            </a>
+                            <div class="dropdown-menu " role="menu">
+                                <a class="dropdown-item" href="#" id="btnProfileDetail" role="menuitem">
+                                    <i class="fa fa-user"></i> Profile
+                                </a> <a class="dropdown-item" href="#" id="btnChangepassword" role="menuitem">
+                                    <i class="fa fa-cog" aria-hidden="true"></i>  Change Password
+                                </a>
+                                <div class="dropdown-divider" role="presentation">
+                                </div>
+                                <a class="dropdown-item" href="/Account/LogOut" role="menuitem">
+                                    <i class="fa fa-sign-out"
+                                       aria-hidden="true"></i>  Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Other Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div id="mymodel_otherdlt" class="modal-body">
+                    @*@{ Html.RenderPartial("_OtherDTL"); }*@
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" id="btnclosed" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+                 
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="normsdtlModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Allow Mode</h4>
+                        <button type="button" id="uclosedtlbtn" class="close" data-dismiss="modal" style="position: relative; top: -10px; color: #fff;">&times;</button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table id="normdtllist" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sno.</th>
+                                    <th>Mode</th>
+                                </tr>                                 
+                            </thead>
+                            <tbody>
+                                 
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="dclosedtlbtn" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <div class="modal" id="DeleteModel">
+        <div class="modal-dialog" id="Deletemodal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header" id="DeleteModel-header">
+                    <h4 class="modal-title" id="DeleteModel-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal" style="position: relative; top: -10px; color: #fff;">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body" id="DeleteModel-body">Modal body.</div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="SubmitDelete">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*****Model PopUp For schedule po ***@
+    <div class="modal" id="ScheduleModel">
+        <div class="modal-dialog" id="Schedulemodal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header" id="ScheduleModel-header">
+                    <h4 class="modal-title" id="ScheduleModel-title" style="height:100px;">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal" style="position: relative; top: -10px; color: #fff;">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body" id="ScheduleModel-body">Modal body.</div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="SubmitSchedule">Submit</button>
+                    <button type="button" id="btnclose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @********@
+
+
+    <div class="modal" id="ShowInfo">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="ShowInfo-modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal" style="position: relative; top: -10px; color: #fff;">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body" id="ShowInfo-modal-body">Modal body.</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="ChangePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myModal2Label">
+    </div>
+    <div class="modal" id="ProfileDetailModel" tabindex="-1" role="dialog" aria-labelledby="myModal2Label">
+    </div> 
+
+<script src="/Scripts/jquery-3.3.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $('#btnChangepassword').click(function () {
+                debugger;
+            var url = '@Url.Action("ChangePassword", "Account")';
+
+            $.get(url, function (data) {
+                debugger;
+                $('#ChangePasswordModal').html(data);
+
+                $('#ChangePasswordModal').modal('show');
+            });
+    });
+
+    $("#dclosedtlbtn").click(function () {
+        $("#normsdtlModal").hide();
+    })
+    $("#uclosedtlbtn").click(function () {
+        $("#normsdtlModal").hide();
+    })
+</script>

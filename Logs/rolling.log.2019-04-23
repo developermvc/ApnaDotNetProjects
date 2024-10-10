@@ -1,0 +1,5 @@
+2019-04-23 09:31:06,648 DEBUG DebugLogger - Insert PO end for po number WOTN1904230001
+2019-04-23 09:31:06,672 DEBUG DebugLogger - Insert PO to SAP start for po number WOTN1904230001
+2019-04-23 09:31:06,724 DEBUG DebugLogger - Po Send by dealer name AMMAN AUTO ASSOCIATES
+2019-04-23 09:31:06,728 DEBUG DebugLogger - found po details success 1
+2019-04-23 09:34:20,635 DEBUG DebugLogger - Insert claim to SAP start for claim number CLM1904230001

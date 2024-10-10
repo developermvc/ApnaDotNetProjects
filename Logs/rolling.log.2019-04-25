@@ -1,0 +1,67 @@
+2019-04-25 09:52:16,024 DEBUG DebugLogger - InterimReportController.cs Microsoft.Reporting.WebForms.MissingReportSourceException: The source of the report definition has not been specified
+   at Microsoft.Reporting.WebForms.LocalReport.EnsureExecutionSession()
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, CreateAndRegisterStream createStreamCallback, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.Render(String format, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at LumaxDMS.Controllers.ClaimController.saveClaimEmailAttachmentFile(String claimNumber) in D:\Projects\LumaxNew\LumaxDMS\Controllers\ClaimController.cs:line 786
+2019-04-25 10:24:46,479 DEBUG DebugLogger - InterimReportController.cs Microsoft.Reporting.WebForms.MissingReportSourceException: The source of the report definition has not been specified
+   at Microsoft.Reporting.WebForms.LocalReport.EnsureExecutionSession()
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, CreateAndRegisterStream createStreamCallback, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.Render(String format, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at LumaxDMS.Controllers.ClaimController.saveClaimEmailAttachmentFile(String claimNumber) in D:\Projects\LumaxNew\LumaxDMS\Controllers\ClaimController.cs:line 786
+2019-04-25 11:25:46,683 DEBUG DebugLogger - Insert PO end for po number WOBR1904250002
+2019-04-25 11:25:46,761 DEBUG DebugLogger - InterimReportController.cs Microsoft.Reporting.WebForms.MissingReportSourceException: The source of the report definition has not been specified
+   at Microsoft.Reporting.WebForms.LocalReport.EnsureExecutionSession()
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, CreateAndRegisterStream createStreamCallback, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.Render(String format, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at LumaxDMS.Controllers.SalesOrderController.SavePoAttachmentFile(String poNumber) in D:\Projects\LumaxNew\LumaxDMS\Controllers\SalesOrderController.cs:line 943
+2019-04-25 11:28:59,870 DEBUG DebugLogger - Insert PO end for po number WODL1904250003
+2019-04-25 11:28:59,920 DEBUG DebugLogger - InterimReportController.cs Microsoft.Reporting.WebForms.MissingReportSourceException: The source of the report definition has not been specified
+   at Microsoft.Reporting.WebForms.LocalReport.EnsureExecutionSession()
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, CreateAndRegisterStream createStreamCallback, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.Render(String format, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at LumaxDMS.Controllers.SalesOrderController.SavePoAttachmentFile(String poNumber) in D:\Projects\LumaxNew\LumaxDMS\Controllers\SalesOrderController.cs:line 943
+2019-04-25 11:30:56,411 DEBUG DebugLogger - Insert PO end for po number WOBR1904250004
+2019-04-25 11:30:56,489 DEBUG DebugLogger - InterimReportController.cs Microsoft.Reporting.WebForms.MissingReportSourceException: The source of the report definition has not been specified
+   at Microsoft.Reporting.WebForms.LocalReport.EnsureExecutionSession()
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, CreateAndRegisterStream createStreamCallback, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.InternalRender(String format, Boolean allowInternalRenderers, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at Microsoft.Reporting.WebForms.LocalReport.Render(String format, String deviceInfo, PageCountMode pageCountMode, String& mimeType, String& encoding, String& fileNameExtension, String[]& streams, Warning[]& warnings)
+   at LumaxDMS.Controllers.SalesOrderController.SavePoAttachmentFile(String poNumber) in D:\Projects\LumaxNew\LumaxDMS\Controllers\SalesOrderController.cs:line 943
+2019-04-25 11:33:44,860 DEBUG DebugLogger - Insert PO end for po number WOBR1904250005
+2019-04-25 11:46:19,814 DEBUG DebugLogger - Insert PO end for po number WOBR1904250006
+2019-04-25 12:02:00,155 DEBUG DebugLogger - Insert PO end for po number WOOR1904250007
+2019-04-25 12:02:35,284 DEBUG DebugLogger - Insert PO end for po number WOOR1904250007
+2019-04-25 12:05:23,142 DEBUG DebugLogger - Insert PO end for po number WOBR1904250008
+2019-04-25 12:05:47,751 DEBUG DebugLogger - Insert PO end for po number WOBR1904250008
+2019-04-25 12:07:46,277 DEBUG DebugLogger - Insert PO end for po number WOOR1904250009
+2019-04-25 12:08:24,270 DEBUG DebugLogger - Insert PO end for po number WOUP1904250010
+2019-04-25 12:09:00,970 DEBUG DebugLogger - Insert PO end for po number WOUP1904250010
+2019-04-25 12:13:07,217 DEBUG DebugLogger - Insert PO end for po number WOUP1904250010
+2019-04-25 12:13:35,245 DEBUG DebugLogger - Insert PO end for po number WOOR1904250009
+2019-04-25 12:13:59,543 DEBUG DebugLogger - Insert PO end for po number WOBR1904250008
+2019-04-25 12:14:15,251 DEBUG DebugLogger - Insert PO end for po number WOOR1904250007
+2019-04-25 12:15:32,667 DEBUG DebugLogger - Insert PO end for po number WOOR1904250011
+2019-04-25 12:16:17,631 DEBUG DebugLogger - Insert PO end for po number WOBR1904250012
+2019-04-25 12:16:22,083 DEBUG DebugLogger - Insert PO end for po number WODL1904250013
+2019-04-25 12:18:20,710 DEBUG DebugLogger - Insert PO end for po number WOBR1904250012
+2019-04-25 12:27:47,074 DEBUG DebugLogger - InterimReportController.cs System.ArgumentException: Column 'WEBORDERNUMBER' does not belong to table Table1.
+   at System.Data.DataRow.GetDataColumn(String columnName)
+   at System.Data.DataRow.get_Item(String columnName)
+   at LumaxDMS.Controllers.ClaimController.saveClaimEmailAttachmentFile(String claimNumber) in D:\Projects\LumaxNew\LumaxDMS\Controllers\ClaimController.cs:line 811
+2019-04-25 12:33:05,722 DEBUG DebugLogger - Insert PO end for po number WOBR1904250006
+2019-04-25 12:34:14,335 DEBUG DebugLogger - Insert PO end for po number WOBR1904250014
+2019-04-25 12:38:15,395 DEBUG DebugLogger - Insert PO end for po number WOOR1904250015
+2019-04-25 12:39:28,712 DEBUG DebugLogger - Insert PO end for po number WOOR1904250016
+2019-04-25 12:44:32,665 DEBUG DebugLogger - Insert PO end for po number WOUP1904250017
+2019-04-25 12:45:42,628 DEBUG DebugLogger - Insert PO end for po number WOUP1904250018
+2019-04-25 12:46:43,816 DEBUG DebugLogger - Insert PO end for po number WOUP1904250018
+2019-04-25 12:50:14,858 DEBUG DebugLogger - Insert PO end for po number WOOR1904250019
+2019-04-25 12:50:33,815 DEBUG DebugLogger - Insert PO end for po number WOOR1904250019
+2019-04-25 12:51:07,040 DEBUG DebugLogger - Insert PO end for po number WOOR1904250019
+2019-04-25 12:51:41,354 DEBUG DebugLogger - Insert PO end for po number WOOR1904250019
+2019-04-25 16:42:41,997 DEBUG DebugLogger - Insert PO end for po number WOTL1904250022
+2019-04-25 17:32:56,121 DEBUG DebugLogger - Insert PO end for po number WOOR1904250023

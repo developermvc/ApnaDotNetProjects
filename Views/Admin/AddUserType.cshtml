@@ -1,0 +1,73 @@
+﻿@model LumaxDMS.Models.UserTypeModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "AddUserType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="card card_ps">
+    <div class="panel panel-default">
+        <div class="header_ps">
+            <span>ADD USER TYPE</span></div>
+        @using (Html.BeginForm("AddUserType", "Admin", FormMethod.Post, new { }))
+        {
+            @Html.AntiForgeryToken()
+        
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            User Type Code:</label>
+                    </div>
+                    <div class="col-lg-2">
+                        @Html.TextBoxFor(model => model.UserType_Name, new { @class = "form-control", @placeholder = "User Code", title = "Enter User Code", id = "txtusercode" })
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            User Type Name:</label>
+                    </div>
+                    <div class="col-lg-2">
+                        @Html.TextBoxFor(model => model.UserType_Description, new { @class = "form-control", @placeholder = "User Name", title = "Enter User Name", id = "txtusername" })
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="pwd">
+                            Status:</label>
+                    </div>
+                    <div class="col-lg-2">
+                        @Html.CheckBoxFor(model => model.IsActive, new { id = "activeId", @checked = "checked" })
+                    </div>
+                </div>
+                <hr />
+                <div class="row botton_tppp" style="margin-bottom: 15px;">
+                    <div class="col-lg-12 pull-right">
+                        @if (Model.ActionName == Constants.BTN_CREATE && Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                        {
+                            <input type="submit" name="btntype" value="Create" id="btnadd" class="btn btn_font"
+                                onclick="return CheckValidation();" />
+                        }
+                        @if (Model.ActionName == Constants.BTN_EDIT && Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                        {
+                                    
+                            <input type="submit" class="btn btn_font" name="btntype" value="Update" id="btnupdate"
+                                onclick="return CheckValidation();" />
+                        }
+                        <input type="button" class="btn btn_font" name="btntype" value="Clear" onclick="return Clear();" />
+                    </div>
+                </div>
+            </div>
+       
+   
+        }
+    </div>
+</div>
+@section JS
+{
+    <script type="text/javascript">
+
+        function Clear() {
+            $('#txtusercode').val('');
+            $('#txtusername').val('');
+            $('#activeId').prop('checked', false);
+        }
+
+    </script>
+}

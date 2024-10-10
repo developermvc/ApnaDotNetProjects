@@ -1,0 +1,142 @@
+﻿@model LumaxDMS.Models.SchemeApplicatorModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "SchemeApplicatorList";
+}
+
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>Scheme Applicator List</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+
+                    <div class="col-sm-12 col-md-12">
+                        @*<div class="panel-heading" style="padding: 10px;">*@
+                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                        {
+                            <a class="mb-1 btn btn-success pull-right right_bottom" href="/Scheme/CreateSchemeApplicator?@Constants.HASH_SCHEME">Create New</a>
+                            <a class="mb-1 btn btn-success pull-left right_bottom" href="/SalesOrder/TestSalesOrder?@Constants.HASH_SCHEME">Test Sale Order</a>
+                        }
+
+                        <table id="Usertbl" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        Scheme Ref No.
+                                    </th>
+                                    <th>
+                                        Scheme Name
+                                    </th>
+                                    <th>
+                                        Apply On
+                                    </th>
+                                    <th>
+                                        From Date
+                                    </th>
+                                    <th>
+                                        To Date
+                                    </th>
+                                    <th>
+                                        Status
+                                    </th>
+                                    <th>IsActive</th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.SchemeApplicatorList)
+                                {
+                                <tr>
+                                    <td>
+                                        @item.SCHEMECODE
+                                    </td>
+                                    <td>
+                                        @item.SCHEMENAME
+                                    </td>
+
+                                    <td>
+                                        @item.Apply_on_Name
+                                    </td>
+                                    <td>
+                                        @Html.DisplayDate(@item.FROM_DATE)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayDate(@item.TO_DATE)
+                                    </td>
+                                    <td>
+                                        @item.APPROVE_STATUS
+                                    </td>
+                                    <td>
+                                        @Html.DisplayStatus(@item.ISACTIVE)
+                                    </td>
+                                    <td class="text_center">
+                                        @Html.HiddenFor(m => m.SchemeApplicatorList[0].SCHEME_ID, new { id = "hdnScheme_Id" })
+                                        @if (@item.ACTION == "EDIT")
+                                        {
+                                            if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                            {
+                                                <a href="/Scheme/CreateSchemeApplicator?Scheme_Id=@item.SCHEME_ID&ButtonActionName=Edit&@Constants.HASH_SCHEME" title="Edit Scheme Applicator">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (Model.PermissionNameList.Contains(Constants.PermissionName.VIEW))
+                                            {
+                                                <a href="/Scheme/CreateSchemeApplicator?Scheme_Id=@item.SCHEME_ID&ButtonActionName=View&@Constants.HASH_SCHEME" title="View Scheme Applicator">
+                                                    <i class="icon-eye"></i>
+                                                </a>
+                                            }
+                                        }
+                                        <a href="/Scheme/CreateSchemeApplicator?Scheme_Id=@item.SCHEME_ID&ButtonActionName=COPY&@Constants.HASH_SCHEME" title="Copy Scheme">
+                                            <i class="fa fa-clone" aria-hidden="true"></i>
+                                        </a>
+
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm("DeleteScheme", "Scheme", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.Scheme_Id, new { @Id = "Del_Scheme_Id" });
+}
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#Usertbl').DataTable({
+                "order": [[0, "desc"]]
+            } );
+        });
+
+
+        function DeleteScheme(id) {
+            $('.modal-title').html("DELETE ITEM GROUP");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_Scheme_Id').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+    </script>
+}
+

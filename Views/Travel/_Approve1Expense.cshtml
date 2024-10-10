@@ -1,0 +1,115 @@
+﻿@model LumaxDMS.Models.TravelExpenseModel
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-lg-2">
+            <label for="pwd" class="redlabel">
+                Approval Remark
+            </label>
+        </div>
+        <div class="col-lg-6">
+
+            @Html.TextAreaFor(m => m.Approve1.REMARKS, new { @class = "form-control ", @style = "padding:0px!important" })
+
+            @*@if (Model.Approve2 != null)
+            {
+                @Html.TextAreaFor(m => m.Approve1.REMARKS, new { @class = "form-control", @readonly = "readonly" })
+            }
+            else
+            {
+                @Html.TextAreaFor(m => m.Approve1.REMARKS, new { @class = "form-control" })
+            }*@
+
+        </div>
+
+
+        @if (Model.travelExpHDRMaster.status > 1 && Model.ActionName != "display")
+        {
+
+            if (Model.travelExpHDRMaster.ISFINALAPPROVAL == "Y")
+            {
+                <div class="content clearfix">
+                    <div class="col-lg-4" id="normsfilediv" style="display:none;">
+                        <input type="file" multiple="multiple" id="normsfile" class="form-control" onchange="saveNormattachment(this)" />
+                    </div>
+                </div>
+
+                
+            }
+
+
+
+        }
+        else
+        {
+            if (Model.TravelExpNormedValModel != null && Model.ActionName == "display")
+            {
+                if (Model.TravelExpNormedValModel.AllowtravelExpNormedVal != null)
+                {
+                    if (Model.travelExpHDRMaster.TravelStatus == "APPROVED")
+                    {
+
+
+                <div class="content clearfix">
+                    <br />
+                    @if (Model.AttechmentList.Count > 0)
+                    {
+                    <span>
+                        <a href="@Url.Action("DownloadNormFiles", "Travel", new { trvelid = Model.travelExpHDRMaster.trvlExpId })" class="btn btn-primary" id="attachmentdownload" style="float:left;margin: 0 2px 0 2px;"><i class="fa fa-download"></i></a>
+                    </span>
+                    }
+                </div>
+                    }
+
+                }
+            }
+        }
+
+
+    </div>
+
+
+</div>
+<script type="text/javascript">
+    function saveNormattachment(input) {
+
+        var id = $(input).attr("id");
+        //var fileid = $(input).attr("data-fileid");
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#" + id).get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object  
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object  
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding one more key to FormData object  
+            fileData.append('username', $("#travelExpHDRMaster_UserCode").val());
+            fileData.append('trvlexpid', $("#travelExpHDRMaster_trvlExpId").val());
+           
+            fileData.append('fileid', id);
+
+            $.ajax({
+                url: '/Travel/UploadNormFiles',
+                type: "POST",
+                contentType: false, // Not to set any content header  
+                processData: false, // Not to process data  
+                data: fileData,
+                success: function (result) {
+
+                   // $("#" + fileid).val(result);
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+</script>

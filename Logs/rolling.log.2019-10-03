@@ -1,0 +1,7 @@
+2019-10-03 14:48:13,380 DEBUG DebugLogger - export enter
+2019-10-03 14:48:13,385 DEBUG DebugLogger - got file path
+2019-10-03 14:48:13,393 DEBUG DebugLogger - strat excel workbook created 
+2019-10-03 14:48:13,507 DEBUG DebugLogger - excel workbook created 
+2019-10-03 14:48:13,682 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\fffd957a-ab1d-4614-90a2-3f595cb92dc6_ExportData.xls
+2019-10-03 14:48:13,800 DEBUG DebugLogger - file export complete
+2019-10-03 14:48:13,800 DEBUG DebugLogger - read file byte System.Byte[]

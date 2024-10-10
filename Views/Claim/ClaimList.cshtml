@@ -1,0 +1,218 @@
+﻿@model LumaxDMS.Models.ClaimModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "ClaimList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">SALES RETURN</div>
+    </div>
+    <div class="custom-datable">
+        <div class="card-body">
+            <div class="panel panel-default">
+
+                <div class="col-sm-12 col-md-12 right_bottom">
+                    @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                    {
+                        <input name="input" type="button" class="mb-1 btn btn-success pull-right" value="Create New" onclick="return CreateNew();" />
+                    }
+
+                    <table id="tblClaim" class="table table-bordered"
+                           style="width: 100%">
+                        <thead class="thead-lights">
+                            <tr>
+                                <th>
+                                    CLAIM NO.
+                                </th>
+                                <th>
+                                    CLAIM DATE
+                                </th>
+                                <th>
+                                    DOC NO.
+                                </th>
+                                <th>
+                                    CUST INV. NO.
+                                </th>
+                                <th>
+                                   CUST INV. DT
+                                </th>
+                                <th>
+                                    CUST CODE
+                                </th>
+                                <th>
+                                    CUST NAME
+                                </th>
+                                <th>
+                                  CLAIM  QTY
+                                </th>
+                                <th>
+                                   CLAIM VALUE
+                                </th>
+                                <th>SAP</th>
+                                <th>
+                                    STATUS
+                                </th>
+                                <th>
+                                    ACTION
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int i = 1; int j = 0;}
+
+                            @foreach (var item in Model.ClaimList)
+                            {
+                                int cnt = Model.ClaimList.Where(m => m.CLAIMNO == item.CLAIMNO).Count();
+                                if (j == 2)
+                                {
+                                    i = 1;
+                                    j = 0;
+                                }
+                                if (cnt > 1)
+                                {
+
+                                    var lst = Model.ClaimList.Where(m => m.CLAIMNO == item.CLAIMNO && m.ACTIONNAME == "EDIT").ToList();
+
+                                    foreach (var item2 in lst)
+                                    {
+                                        if (i == 1)
+                                        {
+                            <tr>
+                                <td>
+                                    @item2.CLAIMNO
+                                </td>
+                                <td>
+                                    @Html.DisplayDate(@item2.CLAIMDATE)
+                                </td>
+                                <td>
+                                    @item2.DOCNO
+                                </td>
+                                <td>
+                                    @item2.INVOICENO
+                                </td>
+                                <td>
+                                    @item2.INVOICEDATE
+                                </td>
+                                <td>@item2.DEALERCODE </td>
+                                <td>@item2.DEALERNAME</td>
+                                <td>@item2.QTY</td>
+                                <td>@item2.VALUE</td>
+                                <td>
+                                    @if(item2.SAP_STATUS==1)
+                                    {
+                                        <span>Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span title="@item.SAP_DOC_NOTE">No</span>
+                                    }
+                                </td>
+                                <td>
+                                    @item2.DISPLAYSTATUS
+                                </td>
+                                <td>
+                                    @if (item2.ACTIONNAME.ToLower() == "edit")
+                                    {
+                                        <a href="/Claim/CreateClaim?Id=@item2.CLAIMID&ActionName=edit&@Constants.HASH_RETURN" title="Edit Claim">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    }
+                                    @if (item2.ACTIONNAME.ToLower() == "view")
+                                    {
+                                        <a href="/Claim/CreateClaim?Id=@item2.CLAIMID&ActionName=view" title="View Claim">
+                                            <i class="icon-eye marginsm"></i>
+                                        </a>
+                                    }
+                                    <a href="/Claim/PrintClaim?claimNumber=@item.CLAIMNO" title="Print Claim">
+                                        <i class="icon-cloud-download marginsm"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                                        }
+                                        i++;
+                                    }
+                                    j++;
+                                }
+                                else
+                                {
+
+
+                            <tr>
+                                <td>
+                                    @item.CLAIMNO
+                                </td>
+                                <td>
+                                    @Html.DisplayDate(@item.CLAIMDATE)
+                                </td>
+                                <td>
+                                    @item.DOCNO
+                                </td>
+                                <td>
+                                    @item.INVOICENO
+                                </td>
+                                <td>
+                                    @item.INVOICEDATE.Value.ToString("dd/MMM/yyyy")
+                                </td>
+                                <td>@item.DEALERCODE</td>
+                                <td>@item.DEALERNAME</td>
+                                <td>@item.QTY</td>
+                                <td>@item.VALUE</td>
+                                <td>
+                                    @if (item.SAP_STATUS == 1)
+                                    {
+                                        <span>Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span title="@item.SAP_DOC_NOTE">No</span>
+                                    }
+                                </td>
+                                <td>
+                                    @item.DISPLAYSTATUS
+                                </td>
+                                <td>
+                                    @if (item.ACTIONNAME.ToLower() == "edit")
+                                    {
+                                        <a href="/Claim/CreateClaim?Id=@item.CLAIMID&ActionName=edit&@Constants.HASH_RETURN" title="Edit Claim">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                    }
+                                    @if (item.ACTIONNAME.ToLower() == "view")
+                                    {
+                                        <a href="/Claim/CreateClaim?Id=@item.CLAIMID&ActionName=view" title="View Claim">
+                                            <i class="icon-eye marginsm"></i>
+                                        </a>
+                                    }
+                                    <a href="/Claim/PrintClaim?claimNumber=@item.CLAIMNO" target="_blank" title="Print Claim">
+                                        <i class="icon-cloud-download marginsm"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#tblClaim').DataTable({
+                "order": [[0, "desc"]],
+            });
+        });
+
+        function CreateNew() {
+            var myUrl = '@Url.Action("CreateClaim", "Claim")';
+			window.location.href = myUrl + "?ActionName=" + 'Create'+ "@Constants.HASH_RETURN";
+        }
+
+    </script>
+}

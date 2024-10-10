@@ -1,0 +1,27 @@
+2019-09-24 10:40:42,548 DEBUG DebugLogger - export enter
+2019-09-24 10:40:42,553 DEBUG DebugLogger - got file path
+2019-09-24 10:40:42,777 DEBUG DebugLogger - strat excel workbook created 
+2019-09-24 10:40:42,902 DEBUG DebugLogger - excel workbook created 
+2019-09-24 10:40:43,104 DEBUG DebugLogger - ExportToExcel -Can't delete/overwrite merged cells. A range is partly merged with the another merged range. O2:R2
+2019-09-24 10:40:43,104 DEBUG DebugLogger - file export complete
+2019-09-24 14:41:09,363 DEBUG DebugLogger - got file path
+2019-09-24 14:41:09,376 DEBUG DebugLogger - strat excel workbook created 
+2019-09-24 14:41:09,411 DEBUG DebugLogger - excel workbook created 
+2019-09-24 14:41:12,505 DEBUG DebugLogger - excel genrated for path E:\SharedFolder\LUMAX\LUMAX\Content\LumaxData\Temp\_ExportData.xls
+2019-09-24 14:41:12,742 DEBUG DebugLogger - file export complete
+2019-09-24 14:41:12,743 DEBUG DebugLogger - read file byte System.Byte[]
+2019-09-24 17:35:14,720 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:35:25,333 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:35:47,649 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:35:58,758 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:36:10,511 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:36:35,169 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:36:43,666 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:36:56,761 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:37:13,168 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:37:30,005 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:38:32,454 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:38:50,428 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:46:33,311 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:49:42,630 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003
+2019-09-24 17:50:28,351 DEBUG DebugLogger - Insert PO end for po number WOUP1909240003

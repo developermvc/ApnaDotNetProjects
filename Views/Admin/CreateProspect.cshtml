@@ -1,0 +1,1330 @@
+﻿@model LumaxDMS.Models.ProspectModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "CreateProspect";
+    var catcounter = 1;
+    var billingcounter = 1;
+    var shippingcounter = 1;
+    var openclass = "";
+    var closeclass = "";
+    var isdone = "";
+}
+@section CSS
+{
+    <link href="~/Content/css/bootstrap-datepicker.css" rel="stylesheet" />
+}
+@using (Html.BeginForm("CreateProspect", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Prospect_Id)
+    <div>
+        @{Html.RenderPartial("_Message", Model);}
+        <div class="card card_ps">
+            <div class="panel panel-default">
+                <div class="header_ps">
+                    @if (Model.ActionName == Constants.BTN_CREATE)
+                    {
+                        <span>CREATE PROSPECT</span>
+                    }
+                    else
+                    {
+                        <span>UPDATE PROSPECT </span>
+                    }
+                </div>
+                <div class="card-body custom_responsive2">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <label for="UserCode">
+                                PROSPECT CODE:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.ProspectCode, new { @class = "form-control", @readonly = "true" })@*onblur="isProspectCodeExist(this);"*@
+                        </div>
+                        <div class="col-lg-2 redlabel">
+                            <label for="pwd">
+                                PROSPECT NAME:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.ProspectName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ProspectName)
+                        </div>
+                        <div class="col-lg-2 redlabel">
+                            <label for="fname">
+                                PROSPECT TYPE:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.DropDownListFor(m => m.ProspectType_Id, new SelectList(Model.ProspectTypeList, "ProspectType_Id", "ProspectTypeName"), "-- Select--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.ProspectType_Id)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                PLANT:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.HiddenFor(model => model.Plant)
+                            @Html.TextBoxFor(model => model.PlantCode, new { @class = "form-control" ,@readonly="readonly"})
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                ORGANIZATION:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.Organization, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                RELATION PARTY:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.RelationParty, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                RELATION PARTY CODE:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.RelationPartyCode, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                UNLOADING POINT:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.DropDownListFor(m => m.UnloadingPoint_Id, new SelectList(Model.UnloadingPointList, "City_Id", "CityName"), "-- Select--", new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2 col-xs-12 redlabel">
+                            <label for="pwd">
+                                SEGMENT:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(m => m.Segment_Id, new SelectList(Model.SegmentList, "Segment_Id", "SegmentName"), "-- Select--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Segment_Id)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                PRODUCT:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(m => m.ProductDivision_Id, new SelectList(Model.ProductDivisionList, "ProductDivision_Id", "ProductDivisionName"), "-- Select--", new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2     redlabel">
+                            <label for="pwd">
+                                CATEGORY:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.DropDownListFor(m => m.DealerCategory_Id, new SelectList(Model.DealerCategoryList, "DealerCategory_Id", "DealerCategoryName"), "-- Select--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.DealerCategory_Id)
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                PAY TERMS:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.PayTerms, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                GST NO.:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.Prospect_GST_No, new { @class = "form-control numberinput" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                PAN NO:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.Prospect_PAN_No, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                CREDIT LIMIT:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.CreditLimit, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                TGT:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.TGT, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                TPT:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.TPT, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                FREIGHT PER(C/B):
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.FreightPerCB, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                FREIGHT TO(PAY/PAID):
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.FreightToPayPaid, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                INS:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.Ins, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                CONTACT PERSON1(C/B):
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.ContactPerson1, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                MOBILE NUMBER1:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.Prospect_MobileNo1, new { @class = "form-control numberinput" ,@Onblur = "return IsPhoneNumber(this);" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                CONTACT PERSON2:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.ContactPerson2, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                MOBILE NUMBER2:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.Prospect_MobileNo2, new { @class = "form-control numberinput" , @Onblur = "return IsPhoneNumber(this);" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                PHONE NO:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.ProspectPhoneNo, new { @class = "form-control numberinput", @Onblur = "return IsPhoneNumber(this);" })
+                        </div>  
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                EMAIL ID:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.Prospect_EmailId, new { @class = "form-control",@Onblur= "return IsEmail(this);" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                FAX No.:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.Prospect_FaxNo, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                SALES PERSON:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.DropDownListFor(m => m.SalesPerson_Id, new SelectList(Model.SalesPersonList, "Emp_Id", "DISPLAYEMPNAME ", Model.SalesPerson_Id), "-- Select--", new { @class = "form-control select-chosen" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                BRANCH HEAD:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.DropDownListFor(m => m.BranchHead_Id, new SelectList(Model.BranchheadList, "Emp_Id", "DISPLAYEMPNAME ", Model.BranchHead_Id), "-- Select--", new { @class = "form-control select-chosen" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                REGIONAL HEAD.:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.DropDownListFor(m => m.RegionalHead_Id, new SelectList(Model.RegionalHeadList, "Emp_Id", "DISPLAYEMPNAME ", Model.RegionalHead_Id), "-- Select--", new { @class = "form-control select-chosen" })
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12 redlabel">
+                            <label for="pwd">
+                                MONTH TOTAL CONTR:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.MNTH_TOT_CONTR, new { @class = "form-control decimalinput" })
+                            @Html.ValidationMessageFor(m => m.MNTH_TOT_CONTR)
+                        </div>
+                        <div class="col-lg-2 redlabel">
+                            <label for="pwd">
+                                MONTH TOTAL LUMAX:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.MNTH_TOT_LUMX, new { @class = "form-control decimalinput" })
+                            @Html.ValidationMessageFor(m => m.MNTH_TOT_LUMX)
+                        </div>
+                        <div class="col-lg-2 redlabel">
+                            <label for="pwd">
+                                MONTH TOTAL PRDC:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.MNTH_LUMX_PRDC, new { @class = "form-control decimalinput" })
+                            @Html.ValidationMessageFor(m => m.MNTH_LUMX_PRDC)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12 redlabel">
+                            <label for="pwd">
+                                MONTH TOTAL RANGE VALUE:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.MNTH_LUMX_RNG_VAL, new { @class = "form-control decimalinput" })
+                            @Html.ValidationMessageFor(m => m.MNTH_LUMX_RNG_VAL)
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                APNTD FLAG:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.APNTD_FLAG, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                APNTD DATE:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="input-group date" id="todatepicker1">
+                                @Html.TextBoxFor(model => model.APNTD_DATE, new { @class = "form-control datepicker", @onchange = "return CheckValidateDate();", @readonly = "readonly" })
+
+                                <span class="input-group-append input-group-addon">
+                                    <i class="input-group-text2 fa fa-calendar"></i>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.APNTD_DATE)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12 redlabel">
+                            <label for="pwd">
+                                REMARKS:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Remarks)
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                APPROVED BY:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.ApprovedBy, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                APPROVED DATE:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <div class="input-group date" id="todatepicker2">
+                                @Html.TextBoxFor(model => model.Approved_Date, new { @class = "form-control datepicker", @readonly = "readonly" })
+
+                                <span class="input-group-append input-group-addon">
+                                    <i class="input-group-text2 fa fa-calendar"></i>
+                                </span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Approved_Date)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                FTMT_ENTRY:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.TextBoxFor(model => model.Prospect_FTMT_ENTRY, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                AUTO ELEC:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.Auto_Elec, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2">
+                            <label>
+                                GEO LOCATION:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.GEO_LOC, new { @class = "form-control" })
+                            @*@Html.ValidationMessageFor(m => m.GEO_LOC)*@
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                GEO LAT:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12 ">
+                            @Html.TextBoxFor(model => model.GEO_LAT, new { @class = "form-control decimalinput" })
+                            @*@Html.ValidationMessageFor(m => m.GEO_LAT)*@
+                        </div>
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                GEO LONG:
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.GEO_LONG, new { @class = "form-control decimalinput" })
+                            @*@Html.ValidationMessageFor(m => m.GEO_LONG)*@
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            <label for="pwd">
+                                ISACTIVE:
+                            </label>
+                        </div>
+                        <div class="col-lg-2 col-xs-12">
+                            @Html.CheckBoxFor(model => model.IsActive)
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-2">
+                            <label for="pwd">
+                                APP FLAG
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.APP_Flag, new { @class = "form-control" })
+                        </div>
+                        <div class="col-lg-2 redlabel">
+                            <label for="pwd">
+                                PROPRIOTER NAME
+                            </label>
+                        </div>
+                        <div class="col-lg-2">
+                            @Html.TextBoxFor(model => model.Prop_Name, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Prop_Name)
+                        </div>
+                        <div class="col-lg-1 redlabel" >
+                            <label for="pwd">
+                                PROSPECT IMAGE:
+                            </label>
+                        </div>
+                        <div class="col-lg-3">
+                            <span>
+                                <a href="##" class="btn btn-primary" onclick="return DownloadDocumentFile('prospectIMG');"><i class="fa fa-download" style="padding: 4px 0px;"></i></a>
+                                @*<input type="file" name="fileField" id="fileField" class="btn btn-primary" style="padding: 0.200rem 0.80rem;">*@
+                                @Html.TextBoxFor(model => model.Prospect_IMG, new { type = "file", @id = "Prospect_IMG", @Name = "Prospect_IMG", @class = "fileInputProspect btn btn-primary", @style = "padding: 7px 5px; width: 204px;", @accept = "image/x-png,image/gif,image/jpeg", @onchange = "return IsImage(this);" })
+                                @Html.ValidationMessageFor(m => m.Prospect_IMG)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row row_pt">
+                        <div class="col-lg-1 col-xs-12">
+                            <label for="pwd">
+                                PAN ATTACH:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            <a href="##" class="btn btn-primary" onclick="return DownloadDocumentFile('panfile');"><i class="fa fa-download" style="padding: 4px 0px;"></i></a>
+                            @Html.TextBoxFor(model => model.PAN_ATCH, new { type = "file", @id = "panfile", @Name = "panfile", @class = "fileInputProspect btn btn-primary", @style = "padding: 7px 5px; width: 204px;" })
+                        </div>
+                        <div class="col-lg-1 col-xs-12">
+                            <label for="pwd">
+                                PROSPECT SIGN:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            <a href="##" class="btn btn-primary" onclick="return DownloadDocumentFile('prospectSign');"><i class="fa fa-download" style="padding: 4px 0px;"></i></a>
+                            @Html.TextBoxFor(model => model.Prospect_Sign, new { type = "file", @id = "prospectSign", @Name = "prospectSign", @class = "fileInputProspect btn btn-primary", @style = "padding: 7px 5px; width: 204px;" })
+                        </div>
+                        <div class="col-lg-1 col-xs-12">
+                            <label for="pwd">
+                                GST ATTACH:
+                            </label>
+                        </div>
+                        <div class="col-lg-3 col-xs-12">
+                            <a href="##" class="btn btn-primary" onclick="return DownloadDocumentFile('GSTfile');"><i class="fa fa-download" style="padding: 4px 0px;"></i></a>
+                            @Html.TextBoxFor(model => model.GST_ATCH, new { type = "file", @id = "GSTfile", @Name = "GSTfile", @class = "fileInputProspect btn btn-primary", @style = "padding: 7px 5px; width: 204px;" })
+                        </div>
+                    </div>
+                </div>
+                @*<div class="header_ps">
+                        <span>PRODUCT CATEGORY</span>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.ProspectProductMaster != null)
+                        {
+
+                            <div id="productCategoryDetail" class="card-body custom_responsive2">
+
+                                @Html.Hidden("CategoryCount", Model.ProspectProductMaster.Count, new { @Name = "CategoryCount" })
+                                @foreach (var item in Model.ProspectProductMaster)
+                                {
+                                    var cls = "";
+                                    var clsclose = "";
+                                    if (catcounter == 1 || (catcounter - 1) % 3 == 0)
+                                    {
+                                        cls = "<div class='row row_pt'>";
+                                        openclass = "openappendclass";
+                                        closeclass = "";
+                                        isdone = "done";
+                                    }
+
+                                    if (catcounter % 3 == 0 || Model.ProspectProductMaster.Count == catcounter)
+                                    {
+                                        closeclass = "closeappendclass";
+                                        openclass = "";
+                                        isdone = "done";
+                                        clsclose = "</div>";
+                                    }
+
+                                    if (isdone == "")
+                                    {
+                                        openclass = "";
+                                        closeclass = "";
+                                    }
+                                    @Html.Raw(@cls)
+                                    <div class="col-lg-2 @openclass">
+                                        <label for="pwd">
+                                            @item.CategoryName:
+                                            @Html.HiddenFor(m => @item.ProductCategory_Id, new { @Name = "CategoryId_" + catcounter })
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 @closeclass">
+                                        @Html.TextBoxFor(m => item.DiscountPercentage, new { @class = "form-control numberinput", @Name = "CategoryDisc_" + catcounter })
+                                    </div>
+                                    @Html.Raw(@clsclose)
+
+
+                                    catcounter++;
+                                }
+
+                            </div>
+                            <br />
+                        }
+                    </div>*@
+                <div class="header_ps">
+                    <span>BILLING ADDRESS</span>
+                </div>
+                <div class="card-body custom_responsive2">
+                    @if (Model.BillingAddresList != null)
+                    {
+                        @Html.Hidden("BillingCount", Model.BillingAddresList.Count, new { @Name = "BillingCount" })
+                        foreach (var billingaddress in Model.BillingAddresList)
+                        {
+
+                            <div id="billingaddressdetail" class="card-body" style="padding-top: 20px;">
+                                <div class="row">
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            PROSPECT ADDRESS1:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => billingaddress.PROSPECT_ADDRESS1, new { @class = "form-control", @Name = "billingAddress1_" + billingcounter })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            PROSPECT ADDRESS 2 :
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => billingaddress.PROSPECT_ADDRESS2, new { @class = "form-control", @Name = "billingAddress2_" + billingcounter })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            LANDMARK:
+                                        </label>
+                                    </div> 
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => billingaddress.PROSPECT_LANDMARK, new { @class = "form-control", @Name = "billingLocality_" + billingcounter })
+                                    </div>
+                                </div>
+                                <div class="row row_pt">
+                                    <div class="col-lg-2 col-xs-12">
+                                        <label for="pwd">
+                                            CONTACT PERSON:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => billingaddress.CONTACTPERSON, new { @class = "form-control", @Name = "billingcontactperson_" + billingcounter })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        <label for="pwd">
+                                            MOBILE NO. :
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => billingaddress.MOBILENO, new { @class = "form-control numberinput", @Name = "billingMobileNo_" + billingcounter, @Onblur = "return IsPhoneNumber(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        <label for="pwd">
+                                            PHONE NO.:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => billingaddress.PHONENO, new { @class = "form-control numberinput", @Name = "billingPhone_" + billingcounter, @Onblur = "return IsPhoneNumber(this);" })
+                                    </div>
+                                </div>
+                                <div class="row row_pt">
+                                    <div class="col-lg-2 col-xs-12">
+                                        <label for="pwd">
+                                            EMAIL:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => billingaddress.EMAIL, new { @class = "form-control", @Name = "billingemail_" + billingcounter, @Onblur = "return IsEmail(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            COUNTRY:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => billingaddress.Country_Id, new SelectList(@Model.CountryList, "Country_id", "CountryName", billingaddress.Country_Id), "-- Select--", new { @class = "form-control", @id = "billingCountry_" + billingcounter, @Name = "billingCountry_" + billingcounter, @onchange = "return GetAllStateOnCountryId(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            STATE :
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => billingaddress.State_Id, new SelectList(billingaddress.StateList, "State_Id", "StateName", billingaddress.State_Id), "-- Select--", new { @class = "form-control", @id = "billingStateId_" + billingcounter, @name = "billingStateId_" + billingcounter, @onchange = "return GetAllDistrictOnStateId(this);" })
+                                    </div>
+                                </div>
+                                <div class="row row_pt">
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            DISTRICT:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => billingaddress.District_Id, new SelectList(billingaddress.DistrictList, "District_Id", "DistrictName", billingaddress.District_Id), "-- Select--", new { @class = "form-control", @id = "billingDistrictId_" + billingcounter, @name = "billingDistrictId_" + billingcounter, @onchange = "return GetAllCityOnDistrictId(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            CITY:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => billingaddress.CITY_ID, new SelectList(billingaddress.CityList, "City_Id", "CityName", billingaddress.CITY_ID), "-- Select--", new { @class = "form-control", @id = "billingCityId_" + billingcounter, @Name = "billingCityId_" + billingcounter, @onchange = "return GetPinCodeByCityId(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12  redlabel">
+                                        <label for="pwd">
+                                            PIN CODE:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => billingaddress.PIN_ID, new SelectList(billingaddress.PinCodeList, "Pin_Id", "PinCode", billingaddress.PIN_ID), "-- Select--", new { @class = "form-control", @id = "billingPinId_" + billingcounter, @Name = "billingPinId_" + billingcounter })
+                                    </div>
+                                </div>
+                            </div>
+                            billingcounter++;
+                        }
+                    }
+                </div>
+                <div class="header_ps">
+                    <span>SHIPPING ADDRESS</span>
+                </div>
+                <div class="card-body custom_responsive2">
+                    @if (Model.ShippingAddresList != null)
+                    {
+                        @Html.Hidden("ShippingCount", Model.ShippingAddresList.Count, new { @Name = "ShippingCount" })
+                        foreach (var shippingaddress in Model.ShippingAddresList)
+                        {
+
+                            <div id="shippingaddressdetail" class="card-body" style="padding-top: 20px;">
+                                <div class="row">
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            PROSPECT ADDRESS 1:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => shippingaddress.PROSPECT_ADDRESS1, new { @class = "form-control", @Name = "shippingAddress1_" + shippingcounter })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            PROSPECT ADDRESS 2 :
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => shippingaddress.PROSPECT_ADDRESS2, new { @class = "form-control", @Name = "shippingAddress2_" + shippingcounter })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            LANDMARK:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => shippingaddress.PROSPECT_LANDMARK, new { @class = "form-control", @Name = "shippingLocality_" + shippingcounter })
+                                    </div>
+                                </div>
+                                <div class="row row_pt">
+                                    <div class="col-lg-2 col-xs-12">
+                                        <label for="pwd">
+                                            CONTACT PERSON:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => shippingaddress.CONTACTPERSON, new { @class = "form-control", @Name = "shippingcontactperson_" + shippingcounter })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        <label for="pwd">
+                                            MOBILE NO. :
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => shippingaddress.MOBILENO, new { @class = "form-control numberinput", @Name = "shippingMobileNo_" + shippingcounter, @Onblur = "return IsPhoneNumber(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        <label for="pwd">
+                                            PHONE NO.:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => shippingaddress.PHONENO, new { @class = "form-control numberinput", @Name = "shippingPhone_" + shippingcounter, @Onblur = "return IsPhoneNumber(this);" })
+                                    </div>
+                                </div>
+                                <div class="row row_pt">
+                                    <div class="col-lg-2 col-xs-12">
+                                        <label for="pwd">
+                                            EMAIL:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.TextBoxFor(m => shippingaddress.EMAIL, new { @class = "form-control", @Name = "shippingemail_" + shippingcounter, @Onblur = "return IsEmail(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            COUNTRY:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => shippingaddress.Country_Id, new SelectList(@Model.CountryList, "Country_id", "CountryName", shippingaddress.Country_Id), "-- Select--", new { @class = "form-control", @id = "shippingCountry_" + shippingcounter, @Name = "shippingCountry_" + shippingcounter, @onchange = "return GetAllShippingStateOnCountryId(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            STATE :
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => shippingaddress.State_Id, new SelectList(shippingaddress.StateList, "State_Id", "StateName", shippingaddress.State_Id), "-- Select--", new { @class = "form-control", @id = "shippingStateId_" + shippingcounter, @name = "shippingStateId_" + shippingcounter, @onchange = "return GetAllShippingDistrictOnStateId(this);" })
+                                    </div>
+                                </div>
+                                <div class="row row_pt">
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            DISTRICT:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => shippingaddress.District_Id, new SelectList(shippingaddress.DistrictList, "District_Id", "DistrictName", shippingaddress.District_Id), "-- Select--", new { @class = "form-control", @id = "shippingDistrictId_" + shippingcounter, @name = "shippingDistrictId_" + shippingcounter, @onchange = "return GetAllShippingCityOnDistrictId(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            CITY:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => shippingaddress.CITY_ID, new SelectList(shippingaddress.CityList, "City_Id", "CityName", shippingaddress.CITY_ID), "-- Select--", new { @class = "form-control", @id = "shippingCityId_" + shippingcounter, @Name = "shippingCityId_" + shippingcounter, @onchange = "return GetShippingPinCodeByCityId(this);" })
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12 redlabel">
+                                        <label for="pwd">
+                                            PIN CODE:
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-2 col-xs-12">
+                                        @Html.DropDownListFor(m => shippingaddress.PIN_ID, new SelectList(shippingaddress.PinCodeList, "Pin_Id", "PinCode", shippingaddress.PIN_ID), "-- Select--", new { @class = "form-control", @id = "shippingPinId_" + shippingcounter, @Name = "shippingPinId_" + shippingcounter })
+                                    </div>
+                                </div>
+                            </div>
+                            shippingcounter++;
+                        }
+                    }
+                    <hr />
+                    <div class="col-md-12">
+                        <div class="row botton_tppp">
+                            <div class="col-lg-12  text-right margin_lf ">
+                                @if (Model.ActionName == Constants.BTN_CREATE)
+                                {
+                                    <input type="submit" name="btntype" value="CREATE" id="btnadd" class="btn btn_font" onclick="checkValidations()"/>
+                                }
+                                else if (Model.ActionName == Constants.BTN_EDIT)
+                                {
+
+                                    <input type="submit" class="btn btn_font" name="btntype" value="UPDATE" id="btnupdate" onclick="checkValidations()" />
+                                }
+                                @*<input type="reset" class="btn btn_font" name="btntype" value="Clear" />*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section JS
+{
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#todatepicker1').datepicker({
+                format: 'dd/M/yyyy'
+            });
+            $('#todatepicker2').datepicker({
+                format: 'dd/M/yyyy'
+            });
+            $(".select-chosen").chosen();
+        });
+
+        function DownloadDocumentFile(FileType) {
+            var checkUrl = '@Url.Action("CheckForFile", "Admin")';
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                url: checkUrl,
+                data: JSON.stringify({ FileType: FileType }),
+                dataType: "json",
+                success: downloadFileSucceeded,
+                error: downloadFileFailed
+            });
+
+            function downloadFileSucceeded(filepath) {
+                debugger;
+                if (filepath) {
+                    var myUrl = '@Url.Action("Downloadfile", "Admin")';
+                    window.location.href = myUrl + "?path=" + filepath + "@Constants.HASH_ADMIN";
+                }
+                else {
+                    alert("File not Exists!.");
+                }
+            }
+
+            function downloadFileFailed(result) {
+            }
+        }
+
+        //Billing Address //
+        function GetAllStateOnCountryId(obj) {
+            //debugger;
+            var countryId = obj.value;
+            var name = $(obj).parent().find('select').attr('id').split('_');
+            var id = name[1];
+            var checkUrl = '@Url.Action("GetAllStateOnCountryId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { CountryId: countryId },
+                success: function (result) {
+                    FillStateList(result, id);
+                },
+                error: GetAllStateByCountryIdFail
+            });
+
+        }
+
+        function GetAllStateByCountryIdSuccess(result, id) {
+            //debugger;
+            FillStateList(result, id);
+        }
+
+        function GetAllStateByCountryIdFail() {
+
+        }
+
+        function FillStateList(StateList, id) {
+            var v = "<option>--Select--</option>";
+            $.each(StateList, function (i, state) {
+
+                v += "<option value=" + state.STATE_ID + ">" + state.STATENAME + "</option>";
+
+            });
+
+            $("#billingStateId_" + id).html(v);
+
+        }
+
+        // Get All District List //
+
+        function GetAllDistrictOnStateId(obj) {
+            //debugger;
+            var stateId = obj.value;
+            var name = $(obj).parent().find('select').attr('id').split('_');
+            var id = name[1];
+            var checkUrl = '@Url.Action("GetAllDistrictOnStateId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { StateId: stateId },
+                success: function (result) {
+                    FillDistrictList(result, id);
+                },
+                error: GetAllDistrictByStateIdFail
+            });
+
+        }
+
+        function GetAllDistrictByStateIdSuccess(result, id) {
+            //debugger;
+            FillDistrictList(result, id);
+        }
+
+        function GetAllDistrictByStateIdFail() {
+
+        }
+
+        function FillDistrictList(DistrictList, id) {
+            var v = "<option>--Select--</option>";
+            $.each(DistrictList, function (i, district) {
+
+                v += "<option value=" + district.DISTRICT_ID + ">" + district.DISTRICTNAME + "</option>";
+
+            });
+
+            $("#billingDistrictId_" + id).html(v);
+        }
+
+        // Get All City List //
+
+        function GetAllCityOnDistrictId(obj) {
+            //debugger;
+            var districtId = obj.value;
+            var name = $(obj).parent().find('select').attr('id').split('_');
+            var id = name[1];
+            var checkUrl = '@Url.Action("GetAllCityOnDIstrictId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { DistrictId: districtId },
+                success: function (result) {
+                    FillCityList(result, id);
+                },
+                error: GetAllCityByDistrictIdFail
+            });
+
+        }
+
+        function GetAllCityByDistrictIdSuccess(result, id) {
+            //debugger;
+            FillCityList(result, id);
+        }
+
+        function GetAllCityByDistrictIdFail() {
+
+        }
+
+        function FillCityList(CityList, id) {
+            var v = "<option>--Select--</option>";
+            $.each(CityList, function (i, city) {
+
+                v += "<option value=" + city.CITY_ID + ">" + city.CITYNAME + "</option>";
+
+            });
+
+            $("#billingCityId_" + id).html(v);
+        }
+
+        // Get All PinCode List //
+
+        function GetPinCodeByCityId(obj) {
+            //debugger;
+            var cityId = obj.value;
+            var name = $(obj).parent().find('select').attr('id').split('_');
+            var id = name[1];
+            var checkUrl = '@Url.Action("GetPinCodeByCityId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { CityId: cityId },
+                success: function (result) {
+                    FillPinList(result, id);
+                },
+                error: GetPinCodeByCityIdFail
+            });
+
+        }
+
+        function GetPinCodeByCityIdSuccess(result, id) {
+            //debugger;
+            FillPinList(result, id);
+
+
+        }
+
+        function GetPinCodeByCityIdFail() {
+
+        }
+
+        function FillPinList(PinList, id) {
+            var v = "<option>--Select--</option>";
+            $.each(PinList, function (i, pin) {
+
+                v += "<option value=" + pin.PIN_ID + ">" + pin.PINCODE + "</option>";
+
+            });
+
+            $("#billingPinId_" + id).html(v);
+        }
+
+        //Shipping Address //
+        function GetAllShippingStateOnCountryId(obj) {
+            //debugger;
+            var countryId = obj.value;
+            var name = $(obj).parent().find('select').attr('name').split('_');
+            var id = name[1];
+            var checkUrl = '@Url.Action("GetAllStateOnCountryId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { CountryId: countryId },
+                success: function (result) {
+                    FillShippingStateList(result, id);
+                },
+                error: GetAllShippingStateByCountryIdFail
+            });
+
+        }
+
+        function GetAllShippingStateByCountryIdSuccess(result, id) {
+            //debugger;
+            FillShippingStateList(result, id);
+        }
+
+        function GetAllShippingStateByCountryIdFail() {
+
+        }
+
+        function FillShippingStateList(StateList, id) {
+            var v = "<option>--Select--</option>";
+            $.each(StateList, function (i, state) {
+
+                v += "<option value=" + state.STATE_ID + ">" + state.STATENAME + "</option>";
+
+            });
+
+            $("#shippingStateId_" + id).html(v);
+        }
+
+        // Get All District List //
+
+        function GetAllShippingDistrictOnStateId(obj) {
+            //debugger;
+            var stateId = obj.value;
+            var name = $(obj).parent().find('select').attr('id').split('_');
+            var id = name[1];
+            var checkUrl = '@Url.Action("GetAllDistrictOnStateId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { StateId: stateId },
+                success: function (result) {
+                    FillShippingDistrictList(result, id);
+                },
+                error: GetAllShippingDistrictByStateIdFail
+            });
+
+        }
+
+        function GetAllShippingDistrictByStateIdSuccess(result, id) {
+            //debugger;
+            FillShippingDistrictList(result, id);
+        }
+
+        function GetAllShippingDistrictByStateIdFail() {
+
+        }
+
+        function FillShippingDistrictList(DistrictList, id) {
+            var v = "<option>--Select--</option>";
+            $.each(DistrictList, function (i, district) {
+
+                v += "<option value=" + district.DISTRICT_ID + ">" + district.DISTRICTNAME + "</option>";
+
+            });
+
+            $("#shippingDistrictId_" + id).html(v);
+        }
+
+        // Get All City List //
+
+        function GetAllShippingCityOnDistrictId(obj) {
+            //debugger;
+            var districtId = obj.value;
+            var name = $(obj).parent().find('select').attr('id').split('_');
+            var id = name[1];
+            var checkUrl = '@Url.Action("GetAllCityOnDIstrictId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { DistrictId: districtId },
+                success: function (result) {
+                    FillShippingCityList(result, id);
+                },
+                error: GetAllShippingCityByDistrictIdFail
+            });
+
+        }
+
+        function GetAllShippingCityByDistrictIdSuccess(result, id) {
+            //debugger;
+            FillShippingCityList(result, id);
+        }
+
+        function GetAllShippingCityByDistrictIdFail() {
+
+        }
+
+        function FillShippingCityList(CityList, id) {
+            var v = "<option>--Select--</option>";
+            $.each(CityList, function (i, city) {
+
+                v += "<option value=" + city.CITY_ID + ">" + city.CITYNAME + "</option>";
+
+            });
+
+            $("#shippingCityId_" + id).html(v);
+        }
+
+        // Get All PinCode List //
+
+        function GetShippingPinCodeByCityId(obj) {
+            //debugger;
+            var cityId = obj.value;
+            var name = $(obj).parent().find('select').attr('id').split('_');
+            var id = name[1];
+            var checkUrl = '@Url.Action("GetPinCodeByCityId", "Admin")';
+            $.ajax({
+                url: checkUrl,
+                type: "GET",
+                dataType: "JSON",
+                data: { CityId: cityId },
+                success: function (result) {
+                    FillShippingPinList(result, id);
+                },
+                error: GetShippingPinCodeByCityIdFail
+            });
+
+        }
+
+        function isProspectCodeExist(obj) {
+            debugger;
+            var prospectCode = obj.value;
+            var url = '@Url.Action("IsProspectCodeExist","Admin")';
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'JSON',
+                data: { code: prospectCode },
+                success: isProspectCodeExistSuccess,
+                error: isProspectCodeExistFail
+            });
+        }
+        function isProspectCodeExistSuccess(result) {
+            debugger;
+        }
+        function isProspectCodeExistFail() {
+            debugger;
+        }
+
+        function GetShippingPinCodeByCityIdSuccess(result, id) {
+            //debugger;
+            FillShippingPinList(result, id);
+
+
+        }
+
+        function GetShippingPinCodeByCityIdFail() {
+
+        }
+
+        function FillShippingPinList(PinList, id) {
+            var v = "<option>--Select--</option>";
+            $.each(PinList, function (i, pin) {
+
+                v += "<option value=" + pin.PIN_ID + ">" + pin.PINCODE + "</option>";
+
+            });
+
+            $("#shippingPinId_" + id).html(v);
+        }
+        function checkValidations() {
+            var valid = true;
+            var address1 = $('#billingaddress_PROSPECT_ADDRESS1').val();
+            var address2 = $('#billingaddress_PROSPECT_ADDRESS2').val();
+            var landmark = $('#billingaddress_PROSPECT_LANDMARK').val();
+            var country = $('#billingCountry_1').value;
+            var state = $('#billingStateId_1').value;
+            var district= $('#billingDistrictId_1').val();
+            var city = $('#billingCityId_1').val();
+            var pin = $('#billingPinId_1').val();
+
+            var s_address1 = $('#billingaddress_PROSPECT_ADDRESS1').val();
+            var s_address2 = $('#billingaddress_PROSPECT_ADDRESS2').val();
+            var s_landmark = $('#billingaddress_PROSPECT_LANDMARK').val();
+            var s_country = $('#billingCountry_1').value;
+            var s_state = $('#billingStateId_1').value;
+            var s_district = $('#billingDistrictId_1').val();
+            var s_city = $('#billingCityId_1').val();
+            var s_pin = $('#billingPinId_1').val();
+
+            if (address1.trim() == "" || address1 == undefined) {
+                alert("PLEASE ENTER ADDRESS")
+                $('#billingaddress_PROSPECT_ADDRESS1').focus();
+                valid = false;
+            }
+            else if (address2.trim() == "" || address2 == undefined) {
+                alert("PLEASE ENTER ADDRESS")
+                $('#billingaddress_PROSPECT_ADDRESS2').focus();
+                valid = false;
+            }
+            else if (landmark.trim() == "" || landmark == undefined) {
+                alert("PLEASE ENTER LANDMARK")
+                $('#billingaddress_PROSPECT_LANDMARK').focus();
+                valid = false;
+            }
+            else if (country == "" || country == undefined || country == 0) {
+                alert("PLEASE SELECT COUNTRY")
+                $('#billingCountry_1').focus();
+                valid = false;
+            }
+            else if (state == "" || state == undefined || state == 0) {
+                alert("PLEASE SELECT STATE")
+                $('#billingStateId_1').focus();
+                valid = false;
+            }
+            else if (district == "" || district == undefined || district == 0) {
+                alert("PLEASE SELECT DISTRICT")
+                $('#billingDistrictId_1').focus();
+                valid = false;
+            }
+            else if (city == "" || city == undefined || city == 0) {
+                alert("PLEASE SELECT CITY")
+                $('#billingCityId_1').focus();
+                valid = false;
+            }
+            else if (pin == "" || pin == pin || pin == 0) {
+                alert("PLEASE SELECT PIN")
+                $('#billingPinId_1').focus();
+                valid = false;
+            }
+
+            else if (s_address1.trim() == "" || s_address1 == undefined) {
+                alert("PLEASE ENTER ADDRESS")
+                $('#shippingaddress_PROSPECT_ADDRESS1').focus();
+                valid = false;
+            }
+            else if (s_address2.trim() == "" || s_address2 == undefined) {
+                alert("PLEASE ENTER ADDRESS")
+                $('#shippingaddress_PROSPECT_ADDRESS2').focus();
+                valid = false;
+            }
+            else if (s_landmark.trim() == "" || s_landmark == undefined) {
+                alert("PLEASE ENTER LANDMARK")
+                $('#shippingaddress_PROSPECT_LANDMARK').focus();
+                valid = false;
+            }
+            else if (s_country == "" || s_country == undefined || s_country == 0) {
+                alert("PLEASE SELECT COUNTRY")
+                $('#shippingCountry_1').focus();
+                valid = false;
+            }
+            else if (s_state == "" || s_state == undefined || s_state == 0) {
+                alert("PLEASE SELECT STATE")
+                $('#shippingStateId_1').focus();
+                valid = false;
+            }
+            else if (s_district == "" || s_district == undefined || s_district == 0) {
+                alert("PLEASE SELECT DISTRICT")
+                $('#shippingDistrictId_1').focus();
+                valid = false;
+            }
+            else if (s_city == "" || s_city == undefined || s_city == 0) {
+                alert("PLEASE SELECT CITY")
+                $('#shippingCityId_1').focus();
+                valid = false;
+            }
+            else if (s_pin == "" || s_pin == pin || s_pin == 0) {
+                alert("PLEASE SELECT PIN")
+                $('#shippingPinId_1').focus();
+                valid = false;
+            }
+             
+            return valid;
+        }
+
+    </script>
+}

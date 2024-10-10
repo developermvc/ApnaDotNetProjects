@@ -1,0 +1,126 @@
+﻿@model LumaxDMS.Models.POSBILLModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "Part Of Salary Bill";
+    var year = DateTime.Now.Year;
+}
+
+@Html.Hidden("hdnFinancialYear")
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>PART OF SALARY BILLS</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="padding: 10px;">
+                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                        {
+                            <a class="mb-1 btn btn-success pull-right" href="/POS/CreatePOSSalaryBill?@Constants.HASH_POS">Create New</a>
+                        }
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <table id="POSBilltbl" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        Salary Bill Code
+                                    </th>
+                                    <th>
+                                        Employee Name
+                                    </th>
+                                    <th>
+                                        Financial Year
+                                    </th>
+                                    @*<th>
+                                        Month
+                                    </th>*@
+                                    <th>
+                                        Hd.Qtr
+                                    </th>
+                                    <th>
+                                        Designation
+                                    </th>
+                                    <th>
+                                        Date Of joining
+                                    </th>
+                                    <th>
+                                        Date ofLeaving
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.POS_BillList)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.POSBILLCODE
+                                        </td>
+                                        <td>
+                                            @item.EMPLOYEENAME
+                                        </td>
+                                        <td>
+                                            @item.FINANCIALYEARNAME
+                                        </td>
+                                        @*<td>
+                                            @item.MONTH
+                                        </td>*@
+                                        <td>
+                                            @item.HDQTR
+                                        </td>
+                                        <td>
+                                            @item.DESIGNATIONNAME
+                                        </td>
+                                        <td>
+                                            @item.JOININGDATE
+                                        </td>
+                                        <td>
+                                            @item.LEAVINGDATE
+                                        </td>
+                                        <td>
+                                            @Html.HiddenFor(m => m.POS_BillList[0].POSBILLHDRID, new { id = "hdnPOSBillID" })
+                                            @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                            {
+                                                <a href="/POS/CreatePOSSalaryBill?POSBillID=@item.POSBILLHDRID&ActionName=edit&@Constants.HASH_POS" title="Edit Part Of Salary Bill"><i class="fa fa-pencil"></i></a>
+                                            }
+                                            @if (Model.PermissionNameList.Contains(Constants.PermissionName.VIEW) && item.FINANCIALYEARNAME != (year + "-"+ (year+1)).ToString())
+                                            {
+                                                <a href="/POS/CreatePOSSalaryBill?POSBillID=@item.POSBILLHDRID&ActionName=view&@Constants.HASH_POS" title="View Part Of Salary Bill">
+                                                    <i class="icon-eye"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JS {
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#POSBilltbl').DataTable();
+        var financialyear = "";
+        if (new Date().getMonth() < 4) {
+            financialyear = (new Date().getUTCFullYear() - 1) + "-" + (new Date().getUTCFullYear());
+        }
+        else {
+            financialyear = (new Date().getUTCFullYear()) + "-" + (new Date().getUTCFullYear() + 1)
+        }
+        $('#hdnFinancialYear').val(financialyear);
+    });
+
+    </script>
+}

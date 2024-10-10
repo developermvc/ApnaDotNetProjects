@@ -1,0 +1,187 @@
+﻿@{
+    ViewBag.Title = "TravelExpenseStatement";
+}
+
+
+<div class="card card-default">
+ <div class="panel panel-default panel_pt">
+ <div class="card-header card_bg">
+ <div class="card-title card_tittle2">TRAVEL EXPENSE STATEMENT</div>
+ </div>
+        
+            <div class="card-body">
+			  <form class="form-horizontal">
+             <div class="row">
+                    <div class="col-lg-2">
+                    <label for="pwd">
+                        Ref No. :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" readonly="readonly" id="pwd"/>
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        Name :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" readonly="readonly" id="pwd"/>
+                </div>
+               <div class="col-lg-2">
+                    <label for="pwd">
+                        Hd. Qtr :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control from_bg from_bg2" readonly="readonly" id="pwd"/>
+                </div>
+                </div>
+
+                 <div class="row row_pt">
+                 <div class="col-lg-2">
+                    <label for="pwd">
+                        Category :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control datepicker from_bg from_bg2" readonly="readonly" id="pwd"/>
+                </div>
+                    <div class="col-lg-2">
+                    <label for="pwd">
+                        From Date :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control datepicker from_bg from_bg2" readonly="readonly" id="pwd"/>
+                </div>
+                <div class="col-lg-2">
+                    <label for="pwd">
+                        To Date :</label>
+                </div>
+                <div class="col-lg-2">
+                    <input type="text" class="form-control datepicker from_bg from_bg2" readonly="readonly" id="pwd"/>
+                </div>
+                </div>
+
+                      
+<br><br>
+
+
+<table class="table table-bordered">
+<thead class="thead-lights">
+                        <tr> 
+                        <th style="text-align: center">
+                                <input type="checkbox" />
+                            </th>
+                            <th style="text-align: center">
+                               Start Date
+                            </th>
+                            <th style="text-align: center">
+                                End Date
+                            </th>
+                            <th style="text-align: center">
+                              Departure Station 
+                            </th>
+                            <th style="text-align: center">
+                                Arrival Station 
+                            </th>
+                            <th style="text-align: center">
+                                Mode Of Travel 
+                            </th>
+                            <th style="text-align: center">
+                                Ticket No. 
+                            </th>
+                            <th style="text-align: center">
+                                Fare Charges 
+                            </th>
+                            <th style="text-align: center">
+                                Tiffin 
+                            </th>
+                            <th style="text-align: center">
+                                Lodging 
+                            </th>
+                            <th style="text-align: center">
+                                Conveyance 
+                            </th>
+                            <th style="text-align: center">
+                                Others 
+                            </th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td align="center">
+                                <input type="checkbox"/>
+                            </td>
+                            <td align="center">
+                                   22-10-2018
+                            </td>
+                           <td align="center">
+                               14-11-2018
+                            </td>
+                            <td align="center">
+                               Delhi
+                            </td>
+                              <td align="center">
+                                Pune
+                            </td>
+                            <td align="center">
+                                Train
+                            </td>
+                            <td align="center">
+                                452-2348512
+                            </td>
+                            <td align="center">
+                                5623
+                            </td>
+                            <td align="center">
+                                1242
+                            </td>
+                            <td align="center">
+                                1200
+                            </td>
+                            <td align="center">
+                                2600
+                            </td>
+                            <td align="center">
+                               860
+                            </td>
+                        </tr>
+                    </tbody>
+					
+					
+                </table>
+	
+
+                
+                </form>  
+               
+            </div>
+			
+			   <div class="card-footer">
+                           <div class="clearfix">
+                              <div class="float-left">
+                                  <button class="btn btn-primary" type="submit">Add Row</button>
+								 <button class="btn btn-primary" type="submit">Delete</button>
+                              </div>
+							  
+							   <div class="float-right">
+                                  <button class="btn btn-primary" type="submit">Submit</button>
+								 <button class="btn btn-primary" type="submit">Clear</button>
+                              </div>
+                            
+                           </div>
+                        </div>
+    
+    </div>
+</div>
+</div>
+
+@*<link href="../../vendor/bootstrap-datepicker/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="/vendor/bootstrap-datepicker/dist/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css" />
+<script src="../../vendor/bootstrap-datepicker/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/vendor/bootstrap-datepicker/dist/js/bootstrap-datetimepicker.js" type="text/javascript"></script>*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$(".datepicker").datepicker({ orientation: "bottom auto" });
+        $(".timepicker").datetimepicker();
+    });
+</script>

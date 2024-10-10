@@ -1,0 +1,94 @@
+﻿@model LumaxDMS.Models.FieldRoleHierModel
+@using LumaxDMS.AppCode
+
+@{
+    ViewBag.Title = "Field Role Hier List";
+}
+
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>APPROVAL HIERARCHY</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="padding: 10px;">
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <table id="ApprovalHierarchytbl" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        Functionality Name
+                                    </th>
+                                    <th>
+                                        Field Role
+                                    </th>
+                                    <th>
+                                        User Name
+                                    </th>
+                                    <th>
+                                        Approval Level
+                                    </th>
+                                    <th>
+                                        Valid From
+                                    </th>
+                                    <th>
+                                        Valid To
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.FieldRoleHierList)
+                                {
+                                    <tr>
+                                        <td>
+                                            @item.NAME
+                                        </td>
+                                        <td>
+                                            @item.FIELD_ROLE
+                                        </td>
+                                        <th>
+                                            @item.USERNAME
+                                        </th>
+                                        <th>
+                                            @item.MULTIPLEAPPROVALLEVEL
+                                        </th>
+                                        <td>
+                                            @Html.DisplayDate(@item.VALID_FROM)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayDate(@item.VALID_TO)
+                                        </td>
+                                        <td>
+                                            @Html.HiddenFor(m => m.FieldRoleHierList[0].FRH_ID, new { id = "hdnFieldRoleId" })
+                                            @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                            {
+                                                <a href="/ManageMaster/CreateApprovalHierarchy?FNCID=@item.FNC_ID&FIELDROLE=@item.FIELD_ROLE&ActionName=edit&@Constants.HASH_MASTER" title="Edit approval hierarchy"><i class="fa fa-pencil"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section JS {
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#ApprovalHierarchytbl').DataTable();
+    });
+
+    </script>
+}

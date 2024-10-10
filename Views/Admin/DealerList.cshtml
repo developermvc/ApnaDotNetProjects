@@ -1,0 +1,149 @@
+﻿@model LumaxDMS.Models.DealerModel
+@using LumaxDMS.AppCode
+@{
+    ViewBag.Title = "Dealer List";
+}
+
+<div class="card card_ps">
+    <div class="panel panel-default panel_pt">
+        <div class="header_ps">
+            <span>DEALER LIST</span>
+        </div>
+        <div class="container custom-datable">
+            <div class="card-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading" style="padding: 10px;">
+                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.CREATE))
+                        {
+
+                            using (Html.BeginForm("ExportDealer", "Admin", FormMethod.Post))
+                            {
+                                <input type="submit" id="excelexport" name="excelexport" value="Export To Excel" class="mb-1 btn btn-success pull-right" />
+                            }
+                            @*<a class="mb-1 btn btn-success pull-right" href="/Scheme/CreateItemGroup">Create New</a>*@
+                        }
+                    </div>
+                    <div class="panel-heading" style="padding: 10px;">
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <table id="dealertbl" class="table table-striped table-bordered dt-responsive nowrap"
+                               style="width: 100%">
+                            <thead class="thead-lights">
+                                <tr>
+                                    <th>
+                                        CP CODE
+                                    </th>
+                                    <th>
+                                        CP NAME
+                                    </th>
+                                    <th>
+                                        CITY
+                                    </th>
+                                    <th>
+                                        STATE
+                                    </th>
+                                    <th>
+                                        SEGMENT
+                                    </th>
+                                    <th>
+                                        CR LMT
+                                    </th>
+                                    <th>
+                                        TGT
+                                    </th>
+                                    <th>
+                                        EMAIL
+                                    </th>
+                                    <th>
+                                        STATUS
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.DealerList)
+                                {
+                                <tr>
+                                    <td>
+                                        @item.DEALERCODE
+                                    </td>
+                                    <td>
+                                        @item.DEALERNAME
+                                    </td>
+                                    <td>@item.CityName</td>
+                                    <td>@item.StateName</td>
+                                    <td>
+                                        @item.SegmentName
+                                    </td>
+                                    <td>@item.TOTALCREDITLIMIT</td>
+                                    <td>@item.TOTALTARGET</td>
+                                    <td>@item.DEALEREMAIL_ID</td>
+                                    <td>
+                                        @Html.DisplayStatus(@item.ISACTIVE)
+                                    </td>
+                                    <td class="text_center">
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.EDIT))
+                                        {
+                                            <a title="Edit Dealer" href="/Admin/EditDealer?DealerId=@item.DEALER_ID&ActionName=edit&@Constants.HASH_ADMIN">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                        }
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.VIEW))
+                                        {
+                                            <a title="Display Dealer" href="/Admin/EditDealer?DealerId=@item.DEALER_ID&ActionName=display&@Constants.HASH_ADMIN">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                        }
+                                        @if (Model.PermissionNameList.Contains(Constants.PermissionName.INACTIVE))
+                                        {
+                                            <a href="##" onclick="return DeleteDealer(@item.DEALER_ID)" title="Delete Dealer">
+                                                <i class="fa fa-trash bg_red"></i>
+                                            </a>
+                                        }
+
+                                        <a title="Set Dealer Target" href="/Admin/CreateDealerTarget?DealerId=@item.DEALER_ID&ActionName=create&@Constants.HASH_ADMIN">
+                                            <i class="fa fa-bullseye" aria-hidden="true"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@using (Html.BeginForm("DeleteDealer", "Admin", FormMethod.Post, new { @Id = "PostDelete" }))
+{
+    @Html.HiddenFor(m => m.Dealer_ID, new { @Id = "Del_DealerId" });
+}
+
+
+@section JS {
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#dealertbl').DataTable();
+        });
+        function DeleteDealer(id) {
+            $('.modal-title').html("DELETE DEALER");
+            $('.modal-body').html("You are about to delete a record. <br/> Do you want to continue.");
+            $('#Del_DealerId').val(id);
+            $('#DeleteModel').modal('show');
+
+        }
+
+        $("#SubmitDelete").click(function () {
+            $("#PostDelete").submit();
+
+        });
+
+
+    </script>
+}

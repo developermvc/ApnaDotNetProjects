@@ -1,0 +1,306 @@
+﻿@model LumaxDMS.Models.DsrhdrdtlModel
+@using LumaxDMS.Controllers
+@using BusinessObject
+@using LumaxDMS.AppCode
+@{
+    /**/
+
+    ViewBag.Title = "PlanDSR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    UserMaster currentUser = (UserMaster)Session[Constants.Session.USER];
+}
+<div id="manidsrcontent" class="card card-default">
+    <div class="card-header card_bg">
+        <div class="card-title card_tittle2">PLAN DAILY SALES REPORTS</div>
+    </div>
+    @using (@Html.BeginForm("PlanDSR", "DSR", FormMethod.Post, new { enctype = "multipart/form-data", @id = "frmcdsractualcrd", @name = "frmcdsractualcrd" }))
+    {
+        @Html.AntiForgeryToken();
+        @Html.HiddenFor(m => m.Planid, new { @class = "form-control" })
+        <input type="hidden" id="selectedcityids" name="selectedcityids" />
+        <div class="card-body">
+            <div class="row  row_pt">
+                <div class="col-md-12">
+                    <div class="forDealer poHdr">
+                        <table id="tblCreditInfo" class="table border">
+
+                            <tbody>
+                                <tr><td colspan="5"><span style="color:red;" id="dtpmsgshow">@Html.HiddenFor(m => m.empId)</span></td></tr>
+                                <tr>
+                                    <td width="20%">
+                                        <div class="input-group date datepicker">
+                                            @Html.TextBoxFor(m => m.plandate, new { @class = "form-control datepicker", @placeholder = "Plan Date", @readonly = "true" })
+                                            <span class="input-group-append input-group-addon">
+                                                <i class="input-group-text2 fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+
+                                    </td>
+                                    <td width="20%" height="10%">
+                                        @Html.DropDownListFor(m => m.SelectedDaytype_id, new SelectList(Model.daytypeMasterList, "DAYTYPE_ID", "DAYTYPENAME"), "--Select Day type--", new { @class = "form-control", @onchange = "return dsrblockinfo(this.value);" })
+                                        @Html.ValidationMessageFor(model => model.SelectedDaytype_id)
+                                    </td>
+                                    <td height="10%">@Html.TextAreaFor(m => m.REMARKS, 10, 10, new { @class = "form-control", @placeholder = "Remarks ", @maxlength = "300" })</td>
+                                    <td width="20%">
+                                        @Html.TextBoxFor(m => m.Plancode, new { @class = "form-control", @placeholder = "Plan No", @readonly = "true" })
+
+                                    </td>
+                                </tr>
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid" id="dsrlsttbl">
+                <br />
+                <div class="row">
+                    <div class="dual-list list-left col-md-5">
+                        <div class="well well_bg">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="input-group">
+                                        <i class="fa fa-search" aria-hidden="true" style="padding: 8px 8px; background: #ddd;">
+                                        </i>
+                                        <input type="text" name="SearchDualList" class="form-control" placeholder="search" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="btn-group list_bg">
+                                        <a class="btn btn-default selector" title="select all" style="border: 1px solid #ccc;
+                                            background: #fff; margin-left: -5px; position: relative; bottom: 10px;">
+                                            <i class="fa fa-check-square-o" aria-hidden="true"
+                                               style="font-size: 13px;"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="list-group" id="momentlistLeft"></ul>
+                        </div>
+                    </div>
+                    <div class="list-arrows col-md-1 text-center">
+                        <button class="btn btn-default btn-sm move-left" type="button" style="background: #fff;
+                            border: 1px solid #ddd;">
+                            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-default btn-sm move-right" type="button" style="background: #fff;
+                            border: 1px solid #ddd;">
+                            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="dual-list list-right col-md-5">
+                        <div class="well">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="btn-group">
+                                        <a class="btn btn-default selector" title="select all">
+                                            <a class="btn btn-default selector"
+                                               title="select all" style="border: 1px solid #ccc; background: #fff; margin-left: -25px;">
+                                                <i class="fa fa-check-square-o" aria-hidden="true" style="font-size: 13px;"></i>
+                                            </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="input-group">
+                                        <i class="fa fa-search" aria-hidden="true" style="padding: 8px 8px; background: #ddd;">
+                                        </i>
+                                        <input type="text" name="SearchDualList" class="form-control" placeholder="search" id="secondsearch">
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="list-group list_bg2" id="momentlistRight"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    @if (Model.Requesttype == "Create")
+                    {
+                        <button name="btnTyp" id="btnTypsave" onclick="return Checkonsubmit();" class="btn btn-primary" value="Submit" type="submit"> Submit</button>
+                    }
+                    else if (Model.Requesttype == "edit")
+                    {
+                        <button name="btnTyp" class="btn btn-primary" onclick="return Checkonsubmit();" value="Update" type="submit">Submit</button>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+    }
+
+</div>
+
+<script src="~/Scripts/ProjectJS/ManageMaster_Common.js"></script>
+<script src="~/Scripts/ProjectJS/Common.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<script src="~/Scripts/ProjectJS/PlanDSR.js"></script>
+<script type="text/javascript">
+    var Requesttype = '@Model.Requesttype';
+    var IsCityEnable = true;
+    $(document).ready(function () {
+        debugger;
+        var tdate = new Date();
+        if (Requesttype != "UnPlanedCreate") {
+            var nextday = tdate.setDate(tdate.getDate() + 1);
+            var tdate = new Date(nextday);
+        }
+        if (Requesttype != "UnPlanedCreate" && Requesttype != "edit" && Requesttype != "view") {
+            $(".datepicker").datepicker({
+                format: 'dd/M/yyyy', orientation: "bottom auto", autoclose: true, startDate: tdate, endDate: '+30d'
+            }).on('changeDate', function (e) {
+
+                Checkdsrexist($('#plandate').val());
+
+            });
+        }
+        
+        $('#plandate').val(formatDate($('#plandate').val()));
+
+        if (Requesttype == "view") {
+            $("#frmcdsractualcrd :input").prop("disabled", true);
+            $("#frmcdsractualcrd select").attr("disabled", "disabled");
+
+        }
+        else {
+            $(".select-chosen").chosen();
+        }
+        if (Requesttype == "view") {
+
+        }
+
+    });
+    function dsrblockinfo(selectedval) {
+        var checkUrl = '/dsr/getCityDisplayByDayType';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ DayTypeId: selectedval }),
+            dataType: "json",
+            async: "false",
+            success: function (returndata) {
+                if (returndata.ISCITYDISPLAY=='N') {
+                    $("#dsrlsttbl").css("display", 'none');
+                    //$("#btnaddddsr").prop("disabled", true);
+                    IsCityEnable = false;
+                }
+                else {
+                    $("#dsrlsttbl").css("display", 'block');
+                    //$("#btnaddddsr").prop("disabled", false);
+                    IsCityEnable = true;
+                }
+            },
+
+        });   
+    }
+    function Checkonsubmit() {
+        debugger;
+        var valid = true;
+       if ($("#plandate").val().length==0) {
+            alert("Choose Plan Date!");
+           $("#plandate").focus();
+           valid = false;
+        }
+        if (valid) {
+            if (IsCityEnable) {
+                valid = FillDestCityIds();
+                if (valid == false) {
+                    alert("Please add atleast one City");
+                }
+            }
+        }
+        debugger;
+        //valid = Checkdsrexist($("#plandate").val());
+        //if (!valid)
+        //{
+        //    debugger;
+        //    valid = false;
+        //}
+       
+        return valid;
+    }
+
+
+    function Checkdsrexist(plandate) {
+        var isSuccess = false;
+        var checkUrl = '/dsr/checkdsrexist';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ plandate: plandate }),
+            dataType: "json",
+            async: "false",
+            success: function (returndata) {
+                if (returndata.PLANID > 0 && returndata.PLANID != $('#Planid').val()) {
+                    $("#btnTypsave").prop("disabled", true);
+                    $("#btnaddddsr").prop("disabled", true);
+                    //alert("This Date is Already Planed with Plancode " + returndata.PLANCODE);
+                    $("#dtpmsgshow").text("This Date is Already Planed with Plancode " + returndata.PLANCODE);
+                    $("#plandate").val("");
+                    isSuccess= false;
+                }
+                else {
+                    $("#dtpmsgshow").text("");
+                    $("#btnTypsave").prop("disabled", false);
+                    $("#btnaddddsr").prop("disabled", false);
+                    isSuccess= true;
+                }
+            },
+
+        });
+        return isSuccess;
+         
+    }
+
+
+
+    function GetCustomerData(rownum) {
+        var ProspectTypeId = $('#Selectedcustomer_id_' + rownum).val();
+        var CityId = $('#Selectedcity_id_' + rownum).val();
+        var requesturl = '/DSR/GetCustomerListByProspectType';
+        $.ajax({
+            url: requesturl,
+            type: "GET",
+            dataType: "JSON",
+            data: { ProspectTypeId: ProspectTypeId, CityId: CityId },//, str: str
+            success: function (result) {
+                debugger;
+                $('#SelCustomermid_' + rownum).empty();
+                var v = "<option value=''>--Select Customer--</option>";
+
+                $.each(result, function (i, data) {
+                    v += "<option value=" + data.cmid + ">" + data.cname + "</option>";
+                });
+                $('#SelCustomermid_' + rownum).append(v);
+                $('#SelCustomermid_' + rownum).trigger("chosen:updated");
+
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        });
+
+    }
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        var whdsrtype = parseInt('@Model.SelectedDaytype_id');
+        dsrblockinfo(whdsrtype);
+        gerDSRCity('@Url.Action("gerDSRCity", "DSR")', $('#Planid').val());
+    });
+</script>

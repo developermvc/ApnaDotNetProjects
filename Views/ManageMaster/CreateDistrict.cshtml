@@ -1,0 +1,240 @@
+﻿@model LumaxDMS.Models.DistrictModel
+@using (Html.BeginForm("CreateDistrict", "ManageMaster", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.District_Id)
+
+    <div class="card card-default">
+        <div class="card-header card_bg">
+            <div class="card-title card_tittle2" id="districtformtitle">CREATE DISTRICT</div>
+        </div>
+        <div id="dv_displaydetail" class="card-body">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        Country Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedCountryId, new SelectList(Model.countryMasterList, "Country_Id", "CountryName"), "--Select--", new { @class = "form-control from_bg chosen-select", @onchange = "return GetStateByCountryId(this);" })
+                    @Html.ValidationMessageFor(model => model.SelectedCountryId)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        State Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.DropDownListFor(model => model.SelectedStateId, new SelectList(Model.stateMasterList, "State_Id", "StateName"), "--Select--", new { @class = "form-control from_bg chosen-select" })
+                    @Html.ValidationMessageFor(model => model.SelectedStateId)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        District Code:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DistrictCode, new { @class = "form-control from_bg", title = "Enter district Code" })
+                    @Html.ValidationMessageFor(model => model.DistrictCode)
+                </div>
+            </div>
+            <div class="row row_pt">
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        District Name:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DistrictName, new { @class = "form-control from_bg", onblur = "return CheckDistrictValidation(this)", title = "Enter district name" })
+                    @Html.ValidationMessageFor(model => model.DistrictName)
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    <label class="redlabel">
+                        District Desc:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.TextBoxFor(model => model.DistrictDesc, new { @class = "form-control from_bg", title = "Enter district Desc" })
+                    @Html.ValidationMessageFor(model => model.DistrictDesc)
+                </div>
+
+                <div class="col-lg-2 col-xs-12">
+                    <label for="pwd">
+                        IsActive:
+                    </label>
+                </div>
+                <div class="col-lg-2 col-xs-12">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div class="clearfix">
+                <div class="float-right">
+                    <button class="btn btn-primary" type="submit" id="btnadd" name="btntype" value="Create" onclick="return checkValidation() ">Create</button>
+                    <button class="btn btn-primary" type="submit" style="display: none" id="btnupdate" name="btntype" onclick="return checkValidation() " value="Update">Update</button>
+                    <button class="btn btn-primary" type="button" onclick="resetValidation()">Clear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<script type="text/javascript">
+
+    $(".chosen-select").chosen();
+
+    function CheckDistrictValidation(district_id) {
+        debugger;
+        var checkUrl = '@Url.Action("CheckIsdistrictExist", "ManageMaster")';
+        var DistrictId = $('#District_Id').val();
+        var districtName = $('#DistrictName').val();
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ districtName: districtName, districtId: DistrictId }),
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                if (!data) {
+                    alert("District Name already exists");
+                    $('#DistrictName').val('');
+                    $('#DistrictName').focus();
+                }
+            },
+            error: function (data) {
+
+            }
+        });
+
+    }
+
+    function EditDistrict(district_id) {
+        debugger;
+        var checkUrl = '@Url.Action("EditDistrict", "ManageMaster")';
+        $.ajax({
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            url: checkUrl,
+            data: JSON.stringify({ district_id: district_id }),
+            dataType: "json",
+            success: EditDistrictSucceeded,
+            error: EditDistrictFailed
+        });
+
+
+    }
+
+    function EditDistrictSucceeded(result) {
+        debugger;
+        if (result != null && result.districtmaster != null) {
+
+
+            FillStateList(result.stateList);
+
+            $('#District_Id').val(result.districtmaster.DISTRICT_ID);
+            $('#DistrictName').val(result.districtmaster.DISTRICTNAME);
+            $('#DistrictCode').val(result.districtmaster.DISTRICTCODE);
+            $('#DistrictDesc').val(result.districtmaster.DISTRICTDESC);
+            $("#SelectedStateId").val(result.districtmaster.STATE_ID).trigger("chosen:updated");
+            $("#SelectedCountryId").val(result.districtmaster.CountryId).trigger("chosen:updated");
+            if (result.districtmaster.ISACTIVE == "Y") {
+                $('#IsActive').prop('checked', true);
+            }
+            else {
+                $('#IsActive').prop('checked', false);
+            }
+
+            $('#btnupdate').show();
+            $('#btnadd').hide();
+            $('#districtformtitle').text("UPDATE DISTRICT");
+
+        }
+
+
+    }
+
+
+
+
+    function EditDistrictFailed() {
+
+    }
+
+    function resetform() {
+        window.location.href = "/ManageMaster/DistrictList";
+    }
+
+
+    function FillStateList(statelist) {
+        var v = "<option>--Select--</option>";
+        $.each(statelist, function (i, state) {
+
+            v += "<option value=" + state.STATE_ID + ">" + state.STATENAME + "</option>";
+
+        });
+
+        $("#SelectedStateId").html(v);
+        $("#SelectedStateId").val('').trigger("chosen:updated");
+    }
+
+
+    function GetStateByCountryId(obj) {
+        debugger;
+        var CountryId = obj.value;
+        var checkUrl = '@Url.Action("GetStateByCountryId", "ManageMaster")';
+        $.ajax({
+            url: checkUrl,
+            type: "GET",
+            dataType: "JSON",
+            data: { id: CountryId },
+            success: GetStateByCountryIdSuccess,
+            error: GetStateByCountryIdFail
+        });
+
+    }
+
+    function GetStateByCountryIdSuccess(result) {
+        debugger;
+        FillStateList(result);
+
+
+    }
+
+    function GetStateByCountryIdFail() {
+
+    }
+
+    function checkValidation() {
+        debugger;
+        var valid = true;
+        var countryid = $('#SelectedCountryId').val();
+        var stateid = $('#SelectedStateId').val();
+        var districtid = $('#SelectedDistrictId').val();
+        if (countryid == "" || countryid == null) {
+            $('#SelectedCountryId').trigger('chosen:activate');
+            alert("Please select country");
+            valid = false;
+        } else if (stateid == "" || stateid == null) {
+            $('#SelectedStateId').trigger('chosen:activate');
+            alert("Please select state");
+            valid = false;
+        }
+
+        return valid;
+    }
+    function resetValidation() {
+
+        $("#DistrictCode-error").html('');
+        $("#DistrictName-error").html('');
+        $("#DistrictDesc-error").html('');
+
+    }
+
+</script>

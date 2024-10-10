@@ -1,0 +1,8 @@
+2020-04-19 14:11:32,281 DEBUG DebugLogger - IRController.cs search ir post method started
+2020-04-19 14:11:32,321 DEBUG DebugLogger - IRController.cs search ir post method end
+2020-04-19 14:11:48,339 DEBUG DebugLogger - IRController.cs search ir post method started
+2020-04-19 14:11:48,346 DEBUG DebugLogger - IRController.cs search ir post method end
+2020-04-19 14:12:16,067 DEBUG DebugLogger - IRController.cs search ir post method started
+2020-04-19 14:12:16,074 DEBUG DebugLogger - IRController.cs search ir post method end
+2020-04-19 14:15:50,201 DEBUG DebugLogger - Insert PO end for po number WODL1911050024
+2020-04-19 14:17:41,905 DEBUG DebugLogger - Insert PO end for po number WODL2004190001

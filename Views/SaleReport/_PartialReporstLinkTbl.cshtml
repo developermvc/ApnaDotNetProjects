@@ -1,0 +1,39 @@
+﻿@model LumaxDMS.Models.BaseReportModel
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>SR</th>
+            <th>Go To Reports</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td><a href="@Url.Action("OrderVsSale",new { Id=Model.hdnSelectedUserArea,FromDate=Convert.ToString(Model.FROMDATE),ToDate=Convert.ToString(Model.TODATE),areaTypeId=Model.C_SelectedAreaType})" value="report1">Order Vs Sale</a></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><a href="@Url.Action("TgtVsAch",new { Id=Model.hdnSelectedUserArea,FromDate=Convert.ToString(Model.FROMDATE),ToDate=Convert.ToString(Model.TODATE),areaTypeId=Model.C_SelectedAreaType})" value="report1">Target Vs Achievement</a></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><a href="@Url.Action("ProductWiseSale",new { Id=Model.hdnSelectedUserArea,FromDate=Convert.ToString(Model.FROMDATE),ToDate=Convert.ToString(Model.TODATE),areaTypeId=Model.C_SelectedAreaType})" value="report1">Product wise sale</a></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><a href="@Url.Action("SaleRegister",new { Id=Model.hdnSelectedUserArea,FromDate=Convert.ToString(Model.FROMDATE),ToDate=Convert.ToString(Model.TODATE),areaTypeId=Model.C_SelectedAreaType})" value="report1">Sale Register</a></td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><a href="@Url.Action("NpdRpt",new { Id=Model.hdnSelectedUserArea,FromDate=Convert.ToString(Model.FROMDATE),ToDate=Convert.ToString(Model.TODATE),areaTypeId=Model.C_SelectedAreaType})" value="report1">NPD Sale</a></td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td><a href="@Url.Action("PendingDA",new { Id=Model.hdnSelectedUserArea,FromDate=Convert.ToString(Model.FROMDATE),ToDate=Convert.ToString(Model.TODATE),areaTypeId=Model.C_SelectedAreaType})" value="report1">Pending DA</a></td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td><a href="@Url.Action("StockPriceList",new { Id=Model.hdnSelectedUserArea,FromDate=Convert.ToString(Model.FROMDATE),ToDate=Convert.ToString(Model.TODATE),areaTypeId=Model.C_SelectedAreaType})" value="report1">Stock Price List</a></td>
+        </tr>
+    </tbody>
+</table>
